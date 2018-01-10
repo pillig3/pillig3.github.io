@@ -6,3 +6,8 @@ h1 {
     width: 100%;
     height: auto;
 }
+
+body {
+  background-image: url(/photos/pascalmod17.png);
+  background-size: 100%;
+}
