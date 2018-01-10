@@ -3,6 +3,13 @@ h1 {
 }
 
 #pascalpic {
-    width: 100%;
-    height: auto;
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+#introtext {
+  position: absolute;
+  top: 120px;
+  left: 60px;
 }
