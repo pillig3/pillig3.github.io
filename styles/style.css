@@ -14,10 +14,6 @@ h1 {
   left: 60px;
 }
 
-nav {
-  border-style: double;
-}
-
 #unlabeled {
   list-style-type: none;
   border-style: double;
