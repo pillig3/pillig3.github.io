@@ -18,7 +18,7 @@ nav {
   border-style: double;
 }
 
-ul.unlabeled {
+#unlabeled {
   list-style-type: none;
   border-style: double;
 }
