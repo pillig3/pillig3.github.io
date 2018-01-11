@@ -4,7 +4,11 @@ function playerMove(){
 
 function submitForm(){
   s = document.getElementById("submission").value;
-  if (s.toLowerCase() === "yes".toLowerCase()) {
-    document.getElementById("response").innerHTML = "Glad you like it! me too :)"
+  if (s.toLowerCase() === "yes") {
+    document.getElementById("response").innerHTML = "Glad you like it! me too :)";
+  } else if (s.toLowerCase() === "no") {
+    document.getElementById("response").innerHTML = "Sorry not sorry xP";
+  } else {
+    document.getElementById("response").innerHTML = "";
   }
 }
