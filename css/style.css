@@ -13,3 +13,8 @@ h1 {
   top: 120px;
   left: 60px;
 }
+
+#unlabeled {
+  list-style-type: none;
+  border-style: double;
+}
