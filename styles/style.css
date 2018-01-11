@@ -20,4 +20,5 @@ nav {
 
 ul {
   list-style-type: none;
+  border-style: double;
 }
