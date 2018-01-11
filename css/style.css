@@ -14,7 +14,12 @@ h1 {
   left: 60px;
 }
 
-#unlabeled {
+ul.unlabeled {
   list-style-type: none;
   border-style: double;
+}
+
+#chomp {
+  position: relative;
+  left:50%;
 }
