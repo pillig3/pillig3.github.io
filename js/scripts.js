@@ -3,16 +3,100 @@ var board = [3,3,3,3];
 var rows = 3;
 var cols = 4;
 
-function playerMove(r,c){
+async function playerMove(c,r) {
+  makeLoadingImg();
+  monch(c,r);
+  if (gameIsOver()) {
+    document.getElementById("loading_space").innerHTML = "<br />The computer won! Rats!<br />";
+    return;
+  }
+  await sleep(1000);
+  var move = getBestMove();
+  monch(move[0],move[1]);
+  document.getElementById("loading_space").innerHTML = "<br /><br /><br />";
+  if(gameIsOver()) {
+    document.getElementById("loading_space").innerHTML = "<br />Nice! You won!<br />";
+  }
+}
 
+function makeLoadingImg() {
+  document.getElementById("loading_space").innerHTML = "<img id = \"loadingGif\" src=\"photos/loading.gif\" />";
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/* returns true iff game is over */
+function gameIsOver() {
+  return ( board.indexOf(0) == 0 ); /* if board is all zeros */
+}
+
+/* monch off the top right of the board */
+function monch(c,r) {
+  board = takeABite(board, c, r);
+  changeBoardOnscreen(board);
+}
+
+/* returns best next position possible */
+function getBestMove() {
+  /* we try to move to a losing position */
+  for (var c = 1; c <= board.length; c++) {
+    for (var r = 1; r <= board[c-1]; r++) {
+      var nextPos = takeABite(board, c, r);
+      if (isLosingPosition(nextPos)) {
+        return [c, r];
+      }
+    }
+  }
+  /* otherwise, we play randomly */
+  var numNonemptyCols = board.indexOf(0);
+  c = Math.floor(Math.random()*numNonemptyCols+1);
+  r = Math.floor(Math.random()*board[c]+1);
+  return [c, r];
+}
+
+/* monch off the top right of pos */
+function takeABite(pos, c, r) {
+  var pos1 = pos.slice();
+  for (var col = c-1; col < pos1.length; col++) {
+    pos1[col] = Math.min(r-1, pos1[col]);
+  }
+  return pos1;
+}
+
+/* returns true IFF pos is a position such that
+ * if the computer has to move from pos it can
+ * be forced into a loss. */
+function isLosingPosition(pos) {
+  if (pos.reduce((a,b)=>a+b) === 0) {
+    return false; /* no squares left is a winning position, because you just won! */
+  }
+  /* give pos length 10 for comparison  */
+  pos1 = pos.slice();
+  if (pos.length < 10){
+    pos1.push(...(new Array(10-pos.length).fill(0)));
+  }
+  /* search & recurse */
+  if (hash["["+pos1.toString()+"]"]) {
+    return true;
+  }
+  for (var c = 1; c <= pos.length; c++/* ha ha */) {
+    for (var r = 1; r <= pos[c-1]; r++) {
+      if (isLosingPosition(takeABite(pos, c, r))) {
+        return false; /* if you can reach a losing position, you're not at one */
+      }
+    }
+  }
+  hash["["+pos1.toString()+"]"] = true;
+  return true;
 }
 
 /* setup the board that the user selected */
-function setupChomp(){
+function setupChomp() {
   rows = parseInt(document.getElementById("chompRowNumber").value);
   cols = parseInt(document.getElementById("chompColumnNumber").value);
   board = new Array(cols).fill(rows);
-  alert(board);
   if (!(rows>1 && cols>1)) {
     alert("invalid board size ("+rows+" by "+cols+")");
   } else {
@@ -83,7 +167,7 @@ function changeBoardOnscreen(list) {
 
 
 
-
+/* lookup table of losing positions */
 var hash={
   "[1,0,0,0,0]":true,
   "[1,0,0,0,0,0,0,0,0,0]":true,

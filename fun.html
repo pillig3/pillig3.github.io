@@ -14,7 +14,7 @@
 
   <h1>Chomp</h1>
   <h3>Chomp is a 2-player game</h3>
-  <p>What size of board would you like to play on?</p>
+  <p>What size of board would you like to play on? (More options coming as soon as computers get faster or I generate more lookup tables)</p>
   <select id="chompRowNumber">
     <option value=2>2</option>
     <option value=3>3</option>
@@ -22,20 +22,12 @@
     <option value=5>5</option>
     <option value=6>6</option>
     <option value=7>7</option>
-    <option value=8>8</option>
-    <option value=9>9</option>
-    <option value=10>10</option>
   </select> rows,
   <select id="chompColumnNumber">
     <option value=2>2</option>
     <option selected value=3>3</option>
     <option value=4>4</option>
     <option value=5>5</option>
-    <option value=6>6</option>
-    <option value=7>7</option>
-    <option value=8>8</option>
-    <option value=9>9</option>
-    <option value=10>10</option>
   </select> columns <button onClick="setupChomp()">Play!</button>
 
   <p>
@@ -63,6 +55,9 @@
     </tr>
   </tbody>
   </table>
+  <p id="loading_space">
+    <br /><br /><br />
+  </p>
 
   <script src="js/scripts.js"></script>
 </body>

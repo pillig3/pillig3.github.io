@@ -20,6 +20,13 @@ h1.name {
   left: 44vw;
 }
 
+#loading_space {
+  text-align: center;
+}
+#loadingGif {
+  width: 20vw;
+}
+
 #math_page {
   background-image: url('../photos/pascalmod17.png');
   background-size: cover;
