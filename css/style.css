@@ -1,11 +1,29 @@
-h1 {
-    text-align: center;
+:root {
+  --epsilon: 9vw;
 }
 
-#pascalpic {
-  position: relative;
-  width: 100%;
-  height: auto;
+#index {
+  background-color: #FF00FF;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
+    font-weight: normal;
+}
+
+h1.name {
+  position: fixed;
+  top: 1%;
+  font-size: 16px;
+  font-size: 6vw;
+  text-align: center;
+  left: 44vw;
+}
+
+#math_page {
+  background-image: url('../photos/pascalmod17.png');
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 #introtext {
@@ -14,12 +32,103 @@ h1 {
   left: 60px;
 }
 
-ul.unlabeled {
+ul.bigNav {
+  display: inline-block;
   list-style-type: none;
-  border-style: double;
+  border-style: none;
+  position: fixed;
+  top: 2%;
+  left: var(--epsilon);
+  padding: 10% 1%;
+  background-color: #00FFFF;
 }
 
-#chomp {
-  position: relative;
-  left:50%;
+ul.smallNav {
+  display: inline-block;
+  list-style-type: none;
+  border-style: none;
+  position: fixed;
+  top: 2%;
+  left: 0px;
+  padding: 10% 1%;
+  background-color: #00FFFF;
+}
+
+a.bigLink {
+    display: block;
+    color: #000000;
+    font-size: 16px;
+    font-size: 4vw;
+    font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
+    font-weight: lighter;
+}
+
+#chomp_table {
+  background-color: black;
+  border-collapse: separate;
+  border: 5px black;
+  margin: auto;
+}
+
+td {
+  width: 75px;
+  height: 75px;
+  float:center;
+  border: black;
+}
+
+button.chomp_butt, button.chomp_butt:active, button.chomp_butt:hover, button.chomp_butt:visited {
+  background-color: #00FFFF;
+  background-image: url("../photos/chocobar.jpg");
+  background-size: 75px 75px;
+  background-repeat: no-repeat;  /* make the background image appear only once */
+  background-position: 0px 0px;  /* equivalent to 'top left' */
+  border: none;
+  width:75px;
+  height:75px;
+  float:left;
+  outline: 0;
+  cursor: pointer;
+}
+
+button.poison_butt {
+  background-image: url("../photos/sans1.png"), url("../photos/chocobar.jpg");
+  background-size: 75px, 75px 75px;
+  background-repeat: no-repeat, no-repeat;  /* make the background image appear only once */
+  background-position: 0px 4px, 0px 0px;
+  border: none;           /* assuming we don't want any borders */
+  cursor: pointer;        /* make the cursor like hovering over an <a> element */
+  width: 75px;
+  height: 75px;
+  float:left;
+  outline:0;
+}
+
+p.code {
+  font-size: 12px;
+  font-family: monospace;
+  position:absolute;
+  top:150%;
+}
+
+a:link, a:visited, a:hover, a:active {
+    text-decoration: none;
+}
+
+#yellow_box {
+  position: fixed;
+  top: 0px;
+  left: calc(100% / 3 + var(--epsilon) / 2);
+  width: calc(100% * 2 / 3 - (3 * var(--epsilon) / 2));
+  height: 100%;
+  background: #FFFF00;
+}
+
+#cyan_box {
+  position: fixed;
+  top: 0px;
+  left: var(--epsilon);
+  width: calc(100% / 3 - (3 * var(--epsilon) / 2));
+  height: 100%;
+  background: #00FFFF;
 }
