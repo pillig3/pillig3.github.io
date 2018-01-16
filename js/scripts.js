@@ -50,7 +50,12 @@ function getBestMove() {
     }
   }
   /* otherwise, we play randomly */
-  var numNonemptyCols = board.indexOf(0);
+  z = board.indexOf(0);
+  if (z < 0) {
+    numNonemptyCols = cols;
+  } else {
+    numNonemptyCols = z;
+  }
   c = Math.floor(Math.random()*numNonemptyCols+1);
   r = Math.floor(Math.random()*board[c]+1);
   return [c, r];
