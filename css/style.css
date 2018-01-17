@@ -11,6 +11,52 @@ h1, h2, h3, h4, h5, h6, p {
     font-weight: normal;
 }
 
+#boomtext {
+  font-family: 'Sedgwick Ave Display', cursive;
+  display:inline;
+  font-size: 6vw;
+  color: #FF0000;
+}
+h3.robottext {
+  font-family: 'Revalia', cursive;
+  display: inline;
+}
+
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    text-align: center;
+    position:relative;
+    left: calc(50% - 60px);
+}
+.fakeloader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  text-align: center;
+  position:relative;
+  left: calc(50% - 60px);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+h3.inlinetext {
+  display: inline;
+}
+#poisontext {
+    display: inline;
+    font-family: fantasy;
+    color: #00FF80;
+}
+
 h1.name {
   position: fixed;
   top: 1%;
@@ -27,6 +73,33 @@ h1.name {
   width: 20vw;
 }
 
+#rulebook {
+  background-image: url("https://c1.staticflickr.com/4/3225/3031647963_003a5f6417_b.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 400px;
+  height: 300px;
+  position: relative;
+  left: 500px;
+}
+#rulelist {
+  width: 160px;
+  position: relative;
+  left: 210px;
+}
+.rule {
+  font-size: 12px;
+  font-weight: lighter;
+}
+
+#references {
+  position: relative;
+  text-align: center;
+  top: 60px;
+  left: calc(100% / 4 );
+  width: calc(100% / 2);
+}
+
 #math_page {
   background-image: url('../photos/pascalmod17.png');
   background-size: cover;
@@ -37,6 +110,29 @@ h1.name {
   position: absolute;
   top: 120px;
   left: 60px;
+}
+
+.pagetitle {
+  position: relative;
+  margin: auto;
+  text-align: center;
+  top: 1vh;
+  font-size: 40px;
+}
+
+.h3_with_margins {
+  position: relative;
+  top: 1vh;
+  left: calc(100% / 4 );
+  width: calc(100% / 2);
+  font-size: 18px;
+}
+.right_justify {
+  text-align: right;
+}
+
+a.bluelink {
+  color: Blue;
 }
 
 ul.bigNav {
@@ -85,7 +181,7 @@ td {
 }
 
 button.chomp_butt, button.chomp_butt:active, button.chomp_butt:hover, button.chomp_butt:visited {
-  background-color: #00FFFF;
+  background-color: brown;
   background-image: url("../photos/chocobar.jpg");
   background-size: 75px 75px;
   background-repeat: no-repeat;  /* make the background image appear only once */
@@ -138,4 +234,35 @@ a:link, a:visited, a:hover, a:active {
   width: calc(100% / 3 - (3 * var(--epsilon) / 2));
   height: 100%;
   background: #00FFFF;
+}
+
+#greybox {
+  z-index: -1;
+  position: fixed;
+  top: 0px;
+  left: calc(100% / 4 - var(--epsilon)/2);
+  width: calc(100% / 2 + var(--epsilon));
+  height: 100%;
+  background: lightgrey;
+}
+
+#weirdbox {
+  z-index: 1;
+  position: absolute;
+  top: 0px;
+  left: calc(100% * 3 / 4 + var(--epsilon)/2);
+  width: calc(100% / 4 - var(--epsilon)/2);
+  height: 200%;
+  background-image: url("../photos/sheeeeeeeeee.png");
+  background-size: cover;
+}
+
+#lightbluebox {
+  z-index: 0;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: calc(100% / 4 - var(--epsilon)/2);
+  height: 100%;
+  background: lightblue;
 }

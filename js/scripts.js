@@ -1,26 +1,35 @@
 var losing_positions = [];
 var board = [3,3,3,3];
+/* represents the board:
+ * [a_1, a_2, ..., a_c] represents the board with c columns
+ * that is a_1 tall in the first column, etc. */
 var rows = 3;
 var cols = 4;
 
+/* when player clicks tile (c, r) */
 async function playerMove(c,r) {
   makeLoadingImg();
   monch(c,r);
   if (gameIsOver()) {
-    document.getElementById("loading_space").innerHTML = "<br />The computer won! Rats!<br />";
+    document.getElementById("message_space").innerHTML = "<br />The computer won! Rats!<br />";
+    clearLoadingImg();
     return;
   }
   await sleep(1000);
   var move = getBestMove();
   monch(move[0],move[1]);
-  document.getElementById("loading_space").innerHTML = "<br /><br /><br />";
+  clearLoadingImg();
   if(gameIsOver()) {
-    document.getElementById("loading_space").innerHTML = "<br />Nice! You won!<br />";
+    document.getElementById("message_space").innerHTML = "<br />Nice! You won!<br />";
   }
 }
 
 function makeLoadingImg() {
-  document.getElementById("loading_space").innerHTML = "<img id = \"loadingGif\" src=\"photos/loading.gif\" />";
+  document.getElementById("loading_space").innerHTML = "<div class=\"loader\"></div>";
+  /*document.getElementById("loading_space").innerHTML = "<img id = \"loadingGif\" src=\"photos/loading.gif\" />";*/
+}
+function clearLoadingImg() {
+  document.getElementById("loading_space").innerHTML = "<div class=\"fakeloader\"></div>";
 }
 
 function sleep(ms) {
@@ -119,6 +128,7 @@ function setupChomp() {
     }
     s += "</tbody>";
     document.getElementById("chomp_table").innerHTML = s;
+    document.getElementById("message_space").innerHTML = "<br /><br />";
   }
 }
 
@@ -127,17 +137,16 @@ function changeBoardOnscreen(list) {
   var originNeedsPlacing = true;
   rowStringList = new Array(rows).fill("<tr>");
   var bottomCells = 0;
-  for (var c = 0; c < list.length; c++) { /* go thru the list */
+  for (var c = 0; c < list.length; c++) { /* go thru the column list */
     h = list[c];
-    for (var i = h-1; i >= 0; i--) { /* go down the column */
-      var ind = i;
-      if ( i === 0 && originNeedsPlacing ) {
+    for (var ind = h-1; ind >= 0; ind--) { /* go down the column */
+      if ( ind === 0 && originNeedsPlacing ) {
         rowStringList[rows - ind - 1] = rowStringList[rows - ind - 1]+"<td><button class=\"poison_butt\" onClick=playerMove(1,1)></button></td>";
         originNeedsPlacing = false;
         bottomCells++;
       } else {
-        if (i === 0 ){ bottomCells++; }
-        rowStringList[rows - ind - 1] = rowStringList[rows - ind - 1]+"<td><button class=\"chomp_butt\" onClick=playerMove("+(c+1)+","+(i+1)+")></button></td>";
+        if (ind === 0 ){ bottomCells++; }
+        rowStringList[rows - ind - 1] = rowStringList[rows - ind - 1]+"<td><button class=\"chomp_butt\" onClick=playerMove("+(c+1)+","+(ind+1)+")></button></td>";
       }
     }
   }
