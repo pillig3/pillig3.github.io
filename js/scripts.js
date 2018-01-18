@@ -5,22 +5,28 @@ var board = [3,3,3,3];
  * that is a_1 tall in the first column, etc. */
 var rows = 3;
 var cols = 4;
+var playerCanMove = true;
 
 /* when player clicks tile (c, r) */
 async function playerMove(c,r) {
-  makeLoadingImg();
-  monch(c,r);
-  if (gameIsOver()) {
-    document.getElementById("message_space").innerHTML = "<br />The computer won! Rats!<br />";
+  if (playerCanMove) {
+    playerCanMove = false;
+    makeLoadingImg();
+    monch(c,r);
+    if (gameIsOver()) {
+      document.getElementById("message_space").innerHTML = "<br />The computer won! Rats!<br />";
+      clearLoadingImg();
+      playerCanMove = true;
+      return;
+    }
+    await sleep(1000);
+    var move = getBestMove();
+    monch(move[0],move[1]);
+    playerCanMove = true;
     clearLoadingImg();
-    return;
-  }
-  await sleep(1000);
-  var move = getBestMove();
-  monch(move[0],move[1]);
-  clearLoadingImg();
-  if(gameIsOver()) {
-    document.getElementById("message_space").innerHTML = "<br />Nice! You won!<br />";
+    if(gameIsOver()) {
+      document.getElementById("message_space").innerHTML = "<br />Nice! You won!<br />";
+    }
   }
 }
 
@@ -59,14 +65,23 @@ function getBestMove() {
     }
   }
   /* otherwise, we play randomly */
-  z = board.indexOf(0);
-  if (z < 0) {
-    numNonemptyCols = cols;
-  } else {
-    numNonemptyCols = z;
+  // z = board.indexOf(0);
+  // if (z < 0) {
+  //   numNonemptyCols = cols;
+  // } else {
+  //   numNonemptyCols = z;
+  // }
+  var numSquares = board.reduce((x, y) => x + y);
+  // c = Math.floor(Math.random()*numNonemptyCols+1);
+  // r = Math.floor(Math.random()*board[c]+1);
+  var n = Math.floor(Math.random()*numSquares)+1;
+  c = 0;
+  while (n > board[c]) {
+    n -= board[c];
+    c += 1;
   }
-  c = Math.floor(Math.random()*numNonemptyCols+1);
-  r = Math.floor(Math.random()*board[c]+1);
+  r = n; // n will now be <= board[c]
+  c += 1; // classic off-by-one error
   return [c, r];
 }
 

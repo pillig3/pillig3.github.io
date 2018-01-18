@@ -66,6 +66,10 @@ h1.name {
   left: 44vw;
 }
 
+#baeslink {
+  font-size: 1px;
+}
+
 #loading_space {
   text-align: center;
 }
@@ -106,6 +110,11 @@ h1.name {
   background-repeat: no-repeat;
 }
 
+#about_page {
+  background-color: #B6F2FF;
+  height: 1000px;
+}
+
 #introtext {
   position: absolute;
   top: 120px;
@@ -142,19 +151,21 @@ ul.bigNav {
   position: fixed;
   top: 2%;
   left: var(--epsilon);
-  padding: 10% 1%;
-  background-color: #00FFFF;
+  padding: 10% 2.5%;
+  background-color: none;
+  text-align: center;
 }
 
 ul.smallNav {
   display: inline-block;
   list-style-type: none;
   border-style: none;
-  position: fixed;
-  top: 2%;
+  position: absolute;
+  top: -1%;
   left: 0px;
-  padding: 10% 1%;
-  background-color: #00FFFF;
+  padding: 5% 6%;
+  background-color: none;
+  text-align: center;
 }
 
 a.bigLink {
@@ -164,6 +175,15 @@ a.bigLink {
     font-size: 4vw;
     font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
     font-weight: lighter;
+}
+
+a.smallLink {
+  display: block;
+  color: #000000;
+  font-size: 16px;
+  font-size: 2vw;
+  font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
+  font-weight: lighter;
 }
 
 #chomp_table {
@@ -218,6 +238,13 @@ a:link, a:visited, a:hover, a:active {
     text-decoration: none;
 }
 
+#vfd {
+  position: absolute;
+  top: 20vh;
+  left: calc(100% / 3 + var(--epsilon) / 2);
+  width: calc(100% * 2 / 3 - (3 * var(--epsilon) / 2));
+}
+
 #yellow_box {
   position: fixed;
   top: 0px;
@@ -252,7 +279,7 @@ a:link, a:visited, a:hover, a:active {
   top: 0px;
   left: calc(100% * 3 / 4 + var(--epsilon)/2);
   width: calc(100% / 4 - var(--epsilon)/2);
-  height: 200%;
+  height: 300%;
   background-image: url("../photos/sheeeeeeeeee.png");
   background-size: cover;
 }
@@ -265,4 +292,28 @@ a:link, a:visited, a:hover, a:active {
   width: calc(100% / 4 - var(--epsilon)/2);
   height: 100%;
   background: lightblue;
+}
+
+#lightpurplebox {
+  z-index: -1;
+  position: fixed;
+  top: 0px;
+  left: calc(100% / 4 - var(--epsilon)/2);
+  width: calc(100% / 2 + var(--epsilon));
+  height: 100%;
+  background: #CCBADC;
+}
+
+#skipic {
+  z-index: 20;
+  background-image: url("http://www.silentsports.net/wp-content/uploads/2016/02/Birkie13.jpg");
+  position: absolute;
+  background-position: center;
+  top: 350px;
+  left: calc(100% / 4 );
+  width: calc(100% / 2 );
+  height: 55%;
+  background-size: contain;
+  background-position: left;
+  background-repeat: no-repeat;
 }
