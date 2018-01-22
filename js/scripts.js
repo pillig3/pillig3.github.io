@@ -179,23 +179,6 @@ function changeBoardOnscreen(list) {
   document.getElementById("chomp_table").innerHTML = tableString;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* lookup table of losing positions */
 var hash={
   "[1,0,0,0,0]":true,
