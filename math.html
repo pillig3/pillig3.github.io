@@ -18,41 +18,18 @@
   <h1 class="pagetitle"> Math Images and Miscellanea </h1>
   <script src="js/scripts.js"></script>
 
-  <h3 class="h3_with_margins"> Some math-related images, gifs, etc. that I've made. Enjoy!</h3>
-  <br /><br />
-  <h2 class="h2_with_margins">
-    Pascal's Triangle Mod 17
-  </h2>
-  <h3 class="h3_with_margins">
-    <img class="imgWithMargins" src="../photos/pascalmod17.png" />
-    Pascal's triangle, where each number is a hexagon colored by its residue mod 17. 0 mod 17 is black, and larger numbers are brighter red. Note the structure: each small triangle has a side length of 17, after which comes an upside-down triangle where everything is divisible by 17. This can be thought of as a mod-17 version of the <a class="bluelink" href="https://en.wikipedia.org/wiki/Sierpinski_triangle">Sierpinski gasket</a>, which is obtained by coloring Pascal's triange mod 2. This was made in Mathematica, with the following code (the number 17 can be changed to any other number to get more neat results - composite numbers are especially interesting).
-    <p class="code">
-      n = 17;<br />
-      hex = ({{Cos[Pi/6], -Sin[Pi/6]}, {Sin[Pi/6], Cos[Pi/6]}}.#) & /@ CirclePoints[6];<br />
-      Show[Table[Graphics[{RGBColor[Mod[Binomial[m, k], n]/(n - 1), 0, 0], Polygon[({(-Sqrt[3] m)/2 + Sqrt[3] k, (-3 m)/2} + #) & /@ hex]}], {m, 0, n^2}, {k, 0, m}]]<br />
-      &nbsp
-    </p>
-  </h3>
-  <br /><br />
-  <h2 class="h2_with_margins">
-    Reducible \( f, f^2, \) and \( f^3 \)
-  </h2>
-  <h3 class="h3_with_margins">
-    <img class="imgWithMargins" src="../photos/reducible.png" />
-    This image visualizes when the iterates of monic quadratic polynomials are reducible.<br />
-    Some background: We write a monic quadratic polynomial in the form \( f(x) = (x-\gamma)^2 + \gamma + m \). Then the <b>second iterate</b> of \( f \) is \( f^2(x) = f(f(x)) = ((x-\gamma)^2 + \gamma + m)^2 + \gamma + m \), the <b>third iterate</b> is \( f^3(x) = f(f(f(x))) \), et cetera. A polynomial is <b>reducible</b> (over \( \mathbb{Q} \)) if it factors into two or more polynomials with rational coefficients. <br />
-    In this image, each point represents an integer polynomial \( f(x) = (x-\gamma)^2 + \gamma + m \), with \( -400 \le m \le 400 \)  on the horizontal axis and \( -400 \le \gamma \le 400 \) on the vertical axis. A point corresponding to \( f \) is colored red if \( f \) is reducible, otherwise yellow if \( f^2 \) is reducible, otherwise white if \( f^3 \) is reducible. If none of these are reducible, it's colored black. One thing to note is that newly reducible \( f^n \) get more rare as \( n \) gets larger; there are only two points in this image corresponding to newly reducible \( f^3 \), and for polynomials of this form it's not known whether there are <i>any</i> newly reducible \( f^n \) for \( n \ge 4 \).
-  </h3>
-  <br /><br />
-  <h2 class="h2_with_margins"> Conic Projection </h2>
-  <h3 class="h3_with_margins">
-    <video controls="controls" width="100%" name="Video Name" src="../photos/projection.mov"></video>
-    This is an animation of a rational projection onto a conic in projective space \( \textbf{RP}^2 \). For a conic in \( \mathbb{R}^2 \) (the plane), if we find one point with rational coordinates then we can find infinitely many more by using projection (see section 1 <a class="bluelink" href="http://www.ucl.ac.uk/~ucahmki/alex2.pdf">here</a>). However, the first rational point doesn't actually have to be in \( \mathbb{R}^2 \); here we use a <b>point at infinity</b>, which is really just a <i>direction</i> in \( \mathbb{R}^2 \). In this video the diagonal black line is the point at infinity, the moving black line is the line we project through, and the red line is where the plane determined by the two black lines intersects the conic. With a rational parameter, the intersection of the red line and the plane \( z = 1 \) will be a rational point! <br />
-    For an introduction to projective geometry, see <a class="bluelink" href="http://morpheo.inrialpes.fr/people/Boyer/Teaching/M2R/geoProj.pdf">here</a>.
-  </h3>
-  <br /><br />
-
-
+  <h3 class="h3_with_margins"> These pages contain some math-related images, gifs, etc. that I've made. Enjoy!</h3>
+  <h3 class="h3_with_margins"><ul>
+    <li>
+      <a href="/math/comps.html">Comps</a>
+    </li>
+    <li>
+      <a href="/math/differentialequations.html">Differential Equations</a>
+    </li>
+    <li>
+      <a href="/math/pascalstriangle.html">Pascal's Triangle</a>
+    </li>
+  </ul></h3>
 
   <nav>
     <ul class="smallNav">

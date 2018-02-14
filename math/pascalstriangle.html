@@ -1,0 +1,60 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="/photos/pi.png">
+  <link href="/css/style.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8">
+  <title>peterillig - math</title>
+  <meta name="description" content="web">
+  <meta name="author" content="illigp@carleton.edu">
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</head>
+
+<body id="math_page">
+  <div id="skybluebox"></div>
+
+
+  <h1 class="pagetitle"> Pascal's Triangle </h1>
+  <script src="js/scripts.js"></script>
+
+  <h3 class="h3_with_margins">  </h3>
+  <br /><br />
+  <h2 class="h2_with_margins">
+    Pascal's Triangle Mod 17
+  </h2>
+  <h3 class="h3_with_margins">
+    <img class="imgWithMargins" src="../photos/pascalmod17.png" />
+    Pascal's triangle, where each number is a hexagon colored by its residue mod 17. 0 mod 17 is black, and larger numbers are brighter red. Note the structure: each small triangle has a side length of 17, after which comes an upside-down triangle where everything is divisible by 17. This can be thought of as a mod-17 version of the <a href="https://en.wikipedia.org/wiki/Sierpinski_triangle">Sierpinski gasket</a>, which is obtained by coloring Pascal's triange mod 2. This was made in Mathematica, with the following code (the number 17 can be changed to any other number to get more neat results - composite numbers are especially interesting).
+    <p class="code">
+      n = 17;<br />
+      hex = ({{Cos[Pi/6], -Sin[Pi/6]}, {Sin[Pi/6], Cos[Pi/6]}}.#) & /@ CirclePoints[6];<br />
+      Show[Table[Graphics[{RGBColor[Mod[Binomial[m, k], n]/(n - 1), 0, 0], Polygon[({(-Sqrt[3] m)/2 + Sqrt[3] k, (-3 m)/2} + #) & /@ hex]}], {m, 0, n^2}, {k, 0, m}]]<br />
+      &nbsp
+    </p>
+  </h3>
+  <br />
+  <h2 class="h2_with_margins">
+    Pascal's Triangle Mod 6
+  </h2>
+  <h3 class="h3_with_margins">
+    <img class="imgWithMargins" src="../photos/pascalmod6.png" />
+    Same thing, but mod 6. This one includes \(6^3\) rows.
+  </h3>
+
+
+  <nav>
+    <ul class="smallNav">
+      <li><a class="smallWhiteLink" href="/index.html">home</a></li>
+      <li>&nbsp</li>
+      <li><a class="smallWhiteLink" href="/about.html">about</a></li>
+      <li>&nbsp</li>
+      <li><a class="smallWhiteLink" href="/math.html">math</a></li>
+      <li>&nbsp</li>
+      <li><a class="smallWhiteLink" href="/fun.html">games</a></li>
+      <!-- <li>&nbsp</li>
+      <li><a class="smallWhiteLink" href="/problems.html">problems</a></li> -->
+    </ul>
+  </nav>
+
+</body>

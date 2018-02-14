@@ -1,0 +1,107 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../photos/pi.png">
+  <link href="../css/style.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8">
+  <title>fun</title>
+  <meta name="description" content="fun">
+  <meta name="author" content="illigp@carleton.edu">
+  <link href="https://fonts.googleapis.com/css?family=Sedgwick+Ave+Display" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Revalia" rel="stylesheet">
+</head>
+
+<body>
+
+  <div id="greybox"></div>
+  <div id="lightbluebox"></div>
+  <div id="weirdbox"></div>
+
+  <h1 class="pagetitle">Chomp</h1>
+  <h3 class="h3_with_margins"> Chomp is a two-player game about eating chocolate! The rules are simple: To play, two people (or in this case, a person and a computer) take turns removing any cell, plus all cells to its top and/or right. Whichever player takes the bottom left square loses, and the other player wins.</h3>
+  <h3 class="h3_with_margins"> Since this game is <a class="bluelink" href="http://mathworld.wolfram.com/FiniteGame.html">finite</a>, <a class="bluelink" href="http://www.whatgamesare.com/determinism.html">determnistic</a>, and <a class="bluelink" href="http://mathworld.wolfram.com/ImpartialGame.html">impartial</a>, with no draws, we <a class="bluelink" href="https://en.wikipedia.org/wiki/Zermelo%27s_theorem_(game_theory)">know</a> that one of the players (player 1 or 2) always has a winning strategy. It's fun to prove that in Chomp, player 1 always has a winning strategy. However, this strategy is not known in general (for arbitrarily large boards), and only recently have results been found for 3 by n boards. </h3>
+  <!-- <h3 class="inlinetext">Chomp is a 2-player game about eating chocolate! 😋</h3>
+  <h3 class="inlinetext">But wait! Before you eat the whole thing, I should warn you that the lower left corner is </h3> <h3 id="poisontext"> P O I S O N ! ⚗️ 🤢 😵</h3>
+  <h3>Phew! That was a close one. You almost ate it, didn't you? 👀 😮 It's ok, I won't tell anyone. 🙊🙊🙊 </h3>
+  <h3 class="inlinetext">So anyway, how should we split the rest of the chocolate? Taking the poison away leaves an odd number of squares, which is kind of awkward seeing as there's only two of us. It's not that I mind sharing, it's just that there's nothing to cut the chocolate with, so one of us will end up having less chocolate and feeling sad while the other person feels guilty, and as I think you'll agree, that's pretty much a lose-lose for everyone. Unless we just leave another square, I guess, but who will ever eat it if not us? Besides, if anyone else ever <i>were</i> to stumble upon this implausible scenario, the presence of two squares may lull them into a dangerous sense of safety, easing their suspicions of the previously mentioned but worth reiterating <i>VERY</i> <ins><b>DANGEROUS</b></ins> </h3><h3 id="poisontext"><b> P O I S O N </b></h3><h3 class="inlinetext">. I suppose we could just cut one square's worth of chocolate from <i>around</i> the border of the piece - we may be safer that way, farther from the poison, but we again run into the problem of-</h3><br /><br />
+  <h3 id="boomtext">BOOM!</h3><br /><br />
+  <h3 class="inlinetext">You hear a deafening <b><i>CRASH</i></b>, and you whirl around to find yourself face-to-metal with a colossal humanoid robot! It towers above you, and as you raise your eyes to its face it snickers menacingly.</h3><br /><br />
+  <h3 class="robottext"> hello human. welcome to my lair. fabulous riches await, but only if you can prove yourself in a game of wits. the setting: a game of chomp. the prize: my hoard of treasure and unimaginable riches. the penalty for losing: one piece of </h3><h3 id="poisontext"><b> P O I S O N </b></h3><h3 class="robottext"> chocolate. the rules:</h3><br />
+  <div id="rulebook">
+
+    <div id="rulelist">
+      <br /><h5 class="rule">1. Two players take turns. On one's turn, one must chomp the chocolate bar. A "chomp" is a selection of square (i, j), followed by the removal of all squares (i', j') with i ≤ i' and j ≤ j'. In other words, you chomp all the squares in some rectangle that extends off the board to the top and left. </h5>
+      <h5 class="rule">2. Whoever chomps the poison square loses.</h5>
+      <h5 class="rule">3. When a human plays a robot, the human goes first.</h5>
+    </div>
+  </div> -->
+
+  <h3 class="h3_with_margins">What size chocolate bar would you like to play on? (More options coming as soon as computers get faster or I generate more lookup tables)<br /><br />
+  <select id="chompRowNumber">
+    <option value=2>2</option>
+    <option value=3>3</option>
+    <option selected value=4>4</option>
+    <option value=5>5</option>
+    <option value=6>6</option>
+    <option value=7>7</option>
+  </select> rows,
+  <select id="chompColumnNumber">
+    <option value=2>2</option>
+    <option selected value=3>3</option>
+    <option value=4>4</option>
+    <option value=5>5</option>
+  </select> columns <button onClick="setupChomp()">Play!</button></h3>
+
+  <p>
+    <br /><br /><br />
+  </p>
+  <table id="chomp_table">
+  <tbody>
+    <tr>
+      <td><button class="chomp_butt" onClick=playerMove(1,3)></button></td>
+      <td><button class="chomp_butt" onClick=playerMove(2,3)></button></td>
+      <td><button class="chomp_butt" onClick=playerMove(3,3)></button></td>
+      <td><button class="chomp_butt" onClick=playerMove(4,3)></button></td>
+    </tr>
+    <tr>
+      <td><button class="chomp_butt" onClick=playerMove(1,2)></button></td>
+      <td><button class="chomp_butt" onClick=playerMove(2,2)></button></td>
+      <td><button class="chomp_butt" onClick=playerMove(3,2)></button></td>
+      <td><button class="chomp_butt" onClick=playerMove(4,2)></button></td>
+    </tr>
+    <tr>
+      <td><button class="poison_butt" onClick=playerMove(1,1)></button></td>
+      <td><button class="chomp_butt" onClick=playerMove(2,1)></button></td>
+      <td><button class="chomp_butt" onClick=playerMove(3,1)></button></td>
+      <td><button class="chomp_butt" onClick=playerMove(4,1)></button></td>
+    </tr>
+  </tbody>
+</table><br /><br />
+<h3 class="h3_with_margins" id="message_space"><br />
+
+</h3>
+<p id="loading_space">
+
+</p>
+<h3 id="references"> For more information on Chomp, see:<br />
+  <a class="bluelink" href="https://www.win.tue.nl/~aeb/games/chomp.html">[interesting variants, generalizations, open questions]</a>,<br />
+  <a class="bluelink" href="http://www.kurims.kyoto-u.ac.jp/EMIS/journals/INTEGERS/papers/fg7/fg7.pdf">[more variants, work on 3 by n boards]</a>,<br />
+  <a class="bluelink" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.718.8493&rep=rep1&type=pdf">[general poset games and 3 by n chomp]</a><br />&nbsp;</h3>
+  <script src="../js/scripts.js"></script>
+
+  <nav id="smallNav">
+    <ul class="smallNav">
+      <li><a class="smallLink" href="/index.html">home</a></li>
+      <li>&nbsp</li>
+      <li><a class="smallLink" href="/about.html">about</a></li>
+      <li>&nbsp</li>
+      <li><a class="smallLink" href="/math.html">math</a></li>
+      <li>&nbsp</li>
+      <li><a class="smallLink" href="/fun.html">games</a></li>
+      <!-- <li>&nbsp</li>
+      <li><a class="smallLink" href="/problems.html">problems</a></li> -->
+    </ul>
+  </nav>
+
+</body>

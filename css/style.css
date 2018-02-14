@@ -110,6 +110,16 @@ h1.name {
   background-repeat: repeat-y;
 }
 
+#centerequation {
+  margin:auto;
+  text-align: center;
+}
+
+#fun_page {
+  background-color: #2BE5EA;
+  height: 1000px;
+}
+
 #about_page {
   background-color: #B6F2FF;
   height: 1000px;
@@ -305,6 +315,15 @@ a:link, a:visited, a:hover, a:active {
   position: fixed;
   top: 0px;
   left: 0px;
+  width: calc(100% / 4 - var(--epsilon)/2);
+  height: 100%;
+  background: lightblue;
+}
+#lightblueboxright {
+  z-index: 0;
+  position: fixed;
+  top: 0px;
+  left: calc(100% * 3 / 4 + var(--epsilon)/2);
   width: calc(100% / 4 - var(--epsilon)/2);
   height: 100%;
   background: lightblue;

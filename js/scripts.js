@@ -30,6 +30,11 @@ async function playerMove(c,r) {
   }
 }
 
+function cheat() {
+  monch(1,1);
+  document.getElementById("message_space").innerHTML = "<br />You won! It wasn't entirely fair and square though, was it? Still, your sense of accomplishment assuages your guilt. Nice!<br />";
+}
+
 function makeLoadingImg() {
   document.getElementById("loading_space").innerHTML = "<div class=\"loader\"></div>";
   /*document.getElementById("loading_space").innerHTML = "<img id = \"loadingGif\" src=\"photos/loading.gif\" />";*/
@@ -65,15 +70,7 @@ function getBestMove() {
     }
   }
   /* otherwise, we play randomly */
-  // z = board.indexOf(0);
-  // if (z < 0) {
-  //   numNonemptyCols = cols;
-  // } else {
-  //   numNonemptyCols = z;
-  // }
   var numSquares = board.reduce((x, y) => x + y);
-  // c = Math.floor(Math.random()*numNonemptyCols+1);
-  // r = Math.floor(Math.random()*board[c]+1);
   var n = Math.floor(Math.random()*numSquares)+1;
   c = 0;
   while (n > board[c]) {
