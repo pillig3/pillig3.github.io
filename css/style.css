@@ -110,13 +110,21 @@ h1.name {
   background-repeat: repeat-y;
 }
 
+#doggogame_page {
+  background-color: black;
+}
+
+#problems_page {
+  background-color: black;
+}
+
 #centerequation {
   margin:auto;
   text-align: center;
 }
 
 #fun_page {
-  background-color: #2BE5EA;
+  background-color: #FBE5EA;
   height: 1000px;
 }
 
@@ -291,26 +299,35 @@ a:link, a:visited, a:hover, a:active {
 
 #greybox {
   z-index: -1;
-  position: fixed;
-  top: 0px;
-  left: calc(100% / 4 - var(--epsilon)/2);
-  width: calc(100% / 2 + var(--epsilon));
-  height: 100%;
   background: lightgrey;
 }
 
 #weirdbox {
   z-index: 1;
-  position: absolute;
-  top: 0px;
-  left: calc(100% * 3 / 4 + var(--epsilon)/2);
-  width: calc(100% / 4 - var(--epsilon)/2);
-  height: 250%;
   background-image: url("../photos/sheeeeeeeeee.png");
   background-size: cover;
 }
 
 #lightbluebox {
+  z-index: 0;
+  background: lightblue;
+}
+
+div.centerBox {
+  position: fixed;
+  top: 0px;
+  left: calc(100% / 4 - var(--epsilon)/2);
+  width: calc(100% / 2 + var(--epsilon));
+  height: 100%;
+}
+div.rightBox {
+  position: fixed;
+  top: 0px;
+  left: calc(100% * 3 / 4 + var(--epsilon)/2);
+  width: calc(100% / 4 - var(--epsilon)/2);
+  height: 100%;
+}
+div.leftBox {
   z-index: 0;
   position: fixed;
   top: 0px;
@@ -319,33 +336,15 @@ a:link, a:visited, a:hover, a:active {
   height: 100%;
   background: lightblue;
 }
-#lightblueboxright {
-  z-index: 0;
-  position: fixed;
-  top: 0px;
-  left: calc(100% * 3 / 4 + var(--epsilon)/2);
-  width: calc(100% / 4 - var(--epsilon)/2);
-  height: 100%;
-  background: lightblue;
-}
 
 #lightpurplebox {
   z-index: -1;
-  position: fixed;
-  top: 0px;
-  left: calc(100% / 4 - var(--epsilon)/2);
-  width: calc(100% / 2 + var(--epsilon));
-  height: 100%;
   background: #CCBADC;
 }
 
+
 #skybluebox {
   z-index: -1;
-  position: fixed;
-  top: 0px;
-  left: calc(100% / 4 - var(--epsilon)/2);
-  width: calc(100% / 2 + var(--epsilon));
-  height: 100%;
   background: #D6DFFF;
 }
 .imgWithMargins {

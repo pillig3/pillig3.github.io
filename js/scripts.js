@@ -72,12 +72,17 @@ function getBestMove() {
   /* otherwise, we play randomly */
   var numSquares = board.reduce((x, y) => x + y);
   var n = Math.floor(Math.random()*numSquares)+1;
+  if (numSquares>3) {
+    while (n===1 || n===2 || n===board[0]+1) { // don't obviously lose
+      n = Math.floor(Math.random()*numSquares)+1;
+    }
+  }
   c = 0;
   while (n > board[c]) {
     n -= board[c];
     c += 1;
   }
-  r = n; // n will now be <= board[c]
+  r = n;
   c += 1; // classic off-by-one error
   return [c, r];
 }

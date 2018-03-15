@@ -12,7 +12,7 @@
 </head>
 
 <body id="math_page">
-  <div id="skybluebox"></div>
+  <div class="centerBox" id="skybluebox"></div>
 
 
   <h1 class="pagetitle"> Comps </h1>
@@ -43,6 +43,15 @@
     <img class="imgWithMargins" src="../photos/reducible.png" />
     This image visualizes when the iterates of monic quadratic polynomials are reducible.<br />
     In this image, each point represents an integer polynomial \( f(x) = (x-\gamma)^2 + \gamma + m \), with \( -400 \le m \le 400 \)  on the horizontal axis and \( -400 \le \gamma \le 400 \) on the vertical axis. A point corresponding to \( f \) is colored red if \( f \) is reducible, otherwise yellow if \( f^2 \) is reducible, otherwise white if \( f^3 \) is reducible. If none of these are reducible, it's colored black. One thing to note is that newly reducible \( f^n \) get more rare as \( n \) gets larger; there are only two points in this image corresponding to newly reducible \( f^3 \), and nobody yet knows if there are any newly reducible \( f^n \) for \( n \ge 4 \).
+  </h3>
+  <br /><br />
+  <h2 class="h2_with_margins">
+    Roots of Iterates
+  </h2>
+  <h3 class="h3_with_margins">
+    <img class="imgWithMargins" src="../photos/rootplot-7-4,9-2.png" />
+    This picture shows the roots of the first \(12\) iterates of \( f(x)=(x-\frac{9}{2})^2-\frac{7}{4}+\frac{9}{2} \). This shows them as points in the complex plane, where the horizontal axis is the real line, and the vertical axis is the imaginary line. Note that if \(\alpha\) is a root of the \(n^\text{th}\) iterate, i.e. \( f^n(\alpha)=0 \), then \( f(f^{n-1}(\alpha))=0 \), so \( f^{n-1}(\alpha) \) is a root of \( f(x) \). Each root \(\alpha\) in this picture is a root of some \( f^{n} \); so is colored red if \( f^{n-1}(\alpha)=\frac{9+i\sqrt{11}}{2} \), and blue if \( f^{n-1}(\alpha)=\frac{9-i\sqrt{11}}{2} \) (these are the two roots of \(f(x)\)).
+
   </h3>
   <br /><br />
   <h2 class="h2_with_margins"> Conic Projection </h2>
