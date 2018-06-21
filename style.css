@@ -1,0 +1,64 @@
+h1.title {
+  font-size: 32pt;
+  text-align: center;
+  font-family: "Baskerville";
+  font-variant: small-caps;
+  font-weight: lighter;
+}
+
+
+#content {
+  position: sticky;
+  display: inline-block;
+  left: calc(100% / 3 - 100% / 6);
+  width: calc(100% * 2 / 3);
+  font-family: "Times New Roman";
+  font-weight: normal;
+}
+
+body {
+  background-color: #FFF0FF;
+}
+
+a.textlink:link, a.textlink:active  {
+  color: blue;
+  text-decoration: none;
+}
+
+a.textlink:hover {
+  text-decoration: underline;
+}
+
+a.textlink:visited {
+  color: darkblue;
+  text-decoration: none;
+}
+
+a.sidebarlink:link, a.sidebarlink:visited, a.sidebarlink:active  {
+  color: black;
+  text-decoration: none;
+}
+
+a.sidebarlink:hover {
+  font-weight: bold;
+}
+
+p.eqn {
+  text-align: center;
+}
+
+.navdiv {
+  float: left;
+  padding: auto;
+  width: calc(100% / 3 - 100% / 6);
+  text-align: center;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+img {
+  display: inline-block;
+}

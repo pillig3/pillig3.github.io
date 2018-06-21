@@ -1,0 +1,100 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="/photos/pi.png">
+  <link href="style.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8">
+  <title>peterillig</title>
+  <meta name="description" content="web">
+  <meta name="author" content="illigp@carleton.edu">
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</head>
+
+
+<body>
+  <h1 class="title"> Comps </h1>
+
+  <div class="navdiv">
+    <ul >
+      <li>
+        <a class="sidebarlink" href="/index.html">
+          <p class="linkp">
+            <img src="/photos/home.png" height=16px width=16px /> Home
+          </p>
+        </a>
+      </li>
+      <li>
+        <a class="sidebarlink" href="/comps.html">
+          <p class="linkp">
+            <img src="/photos/pencil.png" height=16px width=16px /> Comps
+          </p>
+        </a>
+      </li>
+      <li>
+        <a class="sidebarlink" href="/projects.html">
+          <p class="linkp">
+            <img src="/photos/cpu.png" height=16px width=16px /> Projects
+          </p>
+        </a>
+      </li>
+      <li>
+        <a class="sidebarlink" href="/docs/resume.pdf">
+          <p class="linkp">
+            <img src="/photos/scroll.png" height=16px width=16px /> Resume
+          </p>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div id="content">
+
+    <p>
+      This page gives a brief introduction to my comps (comprehensive senior project), and a few neat tidbits.
+    </p>
+    <p>
+      This project focuses on the <a class="textlink" href="https://en.wikipedia.org/wiki/Irreducible_polynomial">reducibility</a> of polynomial iterates. If \( f(x) \) is an arbitrary polynomial, define the \(n\)th iterate of \(f\) to be
+    </p>
+    <p class="eqn">
+      \( f^n(x) = \underbrace{f(f(...(f(x))))}_{n\ f\text{'s}}. \)
+    </p>
+    <p>
+      We also say that \( f^n(x) \) is <i>newly reducible</i>, or that \(f\) has a <i>newly reducible \(n\)th iterate</i>, when all of \( f(x), f^2(x), ..., f^{n-1}(x) \) are irreducible, but \( f^n(x) \) is reducible (over \(\mathbb{Q}\), although we can study this for any field). Note that if some iterate \( f^n(x) \) is reducible, then \( f^n(x)=h_1(x)h_2(x) \), so we also have
+    </p>
+    <p class="eqn">
+      \( f^{n+1}(x) = f^n(f(x)) = h_1(f(x))h_2(f(x)), \)
+    </p>
+    <p>
+      so \( f^{n+1}(x) \) is also reducible. Therefore, we're searching only for the first time an iterate of \( f \) is reducible, because all iterates after that will also be reducible.
+    </p>
+    <p>
+      Here's an example: the polynomial \( f(x) = x^2 - x - 1 \) is a famous one, being the minimal polynomial of the golden ratio \( \varphi \). It is irreducible, since \( \varphi \) is irrational. Now let's iterate it:
+    </p>
+    <p class="eqn">
+      \( \begin{align*}
+      f^2(x) &= x^4 - 2x^3 - 2x^2 + 3x + 1                          &\text{    is irreducible.} \\
+      f^3(x) &= (x^4 - 3x^3 + 4x - 1) (x^4 - x^3 - 3x^2 + x + 1)    &\text{    is reducible!}
+      \end{align*} \)
+    </p>
+    <p>
+      So this polynomial has a newly reducible third iterate. This makes it very rare; there are only <i>eight</i> other integer polynomials of the form \( x^2 + ax + b \), with \( |a| \le 10^5, |b| \le 10^9 \), that have newly reducible third iterates.
+      It's not hard to show that there are infinitely many rational polynomials of the form \( x^2 + ax + b \) with newly reducible <i>second</i> iterates, but before we began it wasn't known whether or not there are infinitely many with newly reducible <i>third</i> iterates.
+    </p>
+    <p>
+      So, our preliminary questions were: <br />
+      How many polynomials of the above form have newly reducible third iterates? <br />
+      Why is the minimal polynomial of \( \varphi \) one of them?
+    </p>
+    <p>
+      In the time since, we've tackled some additional questions: (the last three are still unsolved) <br />
+      How many rational polynomials of the form \( x^3 + ax^2 + bx + c \) have newly reducible second iterates? <br />
+      How many rational polynomials of the form \( x^4 + ax^3 + bx^2 + cx + d \) have newly reducible second iterates? <br />
+      Given a degree \(d\), how many rational, monic, degree-\(d\) polynomials have newly reducible second iterates? <br />
+      Are there <i>any</i> rational polynomials with newly reducible fourth iterate? <br />
+      Given \( n\geq 4 \), are there any rational polynomials with newly reducible \(n\)th iterate?
+    </p>
+
+  </div>
+
+</body>
