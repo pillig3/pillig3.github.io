@@ -62,3 +62,9 @@ ul {
 img {
   display: inline-block;
 }
+
+p.code {
+  background-color: black;
+  color: white;
+  font-family: monospace;
+}
