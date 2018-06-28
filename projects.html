@@ -11,9 +11,8 @@
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </head>
 
-
 <body>
-  <h1 class="title"> Projects </h1>
+  <h1 class="title" id="top"> Projects </h1>
 
   <div class="navdiv">
     <ul >
@@ -57,12 +56,13 @@
       This is a simple program, written for my Software Design class, that allows the user to explore the Mandelbrot set.
       Zoom in by clicking, and move around using the arrow keys or WASD.
       The user may also manually choose the location they wish to see by entering a complex number and screen radius.
-      These images are generated using the <a class="textlink" href="https://en.wikipedia.org/wiki/Mandelbrot_set#Escape_time_algorithm">escape time algorithm</a>, and the user may choose what number of iterations the map will be applied to each point before deciding whether or not it escapes.
+      These images are generated using the <a class="textlink" href="https://en.wikipedia.org/wiki/Mandelbrot_set#Escape_time_algorithm">escape time algorithm</a>, and the user may choose how many iterations the map will be applied to each point before deciding whether or not it escapes.
       A low number of iterations will result in faster rendering times, but a fuzzier and less accurate picture.
       It's probably best to use a small number (~\(1000\)) while moving to the desired location, and a larger number to then render the image.
     </p>
     <p>
-      Program (12 KB jar): <a class="textlink" href="/code/mandelbrot.zip">mandelbrot.zip</a>
+      Program (12 KB jar): <a class="textlink" href="/code/mandelbrot.zip">mandelbrot.zip</a><br />
+      Source code (221 KB): <a class="textlink" href="/code/mandelbrotsource.zip">mandelbrotsource.zip</a>
     </p>
     <p>
       Screenshot (at \( -0.7655+0.10115i \), with radius \( 0.0015 \)):
@@ -77,7 +77,7 @@
       The main missing features are tail recursion and better garbage collection &mdash; these are works in progress. :)
     </p>
     <p>
-      Source (81 KB): <a class="textlink" href="/code/interpreter.zip">interpreter.zip</a>
+      Source code (81 KB): <a class="textlink" href="/code/interpreter.zip">interpreter.zip</a>
     </p>
     <p>
       Example usage:
@@ -97,7 +97,10 @@
       > (hello world) <br />
       Evaluation Error: Failed to find the symbol: hello
     </p>
-
+    <br /><br /><br /><br /><br /><br />
+    <p class="eqn">
+      <a href="#top">top of page</a>
+    </p>
   </div>
 
 </body>

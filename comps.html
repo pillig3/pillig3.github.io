@@ -11,9 +11,8 @@
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </head>
 
-
 <body>
-  <h1 class="title"> Comps </h1>
+  <h1 class="title" id="top"> Comps </h1>
 
   <div class="navdiv">
     <ul >
@@ -82,19 +81,121 @@
       It's not hard to show that there are infinitely many rational polynomials of the form \( x^2 + ax + b \) with newly reducible <i>second</i> iterates, but before we began it wasn't known whether or not there are infinitely many with newly reducible <i>third</i> iterates.
     </p>
     <p>
-      So, our preliminary questions were: <br />
-      How many polynomials of the above form have newly reducible third iterates? <br />
-      Why is the minimal polynomial of \( \varphi \) one of them?
+      So, our preliminary questions were:
+      <ul class="numberedlist">
+        <li> How many polynomials of the above form have newly reducible third iterates? </li>
+        <li> Why is the minimal polynomial of \( \varphi \) one of them? </li>
+      </ul>
     </p>
     <p>
-      In the time since, we've tackled some additional questions: (the last three are still unsolved) <br />
-      How many rational polynomials of the form \( x^3 + ax^2 + bx + c \) have newly reducible second iterates? <br />
-      How many rational polynomials of the form \( x^4 + ax^3 + bx^2 + cx + d \) have newly reducible second iterates? <br />
-      Given a degree \(d\), how many rational, monic, degree-\(d\) polynomials have newly reducible second iterates? <br />
-      Are there <i>any</i> rational polynomials with newly reducible fourth iterate? <br />
-      Given \( n\geq 4 \), are there any rational polynomials with newly reducible \(n\)th iterate?
+      In the time since, we've tackled some additional questions, though they remain unsolved:
+      <ul class="numberedlist">
+        <li>
+          Given a degree \(d\), how many rational, monic, degree-\(d\) polynomials have newly reducible second iterates?
+        </li>
+        <li>
+          Are there <i>any</i> rational polynomials with newly reducible fourth iterate?
+        </li>
+        <li>
+          Given \( n\geq 4 \), are there any rational polynomials with newly reducible \(n\)th iterate?
+        </li>
+      </ul>
+      Although the first is unsolved, we've made some progress;
+      it turns out that if \(d=3\), \(d=4\), or \(d\equiv 2\ (\text{mod } 4)\), then there are infinitely many rational, monic, degree-\(d\) polynomials with newly reducible second iterate!
+      Additionally, this result still holds if we require the polynomials to have integer coefficients.
+      For other \(d>1\), it is completely unknown how many such polynomials exist.
     </p>
 
+
+
+    <h2>Quadratic Polynomials with Newly Reducible Second Iterate</h2>
+
+    <p>
+      In this section I give a proof that there are infinitely many polynomials of the form \( x^2 + ax + b \) with newly reducible second iterates.
+      As I mentioned above, this has been known for a while; it's not too hard to prove, but it is fun!
+    </p>
+    <p>
+      Let \(f(x) = (x-\gamma)^2 + m + \gamma\), for \(m,\gamma\in\mathbb{Q}\).
+      This is equivalent to the form \(f(x) = x^2 + ax + b\), but it makes iterates nicer.
+      Then \(f\) factors uniquely over \(\mathbb{C}\) as \(f(x) = (x+\sqrt{-m-\gamma})(x-\sqrt{-m-\gamma})\), and thus \(f(x)\) is reducible over \(\mathbb{Q}\) if and only if \(-m-\gamma\) is a rational square.
+      So if we want newly reducible second iterates, we need \(-m-\gamma\) to not be a square.<br />
+      Also, note that \( f(x) \) is reducible if and only if \( f(x+\gamma) \) is reducible &mdash; so we will use these statements interchangeably.
+    </p>
+    <p>
+      Now let's suppose \(f^2(x)\) is newly reducible, and see what that tells us about \(m\) and \(\gamma\). If \(f^2(x)\) is newly reducible, we can write it as
+      <p class="eqn">
+        \( f^2(x) = \left((x-\gamma)^2 + b_1(x-\gamma) + a_1\right)\left((x-\gamma)^2 - b_2(x-\gamma) + a_2\right). \)
+      </p>
+      For some rational \(a_1,a_2,b_1,b_2\). We're ignoring the possibility that \(f^2(x) = (\text{degree }1\text{ factor})(\text{degree }3\text{ factor})\),
+      because it turns out that this cannot actually happen when \(f(x)\) is irreducible (if you know a bit of field theory, a more general statement can be proven).
+      On the other hand, we also know that
+      <p class="eqn">
+        \( \begin{align*}
+          f^2(x)  &= f(f(x)) \\
+                  &= \left( (x-\gamma)^2 + m + \gamma - \gamma \right)^2 + m + \gamma \\
+                  &= (x-\gamma)^4 + 2m(x-\gamma) + m^2 + m + \gamma.
+        \end{align*} \)
+      </p>
+      We then equate the coefficients of \((x-\gamma)\) in these two expressions to get the following system of equations:
+      <p class="eqn">
+        \(\begin{align}
+          m^2+m+\gamma  &= a_1a_2 \\
+          0             &= a_1b_2 + a_2b_1 \\
+          2m            &= a_1 + a_2 + b_1b_2 \\
+          0             &= b_1 + b_2
+        \end{align}\)
+      </p>
+      Substituting \( -b_1 \) for \( b_2 \) gives
+      <p class="eqn">
+        \(\begin{align}
+          m^2+m+\gamma  &= a_1a_2 \\
+          0             &= -a_1b_1 + a_2b_1 \\
+          2m            &= a_1 + a_2 - b_1^2
+        \end{align}\)
+      </p>
+      Now we would like to divide the second equation by \(b_1\), but it may be zero.
+      Well, suppose that it is. Then solving the remaining equations for \(m\) and \(\gamma\), and plugging these values into \(f(x)\),
+      shows that
+      <p class="eqn">
+        \( f(x+\gamma) = \frac{1}{4}(2x - a_1 + a_2)(2x + a_1 - a_2) \),
+      </p>
+      and this contradicts our assumption that \(f^2\) is <i>newly</i> reducible. Therefore, \(b_1\neq 0\).
+      Then we have \( a_1 = a_2 \), and solving the remaining two equations gives
+      <p class="eqn">
+        \( m = \frac{1}{2} \left(2 a_1-b_1^2\right), \qquad
+        \gamma = \frac{1}{4} \left(4 a_1 b_1^2-4 a_1-b_1^4+2 b_1^2\right) \tag{$\ast$} \)
+      </p>
+      Now we have proven the following statement: If \( f(x) \) has a newly reducible second iterate, then there exist rational \( a_1,b_1 \) such that equations \( (\ast) \) hold.
+    </p>
+    <p>
+      But what about the converse? Suppose we do have \( m,\gamma,a_1,b_1 \) such that equations \( (\ast) \) hold.
+      Then
+      <p class="eqn">
+        \(\begin{align*}
+          f(x+\gamma)   &= x^2 + a_1 b_1^2 - \frac{1}{4} b_1^4, \\
+          f^2(x+\gamma) &= \left(x^2+b_1 x+a_1\right) \left(x^2-b_1 x+a_1\right).
+        \end{align*}\)
+      </p>
+      We find that \( f^2(x) \) is in fact reducible for all \(a_1\) and \(b_1\)!
+      To determine when it is newly reducible, we look at when \(f(x)\) is irreducible &mdash;
+      recall that this happens exactly when \(-m-\gamma\) is not a square. In our case, we have
+      <p class="eqn">
+        \( -m-\gamma = - a_1 b_1^2 + \frac{1}{4} b_1^4 \)
+      </p>
+      And we can find infinitely many \( a_1,b_1 \) such that this is not the square of a rational number.
+      For instance, let \( a_1 \) and \( b_1 \) be integers equivalent to \(2\) modulo \(3\).
+      Then \( -a_1 b_1^2 + \frac{1}{4} b_1^4 \equiv 2\ (\text{mod }3). \)
+      This is not the square of an integer, since each integer square is either \(0\) or \(1\) mod \(3\).
+      Thus, since it is an integer, it is also not the square of a rational number.
+      Therefore, \( f^2(x) \) is newly reducible for all such \( a_1 \) and \( b_1 \)!
+    </p>
+    <p>
+      <a class="textlink" href="/code/NRSIs.nb">Here</a> is a Mathematica notebook illustrating the proof (13 KB). :)
+    </p>
+    <br /><br /><br /><br /><br /><br />
+    <p class="eqn">
+      <a href="#top">top of page</a>
+    </p>
   </div>
 
 </body>

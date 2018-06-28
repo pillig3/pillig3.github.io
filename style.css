@@ -59,8 +59,16 @@ ul {
   padding-left: 0px;
 }
 
-img {
-  display: inline-block;
+ul.numberedlist {
+  list-style-type: decimal;
+  padding-left: 10pt;
+}
+
+#portrait {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  float: left;
 }
 
 p.code {
