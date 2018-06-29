@@ -76,3 +76,80 @@ p.code {
   color: white;
   font-family: monospace;
 }
+
+/*
+* Styles for chomp.html
+*/
+
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    text-align: center;
+    position:relative;
+    left: calc(50% - 60px);
+}
+.fakeloader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  position:relative;
+  left: calc(50% - 60px);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loading_space {
+  text-align: center;
+}
+#loadingGif {
+  width: 20vw;
+}
+
+#chomp_table {
+  background-color: black;
+  border-collapse: separate;
+  border: 5px black;
+  margin: auto;
+}
+
+td {
+  width: 75px;
+  height: 75px;
+  float:center;
+  border: black;
+}
+
+button.chomp_button, button.chomp_button:active, button.chomp_button:hover, button.chomp_button:visited {
+  background-color: brown;
+  background-image: url("/photos/chocobar.jpg");
+  background-size: 75px 75px;
+  background-repeat: no-repeat;  /* make the background image appear only once */
+  background-position: 0px 0px;  /* equivalent to 'top left' */
+  border: none;
+  width:75px;
+  height:75px;
+  float:left;
+  outline: 0;
+  cursor: pointer;
+}
+
+button.poison_button {
+  background-image: url("/photos/sans1.png"), url("../photos/chocobar.jpg");
+  background-size: 75px, 75px 75px;
+  background-repeat: no-repeat, no-repeat;  /* make the background image appear only once */
+  background-position: 0px 4px, 0px 0px;
+  border: none;           /* assuming we don't want any borders */
+  cursor: pointer;        /* make the cursor like hovering over an <a> element */
+  width: 75px;
+  height: 75px;
+  float:left;
+  outline:0;
+}
