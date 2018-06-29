@@ -110,7 +110,7 @@ p.code {
   text-align: center;
 }
 #loadingGif {
-  width: 20vw;
+  width: 120px;/* 20vw; */
 }
 
 #chomp_table {
@@ -128,7 +128,7 @@ td {
 }
 
 button.chomp_button, button.chomp_button:active, button.chomp_button:hover, button.chomp_button:visited {
-  background-color: brown;
+  background-color: black;
   background-image: url("/photos/chocobar.jpg");
   background-size: 75px 75px;
   background-repeat: no-repeat;  /* make the background image appear only once */
@@ -142,9 +142,10 @@ button.chomp_button, button.chomp_button:active, button.chomp_button:hover, butt
 }
 
 button.poison_button {
+  background-color: black;
   background-image: url("/photos/sans1.png"), url("../photos/chocobar.jpg");
   background-size: 75px, 75px 75px;
-  background-repeat: no-repeat, no-repeat;  /* make the background image appear only once */
+  background-repeat: no-repeat, no-repeat;
   background-position: 0px 4px, 0px 0px;
   border: none;           /* assuming we don't want any borders */
   cursor: pointer;        /* make the cursor like hovering over an <a> element */
