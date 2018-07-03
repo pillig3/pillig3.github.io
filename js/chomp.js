@@ -103,22 +103,25 @@ function isLosingPosition(pos) {
     return false; /* no squares left is a winning position, because you just won! */
   }
   /* give pos length 10 for comparison  */
-  pos1 = pos.slice();
-  if (pos.length < 10){
+  var pos1 = pos.slice();
+  if (pos1.length < 10){
     pos1.push(...(new Array(10-pos.length).fill(0)));
   }
-  /* search & recurse */
-  if (hash["["+pos1.toString()+"]"]) {
+  /* search in tables & recurse */
+  if (lps["["+pos1.toString()+"]"]) {
     return true;
+  } else if (wps["["+pos1.toString()+"]"]) {
+    return false;
   }
-  for (var c = 1; c <= pos.length; c++/* ha ha */) {
+  for (var c = 1; c <= pos.length; c++) {
     for (var r = 1; r <= pos[c-1]; r++) {
-      if (isLosingPosition(takeABite(pos, c, r))) {
+      if (isLosingPosition(takeABite(pos1, c, r))) {
+        wps["["+pos1.toString()+"]"] = true;
         return false; /* if you can reach a losing position, you're not at one */
       }
     }
   }
-  hash["["+pos1.toString()+"]"] = true;
+  lps["["+pos1.toString()+"]"] = true;
   return true;
 }
 
@@ -180,9 +183,11 @@ function changeBoardOnscreen(list) {
   document.getElementById("chomp_table").innerHTML = tableString;
 }
 
-/* lookup table of losing positions */
-var hash={
-  "[1,0,0,0,0]":true,
+/* table of winning positions */
+var wps={"[0,0,0,0,0,0,0,0,0,0]":true};
+
+/* table of losing positions */
+var lps={
   "[1,0,0,0,0,0,0,0,0,0]":true,
   "[2,1,0,0,0,0,0,0,0,0]":true,
   "[2,2,1,0,0,0,0,0,0,0]":true,
