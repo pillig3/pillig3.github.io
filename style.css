@@ -47,7 +47,7 @@ p.eqn {
   text-align: center;
 }
 
-.navdiv {
+#navdiv {
   float: left;
   padding: auto;
   width: calc(100% / 3 - 100% / 6);
@@ -63,6 +63,8 @@ ul.numberedlist {
   list-style-type: decimal;
   padding-left: 10pt;
 }
+
+ol.abc {list-style-type: lower-alpha;}
 
 #portrait {
   padding-left: 20px;
@@ -153,4 +155,20 @@ button.poison_button {
   height: 75px;
   float:left;
   outline:0;
+}
+
+#problemPage {
+    counter-reset: probCounter;
+}
+
+p.prob::before {
+    counter-increment: probCounter;
+    content: counter(probCounter) ". ";
+}
+
+#schemeCode {
+    border-width: thin;
+    outline: none;
+    font-family: monospace, monospace;
+    font-kerning: none;
 }

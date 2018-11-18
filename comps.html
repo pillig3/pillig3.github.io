@@ -14,38 +14,7 @@
 <body>
   <h1 class="title" id="top"> Comps </h1>
 
-  <div class="navdiv">
-    <ul >
-      <li>
-        <a class="sidebarlink" href="/index.html">
-          <p class="linkp">
-            <img src="/photos/home.png" height=16px width=16px /> Home
-          </p>
-        </a>
-      </li>
-      <li>
-        <a class="sidebarlink" href="/comps.html">
-          <p class="linkp">
-            <img src="/photos/pencil.png" height=16px width=16px /> Comps
-          </p>
-        </a>
-      </li>
-      <li>
-        <a class="sidebarlink" href="/projects.html">
-          <p class="linkp">
-            <img src="/photos/cpu.png" height=16px width=16px /> Projects
-          </p>
-        </a>
-      </li>
-      <li>
-        <a class="sidebarlink" href="/docs/resume.pdf">
-          <p class="linkp">
-            <img src="/photos/scroll.png" height=16px width=16px /> Resume
-          </p>
-        </a>
-      </li>
-    </ul>
-  </div>
+  <div id="navdiv"></div>
 
   <div id="content">
 
@@ -83,7 +52,7 @@
     </p>
     <p>
       So this polynomial has a newly reducible third iterate. This makes it very rare; there are only <i>eight</i> other integer polynomials of the form \( x^2 + ax + b \), with \( |a| \le 10^5, |b| \le 10^9 \), that have newly reducible third iterates.
-      It's not hard to show that there are infinitely many rational polynomials of the form \( x^2 + ax + b \) with newly reducible <i>second</i> iterates, but before we began it wasn't known whether or not there are infinitely many with newly reducible <i>third</i> iterates.
+      It's not hard to show that there are infinitely many rational polynomials of the form \( x^2 + ax + b \) with newly reducible <i>second</i> iterates, but it's more difficult to see whether there are infinitely many with newly reducible <i>third</i> iterates.
     </p>
     <p>
       So, our preliminary questions were:
@@ -188,8 +157,8 @@
         \( -m-\gamma = - a_1 b_1^2 + \frac{1}{4} b_1^4 \)
       </p>
       And we can find infinitely many \( a_1,b_1 \) such that this is not the square of a rational number.
-      For instance, let \( a_1 \) and \( b_1 \) be integers equivalent to \(2\) modulo \(3\).
-      Then \( -a_1 b_1^2 + \frac{1}{4} b_1^4 \equiv 2\ (\text{mod }3). \)
+      For instance, let \( a_1 \) and \( b_1 \) be integers equivalent to \(2\) modulo \(3\), and note that \( -m-\gamma \) is a square if and only if \( 4(-m-\gamma) \) is a square.
+      Then we have \( -4 a_1 b_1^2 + b_1^4 \equiv 2\ (\text{mod }3). \)
       This is not the square of an integer, since each integer square is either \(0\) or \(1\) mod \(3\).
       Thus, since it is an integer, it is also not the square of a rational number.
       Therefore, \( f^2(x) \) is newly reducible for all such \( a_1 \) and \( b_1 \)!
@@ -202,5 +171,6 @@
       <a class="textlink" href="#top">top of page</a>
     </p>
   </div>
+  <script type="text/javascript" src="/js/nav.js"></script>
 
 </body>

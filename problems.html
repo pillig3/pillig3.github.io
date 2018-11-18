@@ -1,0 +1,154 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="/photos/pi.png">
+  <link href="style.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8">
+  <title>peterillig</title>
+  <meta name="description" content="web">
+  <meta name="author" content="illigp@carleton.edu">
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</head>
+
+<body id="problemPage">
+  <h1 class="title" id="top"> Problems </h1>
+
+  <div id="navdiv"></div>
+
+  <div id="content">
+
+    <p>
+      Here are some of my favorite math problems / puzzles / riddles!
+      These are all fairly easy to understand, but maybe not so easy to solve.
+      They're ordered roughly by how difficult I found, or find, them; your results may vary.
+      Disclaimer: the last few are unsolved, to the best of my knowledge.
+    </p>
+
+    <p class="prob">
+        There is a \( 100\times 100 \) grid of computers, all of which a hacker would like to infect with a virus.
+        The computers are set up such that if \( 3 \) computers in any \( 2\times 2 \) sub-grid are infected, the fourth also becomes infected.
+        What is the minimum number of computers the hacker must initially infect in order for them all to eventually become infected?
+        (for instance, if it were a \( 4\times 4 \) grid, the hacker would have to infect at least \( 3 \) of them).
+    </p>
+    <p class="prob">
+        Define the functions \( n,d:\mathbb{Q}^+\rightarrow\mathbb{Q}^+ \) as
+        <p class="eqn">
+            \( \begin{align*}
+                n(q) = n\left(\frac{a}{b}\right) &= \frac{a+1}{b} \\
+                d(q) = d\left(\frac{a}{b}\right) &= \frac{a}{b+1}
+            \end{align*} \)
+        </p>
+        Where \( q=a/b \) is in lowest terms, i.e. \( (a,b)=1 \).
+        Is it always possible, given \( q_1,q_2\in\mathbb{Q}^+ \), to get from
+        \( q_1 \) to \( q_2 \) by applying some sequence of \( n \)s and \( d \)s?
+        (an example: \( d(n(8/3))=d(3)=3/2 \)).
+    </p>
+
+    <p class="prob">
+        Place a circle of radius 1 inside the parabola \( y=x^2 \) so that it is tangent to both arms of the parabola.
+        Then place a second circle so that it is tangent to the first circle and both arms.
+        Continue adding circles this way to get an infinite stack of circles (the first three are graphed below).
+        What portion of the area above the parabola is covered by the circles?
+        <p class="eqn">
+            <img src="/photos/firstThreeCircles.png" />
+        </p>
+    </p>
+
+    <p class="prob">
+        Let 2018 points in the plane be given, of which 1009 are colored red, and the rest are colored white.
+        Assume that no three points are colinear. How many line segments can be placed such that:
+        <ol class="abc">
+            <li>
+                Each segment connects a red point with a white point
+            </li>
+            <li>
+                Any two segments do not intersect (except possibly at an endpoint)?
+            </li>
+        </ol>
+    </p>
+
+    <p class="prob">
+        Do there exist uncountably many subsets of \( \mathbb{R} \) such that no two of the subsets have an element in common, each of the subsets is uncountable, and each of the subsets is dense in \( \mathbb{R} \) ?
+    </p>
+
+    <p class="prob">
+        Alice is in a prison with \( N \) (possibly 0) other prisoners. Alice does not know \( N \) and wishes to determine this value.
+        <p>
+            Each day, every prisoner (including Alice) will be presented with a white card and a black card.
+            The prisoner will select one of these. The warden will look at all the selected cards and choose an (\( N+1 \))-cycle.
+            Then, he will permute the cards according to that cycle and redistribute the cards as such.
+            So each prisoner will give one bit of information each day and receive one bit of information each day.
+            The warden may choose a different cycle each day, and he may base his choice on which cards his prisoners select.
+        </p>
+        <p>
+            Before this game is to begin, Alice may write down instructions, which will be copied and distributed to the other prisoners.
+            The warden will be able to see these instructions.
+        </p>
+        <p>
+            Devise a strategy so that
+
+            <ol class="abc">
+                <li>
+                    (Easy) Alice can determine if she is the only prisoner.
+                </li>
+                <li>
+                    (a little less easy) Alice can determine whether there is exactly one other prisoner.
+                </li>
+                <li>
+                    (Medium) Alice can determine an upper bound for the number of prisoners.
+                </li>
+                <li>
+                    (Hard) All prisoners, including Alice, can determine \( N \) exactly.
+                </li>
+            </ol>
+        </p>
+    </p>
+
+    <p class="prob">
+        Suppose mathematicians \( a_1,...,a_n \) attend a 2-day problem solving festival, where they sit at a round table.
+        On the first day each mathematician gets to know the people sitting near her very well, but doesn't get much of a chance to talk to those who are far away.
+        They all want to get to know each other, so on day two they try to sit near people they didn't in round 1, and far from people they did sit near.
+        So if \( d_k(a_i,a_j) \) is the distance (i.e. the minimum number of seats) between mathematicians \( a_i \) and \( a_j \) on day \( k \), they would like to maximize
+        <p class="eqn">
+            \(\begin{align*} \sum_{1\leq i,j\leq n} \left\lvert d_1(a_i,a_j)-d_2(a_i,a_j) \right\rvert \end{align*}\)
+        </p>
+        And so the problems arise:
+        <ol class="abc">
+            <li>
+                Find a seating arrangement that will do this. (Assume the order in round 1 is \( a_1,...,a_n \))
+            </li>
+            <li>
+                How many seating arrangements will do this?
+            </li>
+        </ol>
+    </p>
+
+    <p class="prob">
+        Let \( f(x) \) be a polynomial with integer coefficients, and let \( \sigma_0(n) \) be the number of divisors of \( n \) (e.g. \( \sigma_0(10)=4 \)).
+        Consider the sequence
+        <p class="eqn">
+            \( \{n, \sigma_0(f(n)), \sigma_0(f(\sigma_0(f(n)))), ..., (\sigma_0\circ f)^i(n),...\} \)
+        </p>
+        Is this sequence eventually periodic for all integer \( n \)?
+    </p>
+
+
+
+
+
+
+
+
+
+
+
+
+    <br /><br /><br /><br /><br /><br />
+    <p class="eqn">
+      <a class="textlink" href="#top">top of page</a>
+    </p>
+  </div>
+  <script type="text/javascript" src="/js/nav.js"></script>
+
+</body>
