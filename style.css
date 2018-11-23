@@ -21,7 +21,7 @@ body {
 }
 
 a.textlink:link, a.textlink:active  {
-  color: blue;
+  color: #1042EC;
   text-decoration: none;
 }
 
@@ -30,7 +30,7 @@ a.textlink:hover {
 }
 
 a.textlink:visited {
-  color: darkblue;
+  color: purple;
   text-decoration: none;
 }
 

@@ -106,6 +106,15 @@
     </p>
 
     <p class="prob">
+        Let \( f(x) \) be a polynomial with integer coefficients, and let \( \sigma_0(n) \) be the number of divisors of \( n \) (e.g. \( \sigma_0(10)=4 \)).
+        Consider the sequence
+        <p class="eqn">
+            \( \{n, \sigma_0(f(n)), \sigma_0(f(\sigma_0(f(n)))), ..., (\sigma_0\circ f)^i(n),...\} \)
+        </p>
+        Is this sequence eventually periodic for all integer \( n \)?
+    </p>
+
+    <p class="prob">
         Suppose mathematicians \( a_1,...,a_n \) attend a 2-day problem solving festival, where they sit at a round table.
         On the first day each mathematician gets to know the people sitting near her very well, but doesn't get much of a chance to talk to those who are far away.
         They all want to get to know each other, so on day two they try to sit near people they didn't in round 1, and far from people they did sit near.
@@ -125,12 +134,34 @@
     </p>
 
     <p class="prob">
-        Let \( f(x) \) be a polynomial with integer coefficients, and let \( \sigma_0(n) \) be the number of divisors of \( n \) (e.g. \( \sigma_0(10)=4 \)).
-        Consider the sequence
+        Construct the sequence \( (a_n) \) as follows:
+        Let \( a_0 = 0, a_1 = 1 \), and for \( n \geq 2 \), let \( a_n \) be the number of times \( a_{n-2} \) has appeared so far plus
+        the number of times \( a_{n-1} \) has appeared so far.
+        In other words, if we let
         <p class="eqn">
-            \( \{n, \sigma_0(f(n)), \sigma_0(f(\sigma_0(f(n)))), ..., (\sigma_0\circ f)^i(n),...\} \)
+            \( \begin{align*} freq(i,j) &= \left\lvert\{ k\ |\ a_k = i \text{ and } k < j \}\right\rvert \end{align*} \)
         </p>
-        Is this sequence eventually periodic for all integer \( n \)?
+        Then
+        <p class="eqn">
+            \( \begin{align*} a_n = freq(a_{n-2}, n) + freq(a_{n-1},n). \end{align*} \)
+        </p>
+        This sequence begins:
+        <p class="eqn">
+            0, 1, 2, 2, 4, 3, 2, 4, 5, 3, 3, 6, 4, 4, 8, 5, 3, 6, 6, 6, 8, 6, 7, 6, 7, 8, 5, 6, 10, 8, 5, 8, 9, 6, 9, 10, 4, 7, 8, 9, 9, 8, 11, 8, 9, 13, 6, 10, 12, 4, 7, 10, 8, 13, 11, 4, 9, 13, 9, 10, 12, 7, 7, 12, 9, 11, 11, 8, 14, 11, 6, 15, 11, 7, 13, 11, 11, 16, 9, 10, ...
+        </p>
+        And is sometimes referred to as "The Devil's Sequence" (by me), due to the early presence of three consecutive 6s (and my inability to understand it).
+        Prove or disprove the following:
+        <ol class="abc">
+            <li>
+                For any \( n\in\mathbb{N} \), \(n\) appears at least once in this sequence.
+            </li>
+            <li>
+                For any \( n\in\mathbb{N} \), \(n\) appears only finitely many times in this sequence.
+            </li>
+        </ol>
+        Really, proving anything about this sequence would be awesome.
+        This problem comes from <a class="textlink" href="https://www.reddit.com/r/mathriddles/comments/318rzm/properties_of_a_strange_rather_meta_sequence_not">this reddit post</a>,
+        and is in the OEIS <a class="textlink" href="https://oeis.org/A316774">here</a>.
     </p>
 
 
