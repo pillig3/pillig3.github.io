@@ -27,6 +27,13 @@ document.getElementById("navdiv").innerHTML=`<ul >
       </p>
     </a>
   </li>
+  <li>
+    <a class="sidebarlink" href="/chomp.html">
+      <p class="linkp">
+        <img src="/photos/choco.png" height=16px width=16px /> Chomp
+      </p>
+    </a>
+  </li>
 </ul>`;
 
 // <li>

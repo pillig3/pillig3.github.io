@@ -59,7 +59,7 @@ ul {
   padding-left: 0px;
 }
 
-ul.numberedlist {
+ul.numberedlist { /* why on earth did I do this */
   list-style-type: decimal;
   padding-left: 10pt;
 }
@@ -164,6 +164,10 @@ button.poison_button {
 p.prob::before {
     counter-increment: probCounter;
     content: counter(probCounter) ". ";
+}
+
+p.prob {
+    margin-top: 2em;
 }
 
 #schemeCode {

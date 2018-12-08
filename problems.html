@@ -42,7 +42,7 @@
         Where \( q=a/b \) is in lowest terms, i.e. \( (a,b)=1 \).
         Is it always possible, given \( q_1,q_2\in\mathbb{Q}^+ \), to get from
         \( q_1 \) to \( q_2 \) by applying some sequence of \( n \)s and \( d \)s?
-        (an example: \( d(n(8/3))=d(3)=3/2 \)).
+        (For example, we can get from \(8/3\) to \(3/2\) as: \( d(n(8/3))=d(3)=3/2 \)).
     </p>
 
     <p class="prob">
@@ -66,6 +66,15 @@
                 Any two segments do not intersect (except possibly at an endpoint)?
             </li>
         </ol>
+    </p>
+
+    <p class="prob">
+        Let \( f(x) \) be a polynomial with integer coefficients, and let \( \sigma_0(n) \) be the number of divisors of \( n \) (e.g. \( \sigma_0(10)=4 \)).
+        Consider the sequence
+        <p class="eqn">
+            \( \{n, \sigma_0(f(n)), \sigma_0(f(\sigma_0(f(n)))), ..., (\sigma_0\circ f)^i(n),...\} \)
+        </p>
+        Is this sequence eventually periodic for all integer \( n \)?
     </p>
 
     <p class="prob">
@@ -106,15 +115,6 @@
     </p>
 
     <p class="prob">
-        Let \( f(x) \) be a polynomial with integer coefficients, and let \( \sigma_0(n) \) be the number of divisors of \( n \) (e.g. \( \sigma_0(10)=4 \)).
-        Consider the sequence
-        <p class="eqn">
-            \( \{n, \sigma_0(f(n)), \sigma_0(f(\sigma_0(f(n)))), ..., (\sigma_0\circ f)^i(n),...\} \)
-        </p>
-        Is this sequence eventually periodic for all integer \( n \)?
-    </p>
-
-    <p class="prob">
         Suppose mathematicians \( a_1,...,a_n \) attend a 2-day problem solving festival, where they sit at a round table.
         On the first day each mathematician gets to know the people sitting near her very well, but doesn't get much of a chance to talk to those who are far away.
         They all want to get to know each other, so on day two they try to sit near people they didn't in round 1, and far from people they did sit near.
@@ -150,18 +150,31 @@
             0, 1, 2, 2, 4, 3, 2, 4, 5, 3, 3, 6, 4, 4, 8, 5, 3, 6, 6, 6, 8, 6, 7, 6, 7, 8, 5, 6, 10, 8, 5, 8, 9, 6, 9, 10, 4, 7, 8, 9, 9, 8, 11, 8, 9, 13, 6, 10, 12, 4, 7, 10, 8, 13, 11, 4, 9, 13, 9, 10, 12, 7, 7, 12, 9, 11, 11, 8, 14, 11, 6, 15, 11, 7, 13, 11, 11, 16, 9, 10, ...
         </p>
         And is sometimes referred to as "The Devil's Sequence" (by me), due to the early presence of three consecutive 6s (and my inability to understand it).
-        Prove or disprove the following:
+        The next time a number occurs three times in a row isn't until \( a_{355677} \) (!).<br />
+        Some problems:
         <ol class="abc">
             <li>
-                For any \( n\in\mathbb{N} \), \(n\) appears at least once in this sequence.
+                For any \( n\in\mathbb{N} \), does \(n\) appear at least once in this sequence?
             </li>
             <li>
-                For any \( n\in\mathbb{N} \), \(n\) appears only finitely many times in this sequence.
+                For any \( n\in\mathbb{N} \), does \(n\) appear only finitely many times in this sequence?
+            </li>
+        </ol>
+        Other intriguing questions include:
+        <ol class="abc" start="3">
+            <li>
+                If each \(n\) does appear only finitely many times, approximately how many times does it appear? (It seems to be close to \( 2n \))!
+            </li>
+            <li>
+                What are upper/lower bounds on \( a_n \)?
+            </li>
+            <li>
+                Let \( r(k) \) be the smallest \(n\) such that \( \{0,1,2,...,k\} \subseteq \{a_0,...,a_n\} \). What is the asymptotic behavior of \(r\)? (It seems to be close to \( \frac{1}{2}x^2\))!
             </li>
         </ol>
         Really, proving anything about this sequence would be awesome.
-        This problem comes from <a class="textlink" href="https://www.reddit.com/r/mathriddles/comments/318rzm/properties_of_a_strange_rather_meta_sequence_not">this reddit post</a>,
-        and is in the OEIS <a class="textlink" href="https://oeis.org/A316774">here</a>.
+        This problem comes from <a class="textlink" href="https://www.reddit.com/r/mathriddles/comments/318rzm/properties_of_a_strange_rather_meta_sequence_not">an old reddit post</a>,
+        and is now in the OEIS <a class="textlink" href="https://oeis.org/A316774">here</a>.
     </p>
 
 
