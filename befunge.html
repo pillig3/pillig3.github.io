@@ -1,0 +1,63 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="/photos/pi.png">
+  <link href="befunge_style.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8">
+  <title>peterillig</title>
+  <meta name="description" content="web">
+  <meta name="author" content="illigp@carleton.edu">
+  <script type="text/javascript" src="/js/befunge.js"></script>
+</head>
+
+<body>
+  <h1 class="title" id="top"> Befunge 93&ndash;&infin; </h1>
+
+  <div id="navdiv"></div>
+
+  <div id="content">
+      <!-- u n d e r   c o n s t r u c t i o n -->
+      <p></p>
+      <span class="befungeText">Input</span>
+      <div id="befungeCodeWrapper">
+        <textarea class="codeInput" id="befungeCode" rows="20" autofocus=true autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+      </div>
+
+      <p class="eqn">
+        <button class="befungeButton" id="runButton" onClick="runBefunge()">Run</button>
+        <button class="befungeButton" id="displayButton" onClick="toggleDisplay()">Hide state</button>
+        <span class="befungeText">Pause: </span><input id="pauseInterval" type="number" id="pauseInterval" value="333" /><span class="befungeText"> ms</span>
+      </p>
+
+      <div id="display">
+        <span class="befungeText">State</span>
+        <div class="codeOutput" id="befungeDisplay">
+
+        </div>
+
+        <div class="codeOutput" id="befungeStack">
+
+        </div>
+      </div>
+
+      <span class="befungeText">Output</span>
+      <div class="codeOutput" id="befungeOutput">
+
+      </div>
+
+
+
+      <p>
+        For information about this implementation, see <a class="textlink" href="./befunge_info.html">here</a>.
+      </p>
+
+      <br /><br /><br /><br /><br /><br />
+      <p class="eqn">
+        <a class="textlink" href="#top">top of page</a>
+      </p>
+
+  </div>
+  <script type="text/javascript" src="/js/nav.js"></script>
+
+</body>

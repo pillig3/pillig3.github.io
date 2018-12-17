@@ -11,16 +11,21 @@ var playerCanMove = true;
 async function playerMove(c,r) {
   if (playerCanMove) {
     playerCanMove = false;
-    makeLoadingImg();
     monch(c,r);
+    makeLoadingImg();
     if (gameIsOver()) {
       document.getElementById("message_space").innerHTML = "The computer won! Rats!";
       clearLoadingImg();
       playerCanMove = true;
       return;
     }
-    await sleep(1000);
+    var time = Date.now();
     var move = getBestMove();
+    time = Date.now()-time;
+    if (time < 1000) {
+      // Wait a second so it's not overwhelmingly fast
+      await sleep(1000-time);
+    }
     monch(move[0],move[1]);
     playerCanMove = true;
     clearLoadingImg();

@@ -1,0 +1,176 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="/photos/pi.png">
+  <link href="befunge_style.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8">
+  <title>peterillig</title>
+  <meta name="description" content="web">
+  <meta name="author" content="illigp@carleton.edu">
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</head>
+
+<body>
+  <h1 class="title" id="top"> About Befunge 93&ndash;&infin; </h1>
+
+  <div id="navdiv"></div>
+
+  <div id="content">
+    <h3 id="introduction">Introduction</h3>
+    <p>
+      Befunge is a two-dimensional, toroidal, self-modifying programming language; it was created in 1993 in an attempt to create a language as difficult to compile as possible.
+      Instead of having a program counter (PC) that just counts lines, Befunge features a PC with both x and y coordinates.
+      Furthermore, Befunge's PC will wrap around the top, bottom, or sides of the program, making your code a torus!
+    </p>
+    <p>
+      The original Befunge language, now called Befunge 93, has an 80\(\times\)25-character area for input, a PC, and a stack.
+      The second iteration, Befunge 98, introduced a lot of fun new features; it has an unbounded input area, supports multithreading with multiple PCs, and
+      gives each PC a modifiable velocity vector and a stack of stacks. It also supports extensions via "fingerprints," and the specification dexcribes variants
+      of Befunge in three dimensions or higher.
+    </p>
+    <p>
+      This implementation, Befunge 93&ndash;&infin;, is a mix of the two.
+      Put simply, it's Befunge 93 with unbounded input, arbitrarily large integers, multithreading, PC velocities, and stacks of stacks.
+    </p>
+    <h3 id="details">Implementation details</h3>
+    <p>
+      Below is a list of ways in which Befunge 93&ndash;&infin; differs from Befunge 93; most of the bonus features are borrowed from Befunge 98.
+      <ol type="a">
+        <li>
+          Code is treated as a resizeable torus, with a size that is determined at runtime and may be changed.
+          More specifically: viewing each character as a 1-by-1 square with integer vertices (a "cell"), we take the smallest bounding box of the cells,
+          and identify the edges to create a torus. If, at some point during program execution, we write to a cell that is not in this bounding box, we take
+          the new smallest bounding box containing all cells including the new one, and identify these edges to create a larger torus.
+        </li>
+        <li>
+          We can still only write to cells with positive integer coordinates, so the grid is unbounded to the East and South only.
+        </li>
+        <li>
+          Arbitrarily large integers are supported. Program size is "theoretically" unbounded, but practically the height and width must be under \( 2^{32}-1 \approx 4.29 \) billion characters (the maximum size of a JavaScript array).
+        </li>
+        <li>
+          The program counter (PC) initially moves right at a speed of one cell per step, and will remain at that speed if only Befunge-93 commands are used.
+          However, it can be set to any velocity using the instruction x, as in Befunge 98.
+        </li>
+        <li>
+          As in Befunge 98, instead of a single stack there is a stack of stacks, which initially contains one stack. All stack operations from
+          Befunge 93 operate on the stack that is at the top of the stack of stacks (called the Top-Of-Stack Stack, or the TOSS).
+        </li>
+        <li>
+          Also as in Befunge 98,
+        </li>
+      </ol>
+      Despite the differences, this implementation should be able to run most Befunge 93 programs, with the exception of those that depend on something strange like not being able to write
+      out of bounds.
+    </p>
+
+    <h3 id="refTable">Reference table</h3>
+    <p>
+      Here is a helpful reference table of the available instructions!
+      In general, when the program can't do what an instruction specifies (e.g. there are not enough things on the stack, tries to write to a negative position), it simply
+      does nothing.
+    </p>
+    <table id="commandTable">
+      <colgroup>
+        <col style="width:15%">
+        <col style="width:15%">
+        <col style="width:70%">
+      </colgroup>
+      <tr>
+        <th>        Instruction      </th>
+        <th>        Name             </th>
+        <th>        Explanation      </th>
+      </tr>
+      <!-- <tr>
+        <td colspan="3">
+          Movement Instructions
+        </td>
+      </tr> -->
+      <tr>
+        <td>0,1,..., or 9</td><td>Push</td><td>Pushes 0,1,..., or 9 to the top-of-stack stack (TOSS)</td>
+      </tr>
+      <tr>
+        <td>a,b,c,d,e, or f</td><td>Push</td><td>Pushes 10,11,12,13,14, or 15 to the TOSS</td>
+      </tr>
+      <tr>
+        <td>^</td><td>Go North</td><td>Sets delta to \((0,-1)\). Instruction pointer will begin traveling up at a speed of 1 instruction per step.</td>
+      </tr>
+      <tr>
+        <td>v</td><td>Go South</td><td>Sets delta to \((0,1)\). Instruction pointer will begin traveling down at a speed of 1 instruction per step.</td>
+      </tr>
+      <tr>
+        <td>></td><td>Go East</td><td>Sets delta to \((1,0)\). Instruction pointer will begin traveling right at a speed of 1 instruction per step.</td>
+      </tr>
+      <tr>
+        <td><</td><td>Go West</td><td>Sets delta to \((-1,0)\). Instruction pointer will begin traveling left at a speed of 1 instruction per step.</td>
+      </tr>
+      <tr>
+        <td>?</td><td>Go away</td><td>Randomly acts like one of ^, v, >, or <.</td>
+      </tr>
+      <tr>
+        <td>+, -, *, /, %</td><td>Add,subtract, multiply, divide, modulo</td><td>Pops the top two values off the TOSS, performs the operation in question, and pushes the result
+        onto the TOSS. Note: the first value popped will be on the right hand side of the operator.
+        Division is integer division, with the result rounded down to the nearest integer.
+        Modulo behaves as it does in JavaScript, C, etc. &ndash; it will be \(\leq\)0 iff the left hand side is negative. Except anything mod 0 is 0 by convention.</td>
+      </tr>
+      <tr>
+        <td>. (period)</td><td>Output integer</td><td>Pops a value off the TOSS and writes it to output as an integer in base ten, followed by a space.</td>
+      </tr>
+      <tr>
+        <td>, (comma)</td><td>Output character</td><td>Pops a value off the TOSS and writes the corresponding unicode character to output.</td>
+      </tr>
+      <tr>
+        <td>"</td><td>Enter/Exit stringmode</td><td>When in stringmode, each character under the pointer is pushed to the stack instead of being executed.
+           For instance, if the instruction pointer travels over "Hello world!", the TOSS will have the character codes for H,e,...,d,! on top.</td>
+      </tr>
+      <tr>
+        <td>!</td><td>Negate!</td><td>Pops the top value off the TOSS, and pushes its negation: 1 if the value is 0, and 0 if the value is nonzero.</td>
+      </tr>
+      <tr>
+        <td>` (backtick)</td><td>Greater than</td><td>Pops two values (b and a) off the TOSS and compares them. Pushes 1 if a>b, otherwise pushes 0.</td>
+      </tr>
+      <tr>
+        <td>:</td><td>Duplicate</td><td>Pops a value off the TOSS, then pushes two copies of that value back onto the TOSS.</td>
+      </tr>
+      <tr>
+        <td>$</td><td>Discard</td><td>Pops a value off the TOSS and discards it.</td>
+      </tr>
+      <tr>
+        <td>\</td><td>Swap</td><td>Swaps the top two elements on the TOSS. In other words: pops a, pops b, pushes a, pushes b.</td>
+      </tr>
+      <tr>
+        <td>#</td><td>Bridge</td><td>Skips the next command, so on the next step the PC moves twice as far as it otherwise would.</td>
+      </tr>
+      <tr>
+        <td>&</td><td>Input integer</td><td>Prompts the user for an integer, then pops it onto the TOSS. Pops 0 if no input is entered.</td>
+      </tr>
+      <tr>
+        <td>~</td><td>Input character</td><td>Prompts the user for a character, then pops its unicode value onto the TOSS. Pops 0 if no input is entered.</td>
+      </tr>
+
+
+
+
+
+      <tr>
+        <td>r</td><td>Reflect</td><td>Reflects the instruction pointer, multiplying its velocity vector by \(-1\).</td>
+      </tr>
+      <tr>
+        <td><span style="background-color: lightblue;">&nbsp;</span> (space)</td><td>No op</td><td>Does nothing. Whenever the PC lands on a space outside of stringmode
+          it immediately moves again, jumping over all spaces until it reaches a non-space character.</td>
+      </tr>
+      <tr>
+        <td>Any other character<td>No op II</td><td>Does nothing, but the PC doesn't jump over it.</td>
+      </tr>
+    </table>
+
+    <br /><br /><br /><br /><br /><br />
+    <p class="eqn">
+      <a class="textlink" href="#top">top of page</a>
+    </p>
+
+  </div>
+  <script type="text/javascript" src="/js/nav.js"></script>
+
+</body>
