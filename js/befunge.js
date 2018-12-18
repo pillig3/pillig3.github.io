@@ -88,11 +88,13 @@ function step() {
         stringmode = false;
       } else if (typeof codeArray[ip.y][ip.x] === "string") {
         toss.push(BigInt(codeArray[ip.y][ip.x].charCodeAt(0)));
-      } else { // Should be BigInt
+      } else if (typeof codeArray[ip.y][ip.x] === "undefined") {
+        toss.push(BigInt(" ".charCodeAt(0)));
+      } else { // Should be bigint
         toss.push(codeArray[ip.y][ip.x]);
       }
     } else if (typeof codeArray[ip.y][ip.x] === "bigint") {
-      // Do nothing
+      // Do nothing - character out of ASCII range
     } else {
       switch (codeArray[ip.y][ip.x]) {
         case "q":
@@ -187,7 +189,7 @@ function step() {
           break;
         case ",": // output character
           if (toss.length > 0) {
-            print(String.fromCharCode(parseInt(toss.pop().toString(), 10)));
+            print(String.fromCharCode(bigIntAsInt(toss.pop())));
           }
           break;
         case "&": // input integer
@@ -261,6 +263,20 @@ function step() {
             toss.push(a > b ? 1n : 0n);
           }
           break;
+        case "|": // up if nonzero
+          if (toss.length > 0 && toss.pop() !== 0n) {
+            delta.x = 0n; delta.y = -1n;
+          } else {
+            delta.x = 0n; delta.y = 1n;
+          }
+          break;
+        case "_": // left if nonzero
+          if (toss.length > 0 && toss.pop() !== 0n) {
+            delta.x = -1n; delta.y = 0n;
+          } else {
+            delta.x = 1n; delta.y = 0n;
+          }
+          break;
         case "g": // Get
           if (toss.length > 1) {
             let y = toss.pop();
@@ -280,8 +296,8 @@ function step() {
             let x = toss.pop();
             let item = toss.pop();
             if ( 31 < item && item < 127) {
-              // If a number with a corresponding ASCII character, put that character
-              put(BigInt.asIntN(item), x, y);
+              // If item is a number with a corresponding ASCII character, put that character
+              put(String.fromCharCode(bigIntAsInt(item)), x, y);
             } else {
               // Otherwise, put the bigint
               put(item, x, y);
@@ -322,13 +338,43 @@ function print(str) {
   document.getElementById("befungeOutput").innerHTML += str.replace(/\n/g, "<br/>").replace(/ /g, "&nbsp;");
 }
 
-// TODO: code this function
-// Puts an item (a bigint or string) in the specified position on the board, will resize codeArray and change
-// height and width if necessary
+
+// Puts an item (a bigint or string) in the specified position on the board, will
+// modiify codeArray and/or change height and width if necessary.
+// Note if codeArray is undefined at given index, x and y are not necessarily
+// outside bounding box since codeArray is jagged
 function put(item, x, y) {
-  //...
+  if (x < 0 || y < 0) {
+    // Do nothing
+    return;
+  }
+  if (typeof codeArray[y] === "undefined") {
+    // add more lines
+    codeArray = codeArray.concat((new Array(bigIntAsInt(y - height + 1n))).fill([]));
+    height = BigInt(codeArray.length);
+  }
+  if (typeof codeArray[y][x] === "undefined") {
+    // add more columns
+    codeArray[y] = codeArray[y].concat((new Array(bigIntAsInt(x - BigInt(codeArray[y].length) + 1n))).fill(" "));
+    width = BigInt(Math.max(bigIntAsInt(width), codeArray[y].length));
+  }
+  codeArray[y][x] = item;
 }
 
+// Takes a BigInt and returns the corresponding integer, if bigint is in the
+// range (-2^53, 2^53). Otherwise returns zero.
+// Not to be confused with BigInt.asIntN, although BigInt.asIntN used to support this use (until I was halfway through this project)
+function bigIntAsInt(bigint) {
+  if (-Number.MAX_SAFE_INTEGER <= bigint && bigint <= Number.MAX_SAFE_INTEGER) {
+    return parseInt(bigint.toString(10));
+  }
+  return 0;
+}
+
+// Display the current grid and location of pointer(s), as well as
+// the current stack. Values on the stack are displayed as integers,
+// Values on the grid are displayed as their corresponding ascii char, if
+// not a printable ascii char it's displayed as an epsilon ( ɛ )
 function updateDisplay() {
   //...
 }
