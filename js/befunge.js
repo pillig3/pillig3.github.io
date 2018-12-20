@@ -19,13 +19,13 @@ function stop(calledFromButton) {
     paused = false;
     steppingOnce = false;
     document.getElementById("pauseButton").innerHTML = "Pause";
+    if (calledFromButton) {
+      document.getElementById("befungeDisplay").innerHTML = "";
+      document.getElementById("befungeStack").innerHTML = "";
+    }
   }
   document.getElementById("runButton").innerHTML = "Run";
   document.getElementById("runButton").onclick = function onclick(event){ runBefunge(); };
-  if (calledFromButton) {
-    document.getElementById("befungeDisplay").innerHTML = "";
-    document.getElementById("befungeStack").innerHTML = "";
-  }
 }
 
 // Begins the program, called when user
@@ -33,6 +33,8 @@ function stop(calledFromButton) {
 function runBefunge() {
   // Setup
   document.getElementById("befungeOutput").innerHTML = "";
+  document.getElementById("runButton").innerHTML = "Stop";
+  document.getElementById("runButton").onclick = function onclick(event){ stop(true); };
   var code = document.getElementById("befungeCode").value;
   if (code === "") {
     alert("No code entered.");
@@ -50,6 +52,9 @@ function runBefunge() {
   stacks = [[]];
   paused = false;
 
+  stringmode = false;
+  keepRunning = true;
+  pointersUpdated = [true];
   /***********
    *   Run   *
    ***********/
@@ -60,19 +65,10 @@ function runBefunge() {
 
     pauseInterval = document.getElementById("pauseInterval").value;
     // Run
-    keepRunning = true;
-    stringmode = false;
-    pointersUpdated = [true];
-    document.getElementById("runButton").innerHTML = "Stop";
-    document.getElementById("runButton").onclick = function onclick(event){ stop(true); };
     setTimeout(step);
   } else {
     // No display, run quickly
-    stringmode = false;
-    keepRunning = true;
-    while (keepRunning) {
-      stepQuickly();
-    }
+    stepQuickly();
   }
 }
 
@@ -133,12 +129,12 @@ function stepOnce() {
 // Changes keepRunning to true if program execution should continue, false otherwise (i.e. false
 // iff current instruction is q, or is @ and there is only one pointer left).
 function step() {
-  // if some pointer has not finished updating, not all true
-  if (!pointersUpdated.reduce((b1, b2) => b1 && b2)) {
-    setTimeout(step, 0); // try again later
+  if (!keepRunning) {
     return;
   }
-  if (!keepRunning) {
+  // if some pointer has not finished updating, not all true
+  if (!pointersUpdated.reduce((b1, b2) => b1 && b2)) {
+    setTimeout(step); // try again later
     return;
   }
 
@@ -189,47 +185,112 @@ function step() {
   }
 }
 
+
+
+// TODO
 // Runs one step of the program, called only when showDisplay = false.
+// Take two~
 function stepQuickly() {
-  for (var i in pointers) {
-    let pointer = pointers[i];
-    let ip = pointer.ip;
-    let delta = pointer.delta;
-    let toss = stacks[stacks.length-1]; // Top Of Stack Stack
-    if (stringmode) {
-      if (codeArray[ip.y][ip.x] === "\"") {
-        stringmode = false;
-      } else if (typeof codeArray[ip.y][ip.x] === "string") {
-        toss.push(BigInt(codeArray[ip.y][ip.x].charCodeAt(0)));
-      } else if (typeof codeArray[ip.y][ip.x] === "undefined") {
-        toss.push(BigInt(" ".charCodeAt(0)));
-      } else { // bigint
-        toss.push(codeArray[ip.y][ip.x]);
-      }
-    } else if (typeof codeArray[ip.y][ip.x] === "bigint") {
-      // Do nothing - character out of instruction range
-      // (if you don't believe me check out case "p")
-    } else {
-      doInstruction(ip, delta, toss);
-    }
-
-     // Update position
-
-     do {
-       ip.x = (ip.x + delta.x) % width;
-       ip.y = (ip.y + delta.y) % height;
-       // who ever heard of n % k being less than zero smh
-       if (ip.x < 0) { ip.x = width + ip.x; }
-       if (ip.y < 0) { ip.y = height + ip.y; }
-     } while ((codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined") && !stringmode);
+  if (!keepRunning) {
+    return;
   }
+  // if some pointer has not finished updating, not all true
+  if (!pointersUpdated.reduce((b1, b2) => b1 && b2)) {
+    setTimeout(stepQuickly); // try again later
+    return;
+  }
+
+  // run synchronously for a while
+  for (var ctr = 0; ctr < 1000; ctr++) {
+    pointersUpdated = pointersUpdated.fill(false);
+
+    for (var i in pointers) {
+      var pointer = pointers[i];
+      var ip = pointer.ip;
+      var delta = pointer.delta;
+      var toss = stacks[stacks.length-1]; // Top Of Stack Stack
+      if (stringmode) {
+        if (codeArray[ip.y][ip.x] === "\"") {
+          stringmode = false;
+        } else if (typeof codeArray[ip.y][ip.x] === "string") {
+          toss.push(BigInt(codeArray[ip.y][ip.x].charCodeAt(0)));
+        } else if (typeof codeArray[ip.y][ip.x] === "undefined") {
+          toss.push(BigInt(" ".charCodeAt(0)));
+        } else { // bigint
+          toss.push(codeArray[ip.y][ip.x]);
+        }
+      } else if (typeof codeArray[ip.y][ip.x] === "bigint") {
+        // Do nothing - character out of instruction range
+        // (if you don't believe me check out case "p")
+      } else {
+        doInstruction(ip, delta, toss);
+      }
+       // Update position
+       var ctr2 = 0;
+       var maxctr2 = 1000;
+       do {
+         ip.x = (ip.x + delta.x) % width;
+         ip.y = (ip.y + delta.y) % height;
+         // who ever heard of n % k being less than zero smh
+         if (ip.x < 0) { ip.x = width + ip.x; }
+         if (ip.y < 0) { ip.y = height + ip.y; }
+         ctr2++;
+       } while ((codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined") && !stringmode && ctr2 < maxctr2);
+       if (ctr2 == maxctr2 && (codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined")) {
+         // likely infinite loop, break from outer loop & callback so user can quit
+         ctr = 9999;
+         setTimeout(updatePosition, 0, ip, delta, i);
+       } else {
+         pointersUpdated[i] = true;
+       }
+    }
+  }
+  setTimeout(stepQuickly);
 }
+
+
+
+
+
+// function stepQuickly() {
+//   for (var i in pointers) {
+//     let pointer = pointers[i];
+//     let ip = pointer.ip;
+//     let delta = pointer.delta;
+//     let toss = stacks[stacks.length-1]; // Top Of Stack Stack
+//     if (stringmode) {
+//       if (codeArray[ip.y][ip.x] === "\"") {
+//         stringmode = false;
+//       } else if (typeof codeArray[ip.y][ip.x] === "string") {
+//         toss.push(BigInt(codeArray[ip.y][ip.x].charCodeAt(0)));
+//       } else if (typeof codeArray[ip.y][ip.x] === "undefined") {
+//         toss.push(BigInt(" ".charCodeAt(0)));
+//       } else { // bigint
+//         toss.push(codeArray[ip.y][ip.x]);
+//       }
+//     } else if (typeof codeArray[ip.y][ip.x] === "bigint") {
+//       // Do nothing - character out of instruction range
+//       // (if you don't believe me check out case "p")
+//     } else {
+//       doInstruction(ip, delta, toss);
+//     }
+//      // Update position
+//      do {
+//        ip.x = (ip.x + delta.x) % width;
+//        ip.y = (ip.y + delta.y) % height;
+//        // who ever heard of n % k being less than zero smh
+//        if (ip.x < 0) { ip.x = width + ip.x; }
+//        if (ip.y < 0) { ip.y = height + ip.y; }
+//      } while ((codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined") && !stringmode);
+//   }
+// }
 
 
 // Prints a string to the output
 function print(str) {
   document.getElementById("befungeOutput").innerHTML += str.replace(/\n/g, "<br/>").replace(/ /g, "&nbsp;");
-  document.getElementById("befungeOutput").style.height = document.getElementById("befungeOutput").scrollHeight.toString()+"px"; // resize
+  //document.getElementById("befungeOutput").style.height = document.getElementById("befungeOutput").scrollHeight.toString()+"px"; // resize
+  document.getElementById("befungeOutput").scrollTop = document.getElementById("befungeOutput").scrollHeight; // Scroll down
 }
 
 // Updates position, when showDisplay=true.

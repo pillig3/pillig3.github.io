@@ -268,8 +268,9 @@ span.befungeText {
 }
 
 #befungeOutput {
-  height: 200px;
+  height: 400px;
   overflow-x: scroll;
+  resize: vertical;
 }
 
 input[type="number"] {
