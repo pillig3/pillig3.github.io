@@ -19,43 +19,56 @@
   <div id="content">
       <!-- u n d e r   c o n s t r u c t i o n -->
       <p></p>
-      <span class="befungeText">Input</span>
-      <div id="befungeCodeWrapper">
-        <textarea class="codeInput" id="befungeCode" rows="20" autofocus=true autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
-      </div>
-
-      <p class="eqn">
-        <button class="befungeButton" id="runButton" onClick="runBefunge()">Run</button>
-        <button class="befungeButton" id="displayButton" onClick="toggleDisplay()">Hide state</button>
-        <span class="befungeText">Pause: </span><input id="pauseInterval" type="number" id="pauseInterval" value="333" /><span class="befungeText"> ms</span>
+      <p id="henloText">
+        An interpreter and debugger for <a class="textlink" href="./befunge_info.html">Befunge 93&ndash;&infin;</a>.
+        <br />
       </p>
+
+      <table id="buttonTable" style="width:100%">
+        <colgroup>
+          <col style="width:calc(100%/5)">
+          <col style="width:calc(100%/5)">
+          <col style="width:calc(100%/5)">
+          <col style="width:calc(100%/5)">
+          <col style="width:calc(100%/5)">
+        </colgroup>
+        <tr>
+          <td>
+            <button class="befungeButton" id="runButton" onClick="runBefunge()">Run</button>
+          </td>
+          <td>
+            <button class="befungeButton" id="displayButton" onClick="toggleDisplay()">Hide state</button>
+          </td>
+          <td>
+            <button class="befungeButton" id="stepButton" onClick="stepOnce()">Step</button>
+          </td>
+          <td>
+            <button class="befungeButton" id="pauseButton" onClick="pauseBefunge()">Pause</button>
+          </td>
+          <td>
+            <span id="pauseOptions">
+              <span class="befungeText">Wait: </span><input id="pauseInterval" type="number" id="pauseInterval" value="20" /><span class="befungeText"> ms</span>
+            </span>
+          </td>
+        </tr>
+      </table>
+
+      <span class="befungeText" >Input</span>
+      <div id="befungeCodeWrapper">
+        <textarea class="codeInput" id="befungeCode" placeholder="Write some code here, or choose an example above!" rows="10" autofocus=true autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+      </div>
 
       <div id="display">
         <span class="befungeText">State</span>
-        <div class="codeOutput" id="befungeDisplay">
-
-        </div>
-
-        <div class="codeOutput" id="befungeStack">
-
-        </div>
+        <div class="codeOutput" id="befungeDisplay"></div>
+        <div class="codeOutput" id="befungeStack"></div>
       </div>
 
       <span class="befungeText">Output</span>
-      <div class="codeOutput" id="befungeOutput">
-
-      </div>
-
-
-
-      <p>
-        For information about this implementation, see <a class="textlink" href="./befunge_info.html">here</a>.
-      </p>
+      <div class="codeOutput" id="befungeOutput"></div>
 
       <br /><br /><br /><br /><br /><br />
-      <p class="eqn">
-        <a class="textlink" href="#top">top of page</a>
-      </p>
+
 
   </div>
   <script type="text/javascript" src="/js/nav.js"></script>
