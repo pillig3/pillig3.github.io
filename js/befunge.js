@@ -15,6 +15,7 @@ var steppingOnce;
 function stop(calledFromButton) {
   keepRunning = false;
   if (showDisplay) {
+    updateDisplay();
     pointersUpdated = pointersUpdated.fill(true);
     paused = false;
     steppingOnce = false;
@@ -31,15 +32,15 @@ function stop(calledFromButton) {
 // Begins the program, called when user
 // clicks "Run"
 function runBefunge() {
-  // Setup
-  document.getElementById("befungeOutput").innerHTML = "";
-  document.getElementById("runButton").innerHTML = "Stop";
-  document.getElementById("runButton").onclick = function onclick(event){ stop(true); };
   var code = document.getElementById("befungeCode").value;
   if (code === "") {
     alert("No code entered.");
     return;
   }
+  document.getElementById("befungeOutput").innerHTML = "";
+  document.getElementById("runButton").innerHTML = "Stop";
+  document.getElementById("runButton").onclick = function onclick(event){ stop(true); };
+
   var codeLines = code.split("\n");
   codeArray = codeLines.map(x => x.split(""));
   width = codeArray.reduce((x, y) => Math.max(x, y.length), -Infinity);
@@ -61,11 +62,9 @@ function runBefunge() {
 
   if (showDisplay) {
     // With display, we run slowly and user can break
-    updateDisplay();
-
     pauseInterval = document.getElementById("pauseInterval").value;
     // Run
-    setTimeout(step);
+    setTimeout(step, pauseInterval);
   } else {
     // No display, run quickly
     stepQuickly();
@@ -136,6 +135,8 @@ function step() {
   if (!pointersUpdated.reduce((b1, b2) => b1 && b2)) {
     setTimeout(step); // try again later
     return;
+  } else {
+    updateDisplay();
   }
 
   pointersUpdated = pointersUpdated.fill(false);
@@ -159,24 +160,23 @@ function step() {
       // (if you don't believe me check out case "p")
     } else {
       // Execute instruction at current character
-      doInstruction(ip, delta, toss);
+      var stopped = doInstruction(ip, delta, toss);
     }
-
-     // Update position
-
-    ip.x = (ip.x + delta.x) % width;
-    ip.y = (ip.y + delta.y) % height;
-    // who ever heard of n % k being less than zero smh
-    if (ip.x < 0) { ip.x = width + ip.x; }
-    if (ip.y < 0) { ip.y = height + ip.y; }
-    if ( (codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined") && !stringmode) {
-      setTimeout(updatePosition, 0, ip, delta, i);
-    } else {
-      pointersUpdated[i] = true;
+    if (!stopped) {
+       // Update position
+      ip.x = (ip.x + delta.x) % width;
+      ip.y = (ip.y + delta.y) % height;
+      // who ever heard of n % k being less than zero smh
+      if (ip.x < 0) { ip.x = width + ip.x; }
+      if (ip.y < 0) { ip.y = height + ip.y; }
+      if ( (codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined") && !stringmode) {
+        setTimeout(updatePosition, 0, ip, delta, i);
+      } else {
+        pointersUpdated[i] = true;
+      }
     }
   }
 
-  updateDisplay();
   if (steppingOnce) {
     paused = true;
     document.getElementById("pauseButton").innerHTML = "Resume";
@@ -185,11 +185,14 @@ function step() {
   }
 }
 
+// <stepQuickly related vars>
+// # of steps to take between callbacks: higher makes it run faster but 'choppier'
+var maxctr = 700;
+// # of loops trying to move a pointer over whitespace before turning to callbacks
+var maxctr2 = 10000;
+// </stepQuickly related vars>
 
-
-// TODO
-// Runs one step of the program, called only when showDisplay = false.
-// Take two~
+// Runs one step of the program quickly, called only when showDisplay = false
 function stepQuickly() {
   if (!keepRunning) {
     return;
@@ -200,34 +203,35 @@ function stepQuickly() {
     return;
   }
 
-  // run synchronously for a while
-  for (var ctr = 0; ctr < 1000; ctr++) {
+  for (var ctr = 0; ctr < maxctr; ctr++) {
     pointersUpdated = pointersUpdated.fill(false);
 
     for (var i in pointers) {
-      var pointer = pointers[i];
-      var ip = pointer.ip;
-      var delta = pointer.delta;
+      var ip = pointers[i].ip;
+      var delta = pointers[i].delta;
       var toss = stacks[stacks.length-1]; // Top Of Stack Stack
+      var curCell = codeArray[ip.y][ip.x];
       if (stringmode) {
-        if (codeArray[ip.y][ip.x] === "\"") {
+        if (curCell === "\"") {
           stringmode = false;
-        } else if (typeof codeArray[ip.y][ip.x] === "string") {
-          toss.push(BigInt(codeArray[ip.y][ip.x].charCodeAt(0)));
-        } else if (typeof codeArray[ip.y][ip.x] === "undefined") {
+        } else if (typeof curCell === "string") {
+          toss.push(BigInt(curCell.charCodeAt(0)));
+        } else if (typeof curCell === "undefined") {
           toss.push(BigInt(" ".charCodeAt(0)));
         } else { // bigint
-          toss.push(codeArray[ip.y][ip.x]);
+          toss.push(curCell);
         }
-      } else if (typeof codeArray[ip.y][ip.x] === "bigint") {
+      } else if (typeof curCell === "bigint") {
         // Do nothing - character out of instruction range
         // (if you don't believe me check out case "p")
       } else {
         doInstruction(ip, delta, toss);
       }
+      if (!keepRunning) {
+        return;
+      }
        // Update position
        var ctr2 = 0;
-       var maxctr2 = 1000;
        do {
          ip.x = (ip.x + delta.x) % width;
          ip.y = (ip.y + delta.y) % height;
@@ -238,7 +242,7 @@ function stepQuickly() {
        } while ((codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined") && !stringmode && ctr2 < maxctr2);
        if (ctr2 == maxctr2 && (codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined")) {
          // likely infinite loop, break from outer loop & callback so user can quit
-         ctr = 9999;
+         ctr = 999;
          setTimeout(updatePosition, 0, ip, delta, i);
        } else {
          pointersUpdated[i] = true;
@@ -247,44 +251,6 @@ function stepQuickly() {
   }
   setTimeout(stepQuickly);
 }
-
-
-
-
-
-// function stepQuickly() {
-//   for (var i in pointers) {
-//     let pointer = pointers[i];
-//     let ip = pointer.ip;
-//     let delta = pointer.delta;
-//     let toss = stacks[stacks.length-1]; // Top Of Stack Stack
-//     if (stringmode) {
-//       if (codeArray[ip.y][ip.x] === "\"") {
-//         stringmode = false;
-//       } else if (typeof codeArray[ip.y][ip.x] === "string") {
-//         toss.push(BigInt(codeArray[ip.y][ip.x].charCodeAt(0)));
-//       } else if (typeof codeArray[ip.y][ip.x] === "undefined") {
-//         toss.push(BigInt(" ".charCodeAt(0)));
-//       } else { // bigint
-//         toss.push(codeArray[ip.y][ip.x]);
-//       }
-//     } else if (typeof codeArray[ip.y][ip.x] === "bigint") {
-//       // Do nothing - character out of instruction range
-//       // (if you don't believe me check out case "p")
-//     } else {
-//       doInstruction(ip, delta, toss);
-//     }
-//      // Update position
-//      do {
-//        ip.x = (ip.x + delta.x) % width;
-//        ip.y = (ip.y + delta.y) % height;
-//        // who ever heard of n % k being less than zero smh
-//        if (ip.x < 0) { ip.x = width + ip.x; }
-//        if (ip.y < 0) { ip.y = height + ip.y; }
-//      } while ((codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined") && !stringmode);
-//   }
-// }
-
 
 // Prints a string to the output
 function print(str) {
@@ -347,10 +313,56 @@ function bigIntAsInt(bigint) {
 // Display the current grid and location of pointer(s), as well as
 // the current stack. Values on the stack are displayed as integers,
 // Values on the grid are displayed as their corresponding ascii char, if
-// not a printable ascii char it's displayed as an epsilon ( ɛ )
+// not a printable ascii char it's displayed as Ø
 function updateDisplay() {
-  //...
+  // Update code display
+  var str = "";
+  var ptrIndex = {};
+  for (ptr of pointers) {
+    ptrIndex[ptr.ip.x.toString() + "," + ptr.ip.y.toString()] = true;
+  }
+  for (var y in codeArray) {
+    for (var x in codeArray[y]) {
+
+      if (ptrIndex[x + "," + y]) {
+        str += "<span class=\"borderedChar\" ";
+      } else {
+        str += "<span ";
+      }
+
+      var curItem = codeArray[y][x];
+      if (typeof curItem === "string") {
+        if (typeof instructionColorTable[curItem] === "undefined") {
+          if (curItem === " ") {
+            str += ">&nbsp;";
+          } else {
+            str += "style=\"color: gray\">" + curItem;
+          }
+        } else {
+          str += "style=\"color: " + instructionColorTable[curItem] + "\">" + curItem;
+        }
+      } else { // bigint out of ascii range
+        str += "style=\"color: lightgray\">Ø";
+      }
+      str += "</span>";
+    }
+    str += "<br/>";
+  }
+  document.getElementById("befungeDisplay").innerHTML = str;
+
+  // update stack
+  str = "";
+  for (var stack of stacks) {
+    str += "[";
+    for (var item of stack) {
+      str += item.toString() + " ";
+    }
+    str += "<br/>";
+  }
+  document.getElementById("befungeStack").innerHTML = str;
+  document.getElementById("befungeStack").scrollLeft = document.getElementById("befungeStack").scrollWidth;
 }
+
 
 
 
@@ -386,7 +398,7 @@ function doInstruction(ip, delta, toss) {
   switch (codeArray[ip.y][ip.x]) {
     case "q":
       stop();
-      return;
+      return true;
     case "0":
     case "1":
     case "2":
@@ -591,6 +603,17 @@ function doInstruction(ip, delta, toss) {
         }
       }
       break;
+    case "@": // pop current pointer
+      if (pointers.length === 1) {
+        stop();
+        return true;
+      } else {
+        pointers.pop();
+      }
+      break;
+    case "n": // clear toss
+      toss.splice(0);
+      break;
 
     // more cases...
 
@@ -608,3 +631,76 @@ function doInstruction(ip, delta, toss) {
       break;
   }
 }
+
+function toggleExamples() {
+  console.log('hi');
+}
+
+// Colors to display instructions
+var coColor = "black";
+var arColor = "blue";
+var moColor = "limegreen";
+var ioColor = "purple";
+var stColor = "orange";
+var quColor = "red";
+var gpColor = "cyan";
+var instructionColorTable = {
+  // Constants
+  "0": coColor,
+  "1": coColor,
+  "2": coColor,
+  "3": coColor,
+  "4": coColor,
+  "5": coColor,
+  "6": coColor,
+  "7": coColor,
+  "8": coColor,
+  "9": coColor,
+  "a": coColor,
+  "b": coColor,
+  "c": coColor,
+  "d": coColor,
+  "e": coColor,
+  "f": coColor,
+  // pop -> operation -> push
+  "+": arColor,
+  "-": arColor,
+  "*": arColor,
+  "/": arColor,
+  "%": arColor,
+  "!": arColor,
+  "`": arColor,
+  // Movement
+  "<": moColor,
+  "^": moColor,
+  ">": moColor,
+  "v": moColor,
+  "?": moColor,
+  "_": moColor,
+  "|": moColor,
+  "#": moColor,
+  "r": moColor,
+  // Stack instructions
+  ":": stColor,
+  "\\": stColor,
+  "$": stColor,
+  "n": stColor,
+  "{": stColor,
+  "}": stColor,
+  "u": stColor,
+  // I/O(-ish)
+  ".": ioColor,
+  ",": ioColor,
+  "&": ioColor,
+  "~": ioColor,
+  "\"": ioColor,
+  // Quit
+  "q": quColor,
+  "@": quColor,
+  // Storage
+  "g": gpColor,
+  "p": gpColor,
+};
+
+
+"\"!dlrow olleH\"v,_@\n              >:^";

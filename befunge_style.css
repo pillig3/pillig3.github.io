@@ -6,6 +6,9 @@ h1.title {
   font-weight: lighter;
 }
 
+h3.subsection {
+  font-size: 1em;
+}
 
 #content {
   /*position: sticky;*/
@@ -67,117 +70,6 @@ ol li {
   margin: 10px 0;
 }
 
-#portrait {
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  float: left;
-}
-
-p.code {
-  background-color: black;
-  color: white;
-  font-family: monospace;
-}
-
-/*
-* Styles for chomp.html
-*/
-
-.loader {
-    border: 16px solid #f3f3f3; /* Light grey */
-    border-top: 16px solid #3498db; /* Blue */
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 2s linear infinite;
-    text-align: center;
-    position:relative;
-    left: calc(50% - 60px);
-}
-.fakeloader {
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  position:relative;
-  left: calc(50% - 60px);
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-#loading_space {
-  text-align: center;
-}
-#loadingGif {
-  width: 120px;/* 20vw; */
-}
-
-#chomp_table {
-  background-color: black;
-  border-collapse: separate;
-  border: 5px black;
-  margin: auto;
-}
-
-#chomp_table tbody tr td {
-  width: 75px;
-  height: 75px;
-  float:center;
-  border: black;
-}
-
-button.chomp_button, button.chomp_button:active, button.chomp_button:hover, button.chomp_button:visited {
-  background-color: black;
-  background-image: url("/photos/chocobar.jpg");
-  background-size: 75px 75px;
-  background-repeat: no-repeat;  /* make the background image appear only once */
-  background-position: 0px 0px;  /* equivalent to 'top left' */
-  border: none;
-  width:75px;
-  height:75px;
-  float:left;
-  outline: 0;
-  cursor: pointer;
-}
-
-button.poison_button {
-  background-color: black;
-  background-image: url("/photos/sans1.png"), url("../photos/chocobar.jpg");
-  background-size: 75px, 75px 75px;
-  background-repeat: no-repeat, no-repeat;
-  background-position: 0px 4px, 0px 0px;
-  border: none;           /* assuming we don't want any borders */
-  cursor: pointer;        /* make the cursor like hovering over an <a> element */
-  width: 75px;
-  height: 75px;
-  float:left;
-  outline:0;
-}
-
-#problemPage {
-    counter-reset: probCounter;
-}
-
-p.prob::before {
-    counter-increment: probCounter;
-    content: counter(probCounter) ". ";
-}
-
-p.prob {
-    margin-top: 2em;
-}
-
-#schemeCode {
-    border-width: thin;
-    outline: none;
-    font-family: monospace, monospace;
-    font-kerning: none;
-}
-
 textarea.codeInput {
   font-size: 12pt;
   width: 100%;
@@ -207,15 +99,15 @@ button.befungeButton {
 
 span.befungeText {
   font-style: normal;
-    font-variant-ligatures: normal;
-    font-variant-caps: normal;
-    font-variant-numeric: normal;
-    font-variant-east-asian: normal;
-    font-weight: 400;
-    font-stretch: normal;
-    font-size: 12pt;
-    line-height: normal;
-    font-family: system-ui;
+  font-variant-ligatures: normal;
+  font-variant-caps: normal;
+  font-variant-numeric: normal;
+  font-variant-east-asian: normal;
+  font-weight: 400;
+  font-stretch: normal;
+  font-size: 12pt;
+  line-height: normal;
+  font-family: system-ui;
 }
 
 #runButton {
@@ -234,8 +126,8 @@ span.befungeText {
 .codeOutput {
   font-size: 12pt;
   font-family: monospace, monospace;
-  margin: none;
-  padding: none;
+  margin: 0 0;
+  padding: 0 0;
   border-style: solid;
   border-width: thin;
   break-inside: all;
@@ -261,10 +153,10 @@ span.befungeText {
 }
 
 #befungeStack {
-  height: 30px;
+  height: 60px;
   line-height: 30px;
   margin: 10px 0;
-  resize: none;
+  resize: vertical;
 }
 
 #befungeOutput {
@@ -283,20 +175,22 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-#commandTable tr th, #commandTable tr td {
+.commandTable tr th, .commandTable tr td {
   border-style: solid;
   border-width: thin;
 }
 
-#commandTable tr td {
+.commandTable tr td {
   padding: 5px;
 }
 
-#commandTable tr th {
+.commandTable tr th {
+  font-weight: normal;
   padding: 10px;
+  background-color: lightgray;
 }
 
-#commandTable {
+.commandTable {
   border-collapse: collapse;
   width: 100%;
 }
@@ -313,4 +207,39 @@ h4 {
 
 #buttonTable tr td {
   text-align: center;
+}
+
+#exampleTable {
+  width: 100%;
+}
+
+#exampleTable tr td {
+  font-size: 12pt;
+  font-style: normal;
+  font-variant-ligatures: normal;
+  font-variant-caps: normal;
+  font-variant-numeric: normal;
+  font-variant-east-asian: normal;
+  font-weight: 400;
+  font-stretch: normal;
+  font-size: 12pt;
+  line-height: normal;
+  font-family: system-ui;
+  outline: none;
+  padding: 8px 0;
+  text-align: center;
+  width: 20%;
+  background-color: #CD5454;
+  overflow: hidden;
+}
+
+#exampleTable tr td:hover {
+  cursor: pointer;
+}
+
+span.borderedChar {
+    display: inline-block;
+    /* float: left; */
+    outline: 1px solid black;
+    outline-offset: -1px;
 }

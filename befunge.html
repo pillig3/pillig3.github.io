@@ -21,7 +21,36 @@
       <p></p>
       <p id="henloText">
         An interpreter and debugger for <a class="textlink" href="./befunge_info.html">Befunge 93&ndash;&infin;</a>.
-        <br />
+      </p>
+
+      <!-- <table id="exampleTable">
+        <colgroup>
+          <col style="width:calc(100%/5)">
+          <col style="width:calc(100%/5)">
+          <col style="width:calc(100%/5)">
+          <col style="width:calc(100%/5)">
+          <col style="width:calc(100%/5)">
+        </colgroup>
+        <tr>
+          <td>
+
+          </td>
+          <td>
+
+          </td>
+          <td onclick="toggleExamples()">
+            Examples
+          </td>
+          <td>
+
+          </td>
+          <td>
+
+          </td>
+        </tr>
+      </table> -->
+
+      <p>
       </p>
 
       <table id="buttonTable" style="width:100%">
@@ -34,16 +63,16 @@
         </colgroup>
         <tr>
           <td>
-            <button class="befungeButton" id="runButton" onClick="runBefunge()">Run</button>
+            <button class="befungeButton" id="runButton" onclick="runBefunge()">Run</button>
           </td>
           <td>
-            <button class="befungeButton" id="displayButton" onClick="toggleDisplay()">Hide state</button>
+            <button class="befungeButton" id="displayButton" onclick="toggleDisplay()">Hide state</button>
           </td>
           <td>
-            <button class="befungeButton" id="stepButton" onClick="stepOnce()">Step</button>
+            <button class="befungeButton" id="stepButton" onclick="stepOnce()">Step</button>
           </td>
           <td>
-            <button class="befungeButton" id="pauseButton" onClick="pauseBefunge()">Pause</button>
+            <button class="befungeButton" id="pauseButton" onclick="pauseBefunge()">Pause</button>
           </td>
           <td>
             <span id="pauseOptions">

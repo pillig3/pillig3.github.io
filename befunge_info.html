@@ -25,7 +25,7 @@
       Furthermore, the IP will wrap around the top, bottom, or sides of the program, making your code a torus!
     </p>
     <p>
-      The original Befunge language, now called Befunge 93, has an 80\(\times\)25-character area for input, an IP, and a stack.
+      The original Befunge language, officially called Befunge 93, has an 80\(\times\)25-character area for input, an IP, and a stack.
       The second iteration, Befunge 98, introduced a lot of fun new features; it has an unbounded input area, supports multithreading with multiple instruction pointers, and
       gives each IP a modifiable velocity vector and a stack of stacks. It also supports libraries via "fingerprints," and the specification dexcribes variants
       of Befunge in three dimensions or higher.
@@ -78,14 +78,15 @@
       out of bounds.
     </p>
 
-    <h3 id="refTable">Reference Table</h3>
+    <h3 id="refTable">Reference Tables</h3>
     <p>
-      These are the available instructions.
+      These are the available instructions; the basic instructions can also be found <a class="textlink" href="https://github.com/catseye/Befunge-93/blob/master/doc/Befunge-93.markdown">here</a>.
       In general, when the program can't do what an instruction specifies (e.g. there are not enough things on the stack, tries to write to a negative position), it simply
       does nothing.
       Here "IP" stands for "instruction pointer," "delta" is the velocity vector of the IP in question, the "TOSS" is the "Top Of Stack Stack," and the "SOSS" is the "Second Of Stack Stack" (the one that becomes the TOSS if the TOSS is popped off).
     </p>
-    <table id="commandTable">
+    <h3 class="subsection">Basic Instructions</h3>
+    <table class="commandTable">
       <colgroup>
         <col style="width:15%">
         <col style="width:15%">
@@ -102,10 +103,10 @@
         </td>
       </tr> -->
       <tr>
-        <td>0,1,..., or 9</td><td>Push</td><td>Pushes 0,1,..., or 9 to the top-of-stack stack (TOSS)</td>
+        <td>0,1,..., or 9</td><td>Push number</td><td>Pushes 0,1,..., or 9 to the top-of-stack stack (TOSS)</td>
       </tr>
       <tr>
-        <td>a,b,c,d,e, or f</td><td>Push</td><td>Pushes 10,11,12,13,14, or 15 to the TOSS</td>
+        <td>a,b,c,d,e, or f</td><td>Push number</td><td>Pushes 10,11,12,13,14, or 15 to the TOSS</td>
       </tr>
       <tr>
         <td>^</td><td>Go North</td><td>Sets delta to be a unit vector pointing North. IP will begin traveling up at a speed of 1 instruction per step.</td>
@@ -124,7 +125,7 @@
       </tr>
       <tr>
         <td>+, -, *, /, %</td><td>Add,subtract, multiply, divide, modulo</td><td>Pops the top two values off the TOSS, performs the operation in question, and pushes the result
-        onto the TOSS. Note: the first value popped will be on the right hand side of the operator.
+        onto the TOSS. The first value popped will be on the right hand side of the operator.
         Division is integer division, with the result rounded down to the nearest integer.
         Modulo behaves as it does in JavaScript, C, etc. &ndash; it will be \(\leq\)0 iff the left hand side is negative. Except anything mod 0 is 0 by convention.</td>
       </tr>
@@ -166,31 +167,59 @@
         <td>_</td><td>Horizontal if</td><td>Pops a value off the TOSS. If it is nonzero makes delta a unit vector pointing left, otherwise makes delta a unit vector pointing right.</td>
       </tr>
       <tr>
-        <td>_</td><td>Vertical if</td><td>Pops a value off the TOSS. If it is nonzero makes delta a unit vector pointing up, otherwise makes delta a unit vector pointing down.</td>
+        <td>|</td><td>Vertical if</td><td>Pops a value off the TOSS. If it is nonzero makes delta a unit vector pointing up, otherwise makes delta a unit vector pointing down.</td>
       </tr>
       <tr>
         <td>g</td><td>Get</td><td>Pops values y, then x off the TOSS. Gets the value currently at position (x,y) in the program grid, and pushes it onto the stack. (top left is (0,0), x increases to the right, and y increases going down).</td>
       </tr>
       <tr>
         <td>p</td><td>Put</td><td>Pops values y, then x, then v off the TOSS. Puts v at position (x,y) in the program grid. Note that if this value v is the ASCII code of an instruction, the program will treat it just like any other instruction.
-        (if v is not the ASCII value of a character it is still placed at that position, and "g" will still get it, it will just show up on the stack as an epsilon: ɛ)</td>
+        (if v is not the ASCII value of a character it is still placed at that position, and "g" will still get it, but it's displayed as "Ø")</td>
       </tr>
-
-
-
-
-
       <tr>
         <td>r</td><td>Reflect</td><td>Reflects the IP, multiplying its velocity vector by \(-1\).</td>
+      </tr>
+      <tr>
+        <td>q</td><td>Quit</td><td>Quits the program.</td>
+      </tr>
+      <tr>
+        <td>@</td><td>Stop</td><td>Stops a pointer that lands on it. If that was the only pointer, quits the program.</td>
       </tr>
       <tr>
         <td><span style="background-color: lightblue;">&nbsp;</span> (space)</td><td>No op</td><td>Does nothing. Whenever the IP lands on a space outside of stringmode
           it immediately moves again, jumping over all spaces until it reaches a non-space character.</td>
       </tr>
       <tr>
-        <td>Any other character<td>No op II</td><td>Does nothing, but the IP doesn't jump over it.</td>
+        <td>Anything not defined<td>No op II</td><td>Does nothing, but the IP doesn't jump over it.</td>
       </tr>
     </table>
+
+    <h3 class="subsection">Advanced Instructions</h3>
+
+    <table class="commandTable">
+      <colgroup>
+        <col style="width:15%">
+        <col style="width:15%">
+        <col style="width:70%">
+      </colgroup>
+      <tr>
+        <th>        Instruction      </th>
+        <th>        Name             </th>
+        <th>        Explanation      </th>
+      </tr>
+      <tr>
+        <td>n</td><td>Clear stack</td><td>Pops items from the TOSS until it's empty.</td>
+      </tr>
+      <tr>
+        <td>{</td><td>Begin block</td><td>Pops a value (\(n\)) from the TOSS, then creates a new stack and pushes it to the stack of stacks. Then the top
+          \(n\) values from the SOSS (which used to be the TOSS) are copied to the new TOSS. The orders of the values is preserved.
+          If the SOSS has \(k\) elements, and \(k < n\), then all elements are copied but with \(n-k\) 0s below them.</td>
+      </tr>
+      <tr>
+        <td>}</td><td>End block</td><td>Pz</td>
+      </tr>
+    </table>
+
 
     <br /><br /><br /><br /><br /><br />
     <p class="eqn">
