@@ -336,7 +336,7 @@ function updateDisplay() {
           if (curItem === " ") {
             str += ">&nbsp;";
           } else {
-            str += "style=\"color: gray\">" + curItem;
+            str += "style=\"color: lightgray\">" + curItem;
           }
         } else {
           str += "style=\"color: " + instructionColorTable[curItem] + "\">" + curItem;
