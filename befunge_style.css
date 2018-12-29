@@ -157,6 +157,7 @@ span.befungeText {
   line-height: 30px;
   margin: 10px 0;
   resize: vertical;
+  border-top: 0;
 }
 
 #befungeOutput {
@@ -211,11 +212,19 @@ h4 {
 
 #exampleTable {
   width: 100%;
+  border-collapse: collapse;
+  /* table-layout: fixed; */
 }
 
 #exampleTable tr td {
   font-size: 12pt;
-  font-style: normal;
+  outline: none;
+  padding: 8px 16px;
+  text-align: center;
+  border-style: solid;
+  /* border-width: thin; */
+  background-color: #eeeeee;
+  /* font-style: normal;
   font-variant-ligatures: normal;
   font-variant-caps: normal;
   font-variant-numeric: normal;
@@ -230,11 +239,20 @@ h4 {
   text-align: center;
   width: 20%;
   background-color: #CD5454;
-  overflow: hidden;
+  overflow: hidden; */
 }
 
-#exampleTable tr td:hover {
+#exampleTable tr td.clickable:hover {
   cursor: pointer;
+}
+
+#exampleTable tr td.clickable {
+  border-width: thin;
+}
+
+#exampleTable tr td.hidden {
+  background-color: transparent;
+  border-width: 0;
 }
 
 span.borderedChar {
@@ -242,4 +260,11 @@ span.borderedChar {
     /* float: left; */
     outline: 1px solid black;
     outline-offset: -1px;
+}
+
+#exampleToggler {
+  color: #1042EC;
+}
+#exampleToggler:hover {
+  cursor: pointer;
 }

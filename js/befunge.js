@@ -7,7 +7,7 @@ var showDisplay = true;
 var pauseInterval;
 var keepRunning;
 var pointersUpdated;
-var stringmode;
+var pointersStringmode;
 var paused;
 var steppingOnce;
 
@@ -53,7 +53,7 @@ function runBefunge() {
   stacks = [[]];
   paused = false;
 
-  stringmode = false;
+  pointersStringmode = [false];
   keepRunning = true;
   pointersUpdated = [true];
   /***********
@@ -140,14 +140,13 @@ function step() {
   }
 
   pointersUpdated = pointersUpdated.fill(false);
-  for (var i in pointers) {
-    let pointer = pointers[i];
-    let ip = pointer.ip;
-    let delta = pointer.delta;
+  for (var i = 0; i < pointers.length; i++) {
+    let ip = pointers[i].ip;
+    let delta = pointers[i].delta;
     let toss = stacks[stacks.length-1]; // Top Of Stack Stack
-    if (stringmode) {
+    if (pointersStringmode[i]) {
       if (codeArray[ip.y][ip.x] === "\"") {
-        stringmode = false;
+        pointersStringmode[i] = false;
       } else if (typeof codeArray[ip.y][ip.x] === "string") {
         toss.push(BigInt(codeArray[ip.y][ip.x].charCodeAt(0)));
       } else if (typeof codeArray[ip.y][ip.x] === "undefined") {
@@ -160,20 +159,19 @@ function step() {
       // (if you don't believe me check out case "p")
     } else {
       // Execute instruction at current character
-      var stopped = doInstruction(ip, delta, toss);
+      var flag = doInstruction(ip, delta, toss, i);
     }
-    if (!stopped) {
+
+    if (flag === "newPointer") {
+      // update new pointer position (new pointer is pointers[i], old pointer is pointers[i+1])
+      updatePositionQuickly(pointers[i].ip, pointers[i].delta, i);
+      i++;
+    }
+    if (flag === "deletedPointer") {
+      i--;
+    } else if (flag !== "stopped") {
        // Update position
-      ip.x = (ip.x + delta.x) % width;
-      ip.y = (ip.y + delta.y) % height;
-      // who ever heard of n % k being less than zero smh
-      if (ip.x < 0) { ip.x = width + ip.x; }
-      if (ip.y < 0) { ip.y = height + ip.y; }
-      if ( (codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined") && !stringmode) {
-        setTimeout(updatePosition, 0, ip, delta, i);
-      } else {
-        pointersUpdated[i] = true;
-      }
+      updatePositionQuickly(ip, delta, i);
     }
   }
 
@@ -206,14 +204,14 @@ function stepQuickly() {
   for (var ctr = 0; ctr < maxctr; ctr++) {
     pointersUpdated = pointersUpdated.fill(false);
 
-    for (var i in pointers) {
+    for (var i = 0; i < pointers.length; i++) {
       var ip = pointers[i].ip;
       var delta = pointers[i].delta;
       var toss = stacks[stacks.length-1]; // Top Of Stack Stack
       var curCell = codeArray[ip.y][ip.x];
-      if (stringmode) {
+      if (pointersStringmode[i]) {
         if (curCell === "\"") {
-          stringmode = false;
+          pointersStringmode[i] = false;
         } else if (typeof curCell === "string") {
           toss.push(BigInt(curCell.charCodeAt(0)));
         } else if (typeof curCell === "undefined") {
@@ -225,31 +223,48 @@ function stepQuickly() {
         // Do nothing - character out of instruction range
         // (if you don't believe me check out case "p")
       } else {
-        doInstruction(ip, delta, toss);
+        var flag = doInstruction(ip, delta, toss, i);
       }
       if (!keepRunning) {
         return;
       }
-       // Update position
-       var ctr2 = 0;
-       do {
-         ip.x = (ip.x + delta.x) % width;
-         ip.y = (ip.y + delta.y) % height;
-         // who ever heard of n % k being less than zero smh
-         if (ip.x < 0) { ip.x = width + ip.x; }
-         if (ip.y < 0) { ip.y = height + ip.y; }
-         ctr2++;
-       } while ((codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined") && !stringmode && ctr2 < maxctr2);
-       if (ctr2 == maxctr2 && (codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined")) {
-         // likely infinite loop, break from outer loop & callback so user can quit
-         ctr = 999;
-         setTimeout(updatePosition, 0, ip, delta, i);
-       } else {
-         pointersUpdated[i] = true;
-       }
+      if (flag === "newPointer") {
+        var num1 = updatePositionQuickly(pointers[i].ip, pointers[i].delta, i);
+        i++;
+      }
+      if (flag === "deletedPointer") {
+        i--;
+      } else {
+        // Update position
+        var num2 = updatePositionQuickly(ip, delta, i);
+        if (num1 === Infinity || num2 === Infinity) {
+          ctr = Infinity;
+        }
+      }
     }
   }
   setTimeout(stepQuickly);
+}
+
+// tries to update pointer in a loop, calls back if it's taking too long and is likely an infinite loop
+// maybe this should be the only version of this function
+function updatePositionQuickly(ip, delta, i) {
+  var ctr2 = 0;
+  do {
+    ip.x = (ip.x + delta.x) % width;
+    ip.y = (ip.y + delta.y) % height;
+    // who ever heard of n % k being less than zero smh
+    if (ip.x < 0) { ip.x = width + ip.x; }
+    if (ip.y < 0) { ip.y = height + ip.y; }
+    ctr2++;
+  } while ((codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined") && !pointersStringmode[i] && ctr2 < maxctr2);
+  if (ctr2 == maxctr2 && (codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined")) {
+    // likely infinite loop, break from outer loop & call back so user can quit
+    return Infinity;
+    setTimeout(updatePositionQuickly, 0, ip, delta, i);
+  } else if (pointersUpdated[i] === false) {
+    pointersUpdated[i] = true;
+  }
 }
 
 // Prints a string to the output
@@ -257,23 +272,6 @@ function print(str) {
   document.getElementById("befungeOutput").innerHTML += str.replace(/\n/g, "<br/>").replace(/ /g, "&nbsp;");
   //document.getElementById("befungeOutput").style.height = document.getElementById("befungeOutput").scrollHeight.toString()+"px"; // resize
   document.getElementById("befungeOutput").scrollTop = document.getElementById("befungeOutput").scrollHeight; // Scroll down
-}
-
-// Updates position, when showDisplay=true.
-// input: IP, Delta, and the pointer's index in the list of pointers
-function updatePosition(ip, delta, i) {
-  ip.x = (ip.x + delta.x) % width;
-  ip.y = (ip.y + delta.y) % height;
-  // who ever heard of n % k being less than zero smh
-  if (ip.x < 0) { ip.x = width + ip.x; }
-  if (ip.y < 0) { ip.y = height + ip.y; }
-
-  // In stringmode we should not jump. Otherwise, jump over spaces and undefined
-  if ( (codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined") && !stringmode) {
-    setTimeout(updatePosition, 0, ip, delta, i);
-  } else {
-    pointersUpdated[i] = true;
-  }
 }
 
 
@@ -341,6 +339,8 @@ function updateDisplay() {
         } else {
           str += "style=\"color: " + instructionColorTable[curItem] + "\">" + curItem;
         }
+      } else if (typeof curItem === "undefined") {
+        str += ">&nbsp;";
       } else { // bigint out of ascii range
         str += "style=\"color: lightgray\">Ø";
       }
@@ -352,7 +352,8 @@ function updateDisplay() {
 
   // update stack
   str = "";
-  for (var stack of stacks) {
+  for (var i = stacks.length-1; i >= 0; i--) {
+    var stack = stacks[i];
     str += "[";
     for (var item of stack) {
       str += item.toString() + " ";
@@ -394,11 +395,12 @@ function updateDisplay() {
 
 // Does instruction at current character
 // Literally just a huge switch statement
-function doInstruction(ip, delta, toss) {
+// i = index of current pointer
+function doInstruction(ip, delta, toss, i) {
   switch (codeArray[ip.y][ip.x]) {
     case "q":
       stop();
-      return true;
+      return "stopped";
     case "0":
     case "1":
     case "2":
@@ -421,7 +423,7 @@ function doInstruction(ip, delta, toss) {
       toss.push(BigInt(codeArray[ip.y][ip.x].charCodeAt(0) - 87));
       break;
     case "\"": // enter stringmode
-      stringmode = true;
+      pointersStringmode[i] = true;
       break;
     case "$": // Pop
       toss.pop();
@@ -493,18 +495,19 @@ function doInstruction(ip, delta, toss) {
       break;
     case "&": // input integer
       var num = prompt("Enter an integer");
-      num = num.match(/[0-9]+/); // first integer in entered string
-      if (num === null) {
-        // if no integer entered, act like 0 was entered
+      if (!num) {
         num = ["0"];
+      } else {
+        num = num.match(/-?[0-9]+/);
       }
+      // first integer in entered string
       toss.push(BigInt(num[0]));
       break;
     case "~": // input character
       var char = prompt("Enter a character");
       if (char === "" || char === null) {
-        // empty string has code 0
-        toss.push(0n);
+        // default to 10
+        toss.push(10n);
       } else {
         char = char.charCodeAt(0); // code of first char of input
         toss.push(BigInt(char));
@@ -580,7 +583,7 @@ function doInstruction(ip, delta, toss) {
       if (toss.length > 1) {
         let y = toss.pop();
         let x = toss.pop();
-        if (typeof codeArray[y][x] === "undefined") {
+        if (typeof codeArray[y] === "undefined" || typeof codeArray[y][x] === "undefined") {
           toss.push(32n); // push a space
         } else if (typeof codeArray[y][x] === "string") {
           toss.push(BigInt(codeArray[y][x].charCodeAt(0)));
@@ -603,17 +606,133 @@ function doInstruction(ip, delta, toss) {
         }
       }
       break;
-    case "@": // pop current pointer
+    case "@": // remove current pointer
       if (pointers.length === 1) {
         stop();
-        return true;
+        return "stopped";
       } else {
-        pointers.pop();
+        pointers.splice(i, 1);
+        pointersUpdated.splice(i, 1);
       }
-      break;
+      return "deletedPointer";
     case "n": // clear toss
       toss.splice(0);
       break;
+    case "{": // begin block
+      var newToss;
+      if (toss.length > 0) {
+        let n = bigIntAsInt(toss.pop());
+        if (toss.length >= n) {
+          newToss = toss.splice(toss.length-n);
+        } else {
+          newToss = (new Array(n-toss.length)).fill(0).concat(toss.splice(0));
+        }
+      } else {
+        newToss = [];
+      }
+      stacks.push(newToss);
+      break;
+    case "}": // end block
+      if (stacks.length > 1) {
+        // transfer
+        if (toss.length > 0) {
+          let soss = stacks[stacks.length-2];
+          let n = bigIntAsInt(toss.pop());
+          if (toss.length >= n) {
+            soss.splice.apply(soss, [soss.length, 0].concat(toss.splice(toss.length-n)));
+          } else {
+            soss.splice.apply(soss, [soss.length, 0].concat( (new Array(n-toss.length)).fill(0).concat(toss) ));
+          }
+        }
+        stacks.pop();
+      }
+      break;
+    case "u": // stack under stack
+      if (toss.length > 0) {
+        let n = bigIntAsInt(toss.pop());
+        for (let i = 0; i < n; i++) {
+          let item = stacks[stacks.length-2].pop();
+          toss.push(typeof item === "undefined" ? 0 : item);
+        }
+      }
+      break;
+    case "x":
+      if (toss.length > 1) {
+        let y = toss.pop();
+        let x = toss.pop();
+        delta.y = y;
+        delta.x = x;
+      }
+      break;
+    case "[": // turn left
+      if (true) { // I'm so sorry
+        // if you have another way to prevent the declarations in this case
+        // and the next one from throwing a syntax error pls let me know
+        let x = delta.x;
+        let y = delta.y;
+        delta.x = -y;
+        delta.y = x;
+      }
+      break;
+    case "]":
+      if (true) {
+        let x = delta.x;
+        let y = delta.y;
+        delta.x = y;
+        delta.y = -x;
+      }
+      break;
+    case "w":
+      if (toss.length > 1) {
+        let b = toss.pop();
+        let a = toss.pop();
+        if (a < b) {
+          let x = delta.x;
+          let y = delta.y;
+          delta.x = -y;
+          delta.y = x;
+        } else if (a > b) {
+          let x = delta.x;
+          let y = delta.y;
+          delta.x = y;
+          delta.y = -x;
+        }
+      }
+      break;
+    case "t": // new pointer
+      pointers.splice(i, 0, {"ip": {"x": ip.x, "y":ip.y}, "delta": {"x": -delta.x, "y": -delta.y}});
+      pointersUpdated.splice(i, 0, false);
+      // return signal to increment counter
+      return "newPointer";
+      break;
+    case "'": // fetch character
+      ip.x = (ip.x + delta.x) % width;
+      ip.y = (ip.y + delta.y) % height;
+      if (ip.x < 0) { ip.x = width + ip.x; }
+      if (ip.y < 0) { ip.y = height + ip.y; }
+      if (typeof codeArray[ip.y][ip.x] === "undefined") {
+        toss.push(32n);
+      } else if (typeof codeArray[ip.y][ip.x] === "string") {
+        toss.push(BigInt(codeArray[ip.y][ip.x].charCodeAt(0)));
+      } else {
+        toss.push(codeArray[ip.y][ip.x]);
+      }
+      break;
+    case "s": // store character
+      ip.x = (ip.x + delta.x) % width;
+      ip.y = (ip.y + delta.y) % height;
+      if (ip.x < 0) { ip.x = width + ip.x; }
+      if (ip.y < 0) { ip.y = height + ip.y; }
+      if (toss.length > 0) {
+        let item = toss.pop();
+        if ( 31 < item && item < 127) {
+          put(String.fromCharCode(bigIntAsInt(item)), ip.x, ip.y);
+        } else {
+          put(item, ip.x, ip.y);
+        }
+      }
+      break;
+
 
     // more cases...
 
@@ -632,9 +751,6 @@ function doInstruction(ip, delta, toss) {
   }
 }
 
-function toggleExamples() {
-  console.log('hi');
-}
 
 // Colors to display instructions
 var coColor = "black";
@@ -680,6 +796,10 @@ var instructionColorTable = {
   "|": moColor,
   "#": moColor,
   "r": moColor,
+  "x": moColor,
+  "[": moColor,
+  "]": moColor,
+  "w": moColor,
   // Stack instructions
   ":": stColor,
   "\\": stColor,
@@ -694,13 +814,92 @@ var instructionColorTable = {
   "&": ioColor,
   "~": ioColor,
   "\"": ioColor,
+  "'":ioColor,
+  "s":ioColor,
   // Quit
   "q": quColor,
   "@": quColor,
   // Storage
   "g": gpColor,
   "p": gpColor,
+  // Misc
+  "t": "magenta",
 };
 
 
-"\"!dlrow olleH\"v,_@\n              >:^";
+/**********************
+*  Code for examples  *
+*    on main page     *
+**********************/
+
+
+var examplesCurrentlyVisible = false;
+function toggleExamples() {
+  if (!examplesCurrentlyVisible) {
+    document.getElementById("examples").innerHTML = `<table id="exampleTable">
+      <colgroup>
+        <col style="width:calc(100%/5)">
+        <col style="width:calc(100%/5)">
+        <col style="width:calc(100%/5)">
+        <col style="width:calc(100%/5)">
+        <col style="width:calc(100%/5)">
+      </colgroup>
+      <tr>
+        <td class="clickable" onclick="putExample(1)">Hello world!</td>
+        <td class="clickable" onclick="putExample(5)">Sum</td>
+        <td class="clickable" onclick="putExample(3)">Factorial</td>
+        <td class="clickable" onclick="putExample(4)">Factor</td>
+        <td class="clickable" onclick="putExample(2)">Hello world! 2.0</td>
+      </tr>
+    </table>
+    <p></p>`;
+  } else {
+    document.getElementById("examples").innerHTML = "";
+  }
+  examplesCurrentlyVisible = !examplesCurrentlyVisible;
+}
+function putExample(n) {
+  document.getElementById("befungeCode").value = examples[n];
+}
+
+var examples = {
+1:
+"\"!dlrow olleH\"v,_@\n              >:^"
+,2:
+`#vt#vt#vt#vt#vt>"wH"v
+ v  v  v  v  "
+ v  v  v  v  o
+ v  v  v  "  e
+ v  v  v  r  "
+ v  v  "  l
+ v  v  l  "
+ v  "  l
+ v  d  "
+ "  o
+ !  "
+
+ "
+>>>>>>>>>>>>>>>>>>>>>,,@`
+,3:
+`&:>00pv
+  *   1
+  g   -
+  0   :
+.@^0 :_00g`
+,4:
+`&:." =",,: v
+v          _0.@
+  ;factor;
+>00p>00g1-#v_>:#._@
+^/\\g00:<   2
+     >   1+v
+     ^_^#%<:
+          \\0
+          g0
+          ^<`
+,5:
+`0>&:v
+ ^ +_$.@
+calculates the sum of the numbers you enter!
+enter 0 (or nothing) to stop`
+};
