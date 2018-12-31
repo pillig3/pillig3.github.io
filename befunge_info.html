@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <link rel="icon" type="image/png" href="/photos/pi.png">
-  <link href="befunge_style.css" rel="stylesheet" type="text/css">
+  <link href="/css/befunge_style.css" rel="stylesheet" type="text/css">
   <meta charset="utf-8">
   <title>peterillig</title>
   <meta name="description" content="web">
@@ -25,8 +25,8 @@
       Furthermore, the IP will wrap around the top, bottom, or sides of the program, making your code a torus!
     </p>
     <p>
-      The original Befunge language, officially called <a class="textlink" href="https://github.com/catseye/Befunge-93/blob/master/doc/Befunge-93.markdown">Befunge 93</a>, has an 80\(\times\)25-character area for input, an IP, and a stack.
-      The second iteration, <a class="textlink" href="https://quadium.net/funge/spec98.html">Befunge 98</a>, introduced a lot of fun new features; it has an unbounded input area, supports multithreading with multiple instruction pointers, and
+      The original Befunge language, officially called <a href="https://github.com/catseye/Befunge-93/blob/master/doc/Befunge-93.markdown">Befunge 93</a>, has an 80\(\times\)25-character area for input, an IP, and a stack.
+      The second iteration, <a href="https://quadium.net/funge/spec98.html">Befunge 98</a>, introduced a lot of fun new features; it has an unbounded input area, supports multithreading with multiple instruction pointers, and
       gives each IP a modifiable velocity vector and a stack of stacks. It also supports libraries via "fingerprints," and the specification dexcribes variants
       of Befunge in three dimensions or higher.
     </p>
@@ -35,18 +35,22 @@
       Basically it's Befunge 93 with unbounded input, unbounded integers, multithreading, arbitrary IP velocities, and stacks of stacks.
     </p>
     <p>
-      You'll need Chrome to use it for now, as it's the only browser that supports <a class="textlink" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">BigInt</a>.
+      You'll need Chrome to use it for now, as it's the only browser that supports <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">BigInt</a>.
     </p>
 
     <h3 id="Notes"> Notes </h3>
     <p>
-      Back at <a class="textlink" href="./befunge.html">befunge.html</a>, you can run code with or without the "state,"
+      Back at <a href="./befunge.html">befunge.html</a>, you can run code with or without the "state,"
       which shows the code, pointers, and stack of stacks after each step.
       If the state is displayed, the "wait" time is how long to pause between steps.
       Even with a wait time of 0 it's pretty slow; running with the state hidden is much faster.
     </p>
     <p>
-      For more sophisticated example programs, see <a class="textlink" href="https://github.com/catseye/Befunge-93/blob/master/eg/README.markdown">here</a> &ndash; aturley.bf, befbef2.bf, and life.bf are especially cool.
+      Also, even though each pointer has its own stack of stacks, the only one displayed is the one belonging to the "top" pointer
+      (when a new pointer is created, it is placed onto the list of pointers one spot "below" the current pointer).
+    </p>
+    <p>
+      For more sophisticated example programs, see <a href="https://github.com/catseye/Befunge-93/blob/master/eg/README.markdown">here</a> &ndash; aturley.bf, befbef2.bf, and life.bf are especially cool.
       Also check out <a href="https://www.bedroomlan.org/coding/soup/">this</a> beautiful almost-quine.
     </p>
 
@@ -243,7 +247,7 @@
       </tr>
       <tr>
         <td>t</td><td>Split</td><td>Creates a new pointer (\(p^\prime\)) from the current pointer (\(p\)).
-          The position of \(p^\prime\) equals that of \(p\), and the delta of \(p^\prime\) equals the delta of \(p\) times \(-1\).
+          The position of \(p^\prime\) equals \(p\)'s, the stack of \(p^\prime\) is a copy of \(p\)'s, and the delta of \(p^\prime\) equals the delta of \(p\) times \(-1\).
           \(p^\prime\) is placed in the pointer list just before \(p\); in a given step, first \(p^\prime\) is executed, and then \(p\). </td>
       </tr>
       <tr>
@@ -258,8 +262,8 @@
 
 
     <br /><br /><br /><br /><br /><br />
-    <p class="eqn">
-      <a class="textlink" href="#top">top of page</a>
+    <p class="centered">
+      <a href="#top">top of page</a>
     </p>
 
   </div>

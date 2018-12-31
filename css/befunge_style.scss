@@ -1,0 +1,227 @@
+h1.title {
+  font-size: 32pt;
+  text-align: center;
+  font-family: "Baskerville";
+  font-variant: small-caps;
+  font-weight: lighter;
+}
+
+h3.subsection {
+  font-size: 1em;
+}
+
+h4 {
+  text-align: center;
+  font-weight: normal;
+}
+
+#content {
+  /*position: sticky;*/
+  display: inline-block;
+  left: calc(100% / 3 - 100% / 6);
+  width: calc(100% * 2 / 3);
+  font-family: "Times New Roman";
+  font-weight: normal;
+}
+
+body {
+  background-color: #FFF0FF;
+}
+
+a {
+  text-decoration: none;
+
+  &:link, &:active {
+    color: #1042EC;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+  &:visited {
+    color: purple;
+  }
+
+  &.sidebarlink {
+    color: black;
+    text-decoration: none;
+
+    &:hover {
+      font-weight: bold;
+    }
+  }
+}
+
+p.centered {
+  text-align: center;
+}
+
+#navdiv {
+  float: left;
+  padding: auto;
+  width: 100% / 3 - 100% / 6;
+  text-align: center;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+ol {
+  padding-left: 16px;
+
+  li {
+    margin: 10px 0;
+  }
+}
+
+#display {
+  width: 100%;
+  padding: 0;
+
+
+  #befungeDisplay {
+    height: 200px;
+  }
+
+  #befungeStack {
+    height: 60px;
+    line-height: 30px;
+    margin: 10px 0;
+    border-top: 0;
+  }
+}
+
+#befungeCodeWrapper {
+  margin-right: 5px;
+  padding: 0 0;
+}
+
+button {
+  font-size: 12pt;
+  outline: none;
+  padding: 8px 16px;
+  text-align: center;
+  border-radius: 20px;
+
+  &#runButton {
+    background-color: #66e2b3;
+  }
+  &#displayButton {
+    background-color: #dea3ff;
+  }
+  &#pauseButton {
+    background-color: #fabdfc;
+  }
+  &#stepButton {
+    background-color: #ffc268;
+  }
+}
+
+span {
+  &.befungeText {
+    font-weight: 400;
+    font-family: sans-serif;
+  }
+  &.borderedChar {
+    display: inline-block;
+    outline: 1px solid black;
+    outline-offset: -1px;
+  }
+  &#exampleToggler {
+    color: #1042EC;
+
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}
+
+@mixin codeFormatting() {
+  font-size: 12pt;
+  border-style: solid;
+  border-width: thin;
+  outline: none;
+  width: 100%;
+  white-space: nowrap;
+  overflow: auto;
+  resize: vertical;
+  font-family: monospace, monospace;
+  font-kerning: none;
+}
+
+textarea { // input
+  @include codeFormatting();
+  margin: auto;
+}
+
+.codeOutput {
+  @include codeFormatting();
+  margin: 0 0;
+  padding: 0 0;
+  background-color: white;
+
+  &:hover {
+    cursor: default;
+  }
+}
+
+#befungeOutput {
+  height: 400px;
+}
+
+input[type="number"] {
+    width: 40px;
+    outline: none;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+}
+
+.commandTable {
+  border-collapse: collapse;
+  width: 100%;
+  tr {
+    th {
+      font-weight: normal;
+      padding: 10px;
+      background-color: lightgray;
+    }
+    td {
+      padding: 5px;
+    }
+    th, td {
+      border-style: solid;
+      border-width: thin;
+    }
+  }
+}
+
+#buttonTable {
+  width: 100%;
+  table-layout: fixed;
+  tr td {
+    text-align: center;
+  }
+}
+
+#exampleTable {
+  width: 100%;
+  border-collapse: collapse;
+  tr td {
+    font-size: 12pt;
+    outline: none;
+    padding: 8px 16px;
+    text-align: center;
+    border-style: solid;
+    background-color: #eeeeee;
+    border-width: thin;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

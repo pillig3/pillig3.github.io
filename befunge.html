@@ -3,12 +3,13 @@
 <html lang="en">
 <head>
   <link rel="icon" type="image/png" href="/photos/pi.png">
-  <link href="befunge_style.css" rel="stylesheet" type="text/css">
+  <link href="/css/befunge_style.css" rel="stylesheet" type="text/css">
   <meta charset="utf-8">
   <title>peterillig</title>
   <meta name="description" content="web">
   <meta name="author" content="illigp@carleton.edu">
-  <script type="text/javascript" src="/js/befunge.js"></script>
+  <!-- <script type="text/javascript" src="/js/befunge.js"></script> -->
+  <script type="text/javascript" src="/js/befunge.min.js"></script>
 </head>
 
 <body>
@@ -20,7 +21,7 @@
       <!-- u n d e r   c o n s t r u c t i o n -->
       <p></p>
       <p id="henloText">
-        An interpreter and debugger for <a class="textlink" href="./befunge_info.html">Befunge 93&ndash;&infin;</a>.
+        An interpreter and debugger for <a href="./befunge_info.html">Befunge 93&ndash;&infin;</a>.
         Click <span id="exampleToggler" onclick="toggleExamples()">here</span> for example programs.
       </p>
 <span class="befungeText" id="examples" style="font-size: 11pt;"></span>
@@ -35,16 +36,16 @@
         </colgroup>
         <tr>
           <td>
-            <button class="befungeButton" id="runButton" onclick="runBefunge()">Run</button>
+            <button id="runButton" onclick="runBefunge()">Run</button>
           </td>
           <td>
-            <button class="befungeButton" id="displayButton" onclick="toggleDisplay()">Hide state</button>
+            <button id="displayButton" onclick="toggleDisplay()">Hide state</button>
           </td>
           <td>
-            <button class="befungeButton" id="stepButton" onclick="stepOnce()">Step</button>
+            <button id="stepButton" onclick="stepOnce()">Step</button>
           </td>
           <td>
-            <button class="befungeButton" id="pauseButton" onclick="pauseBefunge()">Pause</button>
+            <button id="pauseButton" onclick="pauseBefunge()">Pause</button>
           </td>
           <td>
             <span id="pauseOptions">
@@ -56,7 +57,7 @@
 
       <span class="befungeText" >Input</span>
       <div id="befungeCodeWrapper">
-        <textarea class="codeInput" id="befungeCode" placeholder="Write some code here, or choose an example above!" rows="10" autofocus=true autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+        <textarea id="befungeCode" placeholder="Write some code here, or choose an example above!" rows="10" autofocus=true autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
       </div>
 
       <div id="display">

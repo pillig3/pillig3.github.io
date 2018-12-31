@@ -11,6 +11,9 @@ var pointersStringmode;
 var paused;
 var steppingOnce;
 
+const ZERO = BigInt(0);
+const ONE = BigInt(1);
+
 // Stops program execution
 function stop(calledFromButton) {
   keepRunning = false;
@@ -49,8 +52,8 @@ function runBefunge() {
   height = BigInt(height);
   // List of Instruction Pointers (position) and their Deltas (velocity)
   pointers = [{ip: {x: BigInt(0), y: BigInt(0)}, delta: {x: BigInt(1), y: BigInt(0)}},];
-  // Stack (of stacks)
-  stacks = [[]];
+  // List of stacks of stacks - that of pointer i is in stacks[i]
+  stacks = [[[]]];
   paused = false;
 
   pointersStringmode = [false];
@@ -135,22 +138,20 @@ function step() {
   if (!pointersUpdated.reduce((b1, b2) => b1 && b2)) {
     setTimeout(step); // try again later
     return;
-  } else {
-    updateDisplay();
   }
-
+  updateDisplay();
   pointersUpdated = pointersUpdated.fill(false);
   for (var i = 0; i < pointers.length; i++) {
     let ip = pointers[i].ip;
     let delta = pointers[i].delta;
-    let toss = stacks[stacks.length-1]; // Top Of Stack Stack
+    let toss = stacks[i][stacks[i].length-1]; // Top Of Stack Stack
     if (pointersStringmode[i]) {
       if (codeArray[ip.y][ip.x] === "\"") {
         pointersStringmode[i] = false;
       } else if (typeof codeArray[ip.y][ip.x] === "string") {
         toss.push(BigInt(codeArray[ip.y][ip.x].charCodeAt(0)));
       } else if (typeof codeArray[ip.y][ip.x] === "undefined") {
-        toss.push(BigInt(" ".charCodeAt(0)));
+        toss.push(BigInt(32)); // space
       } else { // bigint
         toss.push(codeArray[ip.y][ip.x]);
       }
@@ -205,17 +206,17 @@ function stepQuickly() {
     pointersUpdated = pointersUpdated.fill(false);
 
     for (var i = 0; i < pointers.length; i++) {
-      var ip = pointers[i].ip;
-      var delta = pointers[i].delta;
-      var toss = stacks[stacks.length-1]; // Top Of Stack Stack
-      var curCell = codeArray[ip.y][ip.x];
+      let ip = pointers[i].ip;
+      let delta = pointers[i].delta;
+      let toss = stacks[i][stacks[i].length-1]; // Top Of Stack Stack
+      let curCell = codeArray[ip.y][ip.x];
       if (pointersStringmode[i]) {
         if (curCell === "\"") {
           pointersStringmode[i] = false;
         } else if (typeof curCell === "string") {
           toss.push(BigInt(curCell.charCodeAt(0)));
         } else if (typeof curCell === "undefined") {
-          toss.push(BigInt(" ".charCodeAt(0)));
+          toss.push(BigInt(32)); // space
         } else { // bigint
           toss.push(curCell);
         }
@@ -260,8 +261,8 @@ function updatePositionQuickly(ip, delta, i) {
   } while ((codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined") && !pointersStringmode[i] && ctr2 < maxctr2);
   if (ctr2 == maxctr2 && (codeArray[ip.y][ip.x] === " " || typeof codeArray[ip.y][ip.x] === "undefined")) {
     // likely infinite loop, break from outer loop & call back so user can quit
-    return Infinity;
     setTimeout(updatePositionQuickly, 0, ip, delta, i);
+    return Infinity;
   } else if (pointersUpdated[i] === false) {
     pointersUpdated[i] = true;
   }
@@ -270,7 +271,6 @@ function updatePositionQuickly(ip, delta, i) {
 // Prints a string to the output
 function print(str) {
   document.getElementById("befungeOutput").innerHTML += str.replace(/\n/g, "<br/>").replace(/ /g, "&nbsp;");
-  //document.getElementById("befungeOutput").style.height = document.getElementById("befungeOutput").scrollHeight.toString()+"px"; // resize
   document.getElementById("befungeOutput").scrollTop = document.getElementById("befungeOutput").scrollHeight; // Scroll down
 }
 
@@ -286,12 +286,12 @@ function put(item, x, y) {
   }
   if (typeof codeArray[y] === "undefined") {
     // add more lines
-    codeArray = codeArray.concat((new Array(bigIntAsInt(y - height + 1n))).fill([]));
+    codeArray = codeArray.concat((new Array(bigIntAsInt(y - height + ONE))).fill([]));
     height = BigInt(codeArray.length);
   }
   if (typeof codeArray[y][x] === "undefined") {
     // add more columns
-    codeArray[y] = codeArray[y].concat((new Array(bigIntAsInt(x - BigInt(codeArray[y].length) + 1n))).fill(" "));
+    codeArray[y] = codeArray[y].concat((new Array(bigIntAsInt(x - BigInt(codeArray[y].length) + ONE))).fill(" "));
     width = BigInt(Math.max(bigIntAsInt(width), codeArray[y].length));
   }
   codeArray[y][x] = item;
@@ -352,16 +352,17 @@ function updateDisplay() {
 
   // update stack
   str = "";
-  for (var i = stacks.length-1; i >= 0; i--) {
-    var stack = stacks[i];
+  let firstSOS = stacks[stacks.length-1];
+  for (var i = firstSOS.length-1; i >= 0; i--) {
+    let stack = firstSOS[i];
     str += "[";
-    for (var item of stack) {
+    for (let item of stack) {
       str += item.toString() + " ";
     }
     str += "<br/>";
   }
   document.getElementById("befungeStack").innerHTML = str;
-  document.getElementById("befungeStack").scrollLeft = document.getElementById("befungeStack").scrollWidth;
+  //document.getElementById("befungeStack").scrollLeft = document.getElementById("befungeStack").scrollWidth;
 }
 
 
@@ -440,9 +441,6 @@ function doInstruction(ip, delta, toss, i) {
         toss[toss.length-2] = temp;
       }
       break;
-    case "n": // Clear toss
-      stacks[stacks.length-1] = [];
-      break;
     case "+":
       if (toss.length > 1) {
         let b = toss.pop();
@@ -475,8 +473,8 @@ function doInstruction(ip, delta, toss, i) {
       if (toss.length > 1) {
         let b = toss.pop();
         let a = toss.pop();
-        if (b === 0n) {
-          toss.push(0n);
+        if (b === ZERO) {
+          toss.push(ZERO);
         } else {
           // i guess i heard of it
           toss.push(a % b);
@@ -507,7 +505,7 @@ function doInstruction(ip, delta, toss, i) {
       var char = prompt("Enter a character");
       if (char === "" || char === null) {
         // default to 10
-        toss.push(10n);
+        toss.push(BigInt(10));
       } else {
         char = char.charCodeAt(0); // code of first char of input
         toss.push(BigInt(char));
@@ -515,7 +513,7 @@ function doInstruction(ip, delta, toss, i) {
       break;
     case "!": // not: changes 0 to 1 and nonzero to 0
       if (toss.length > 0) {
-        toss[toss.length-1] = (toss[toss.length-1] === 0n ? 1n : 0n);
+        toss[toss.length-1] = (toss[toss.length-1] === ZERO ? ONE : ZERO);
       }
       break;
     case "#":
@@ -526,35 +524,35 @@ function doInstruction(ip, delta, toss, i) {
       if (ip.y < 0) { ip.y = height + ip.y; }
       break;
     case "<":
-      delta.x = -1n;
-      delta.y = 0n;
+      delta.x = -ONE;
+      delta.y = ZERO;
       break;
     case "^":
-      delta.x = 0n;
-      delta.y = -1n;
+      delta.x = ZERO;
+      delta.y = -ONE;
       break;
     case ">":
-      delta.x = 1n;
-      delta.y = 0n;
+      delta.x = ONE;
+      delta.y = ZERO;
       break;
     case "v":
-      delta.x = 0n;
-      delta.y = 1n;
+      delta.x = ZERO;
+      delta.y = ONE;
       break;
     case "?":
       let rand = Math.floor(Math.random()*4);
       switch (rand) {
         case 0:
-          delta.x = -1n; delta.y = 0n;
+          delta.x = -ONE; delta.y = ZERO;
           break;
         case 1:
-          delta.x = 0n; delta.y = -1n;
+          delta.x = ZERO; delta.y = -ONE;
           break;
         case 2:
-          delta.x = 1n; delta.y = 0n;
+          delta.x = ONE; delta.y = ZERO;
           break;
         default: // 3
-          delta.x = 0n; delta.y = 1n;
+          delta.x = ZERO; delta.y = ONE;
           break;
       }
       break;
@@ -562,21 +560,21 @@ function doInstruction(ip, delta, toss, i) {
       if (toss.length > 1) {
         let b = toss.pop();
         let a = toss.pop();
-        toss.push(a > b ? 1n : 0n);
+        toss.push(a > b ? ONE : ZERO);
       }
       break;
     case "|": // up if nonzero
-      if (toss.length > 0 && toss.pop() !== 0n) {
-        delta.x = 0n; delta.y = -1n;
+      if (toss.length > 0 && toss.pop() !== ZERO) {
+        delta.x = ZERO; delta.y = -ONE;
       } else {
-        delta.x = 0n; delta.y = 1n;
+        delta.x = ZERO; delta.y = ONE;
       }
       break;
     case "_": // left if nonzero
-      if (toss.length > 0 && toss.pop() !== 0n) {
-        delta.x = -1n; delta.y = 0n;
+      if (toss.length > 0 && toss.pop() !== ZERO) {
+        delta.x = -ONE; delta.y = ZERO;
       } else {
-        delta.x = 1n; delta.y = 0n;
+        delta.x = ONE; delta.y = ZERO;
       }
       break;
     case "g": // Get
@@ -584,7 +582,7 @@ function doInstruction(ip, delta, toss, i) {
         let y = toss.pop();
         let x = toss.pop();
         if (typeof codeArray[y] === "undefined" || typeof codeArray[y][x] === "undefined") {
-          toss.push(32n); // push a space
+          toss.push(BigInt(32)); // push a space
         } else if (typeof codeArray[y][x] === "string") {
           toss.push(BigInt(codeArray[y][x].charCodeAt(0)));
         } else { // should have type BigInt
@@ -613,6 +611,7 @@ function doInstruction(ip, delta, toss, i) {
       } else {
         pointers.splice(i, 1);
         pointersUpdated.splice(i, 1);
+        stacks.splice(i, 1);
       }
       return "deletedPointer";
     case "n": // clear toss
@@ -630,13 +629,13 @@ function doInstruction(ip, delta, toss, i) {
       } else {
         newToss = [];
       }
-      stacks.push(newToss);
+      stacks[i].push(newToss);
       break;
     case "}": // end block
-      if (stacks.length > 1) {
+      if (stacks[i].length > 1) {
         // transfer
         if (toss.length > 0) {
-          let soss = stacks[stacks.length-2];
+          let soss = stacks[i][stacks[i].length-2];
           let n = bigIntAsInt(toss.pop());
           if (toss.length >= n) {
             soss.splice.apply(soss, [soss.length, 0].concat(toss.splice(toss.length-n)));
@@ -644,14 +643,14 @@ function doInstruction(ip, delta, toss, i) {
             soss.splice.apply(soss, [soss.length, 0].concat( (new Array(n-toss.length)).fill(0).concat(toss) ));
           }
         }
-        stacks.pop();
+        stacks[i].pop();
       }
       break;
     case "u": // stack under stack
       if (toss.length > 0) {
         let n = bigIntAsInt(toss.pop());
         for (let i = 0; i < n; i++) {
-          let item = stacks[stacks.length-2].pop();
+          let item = stacks[i][stacks[i].length-2].pop();
           toss.push(typeof item === "undefined" ? 0 : item);
         }
       }
@@ -700,8 +699,14 @@ function doInstruction(ip, delta, toss, i) {
       }
       break;
     case "t": // new pointer
-      pointers.splice(i, 0, {"ip": {"x": ip.x, "y":ip.y}, "delta": {"x": -delta.x, "y": -delta.y}});
+      let newSOS = [];
+      // copy current stack of stacks
+      for (stack of stacks[i]) {
+        newSOS.push(stack.slice());
+      }
+      pointers.splice(i, 0, {ip: {x: ip.x, y:ip.y}, delta: {x: -delta.x, y: -delta.y}});
       pointersUpdated.splice(i, 0, false);
+      stacks.splice(i, 0, newSOS);
       // return signal to increment counter
       return "newPointer";
       break;
@@ -711,7 +716,7 @@ function doInstruction(ip, delta, toss, i) {
       if (ip.x < 0) { ip.x = width + ip.x; }
       if (ip.y < 0) { ip.y = height + ip.y; }
       if (typeof codeArray[ip.y][ip.x] === "undefined") {
-        toss.push(32n);
+        toss.push(BigInt(32));
       } else if (typeof codeArray[ip.y][ip.x] === "string") {
         toss.push(BigInt(codeArray[ip.y][ip.x].charCodeAt(0)));
       } else {
@@ -742,8 +747,8 @@ function doInstruction(ip, delta, toss, i) {
       // should only happen at beginning
       break;
     case "r": // reflect
-      delta.x *= -1n;
-      delta.y *= -1n;
+      delta.x *= -ONE;
+      delta.y *= -ONE;
       break;
     default:
       // do nothing
@@ -845,11 +850,11 @@ function toggleExamples() {
         <col style="width:calc(100%/5)">
       </colgroup>
       <tr>
-        <td class="clickable" onclick="putExample(1)">Hello world!</td>
-        <td class="clickable" onclick="putExample(5)">Sum</td>
-        <td class="clickable" onclick="putExample(3)">Factorial</td>
-        <td class="clickable" onclick="putExample(4)">Factor</td>
-        <td class="clickable" onclick="putExample(2)">Hello world! 2.0</td>
+        <td onclick="putExample(1)">Hello world!</td>
+        <td onclick="putExample(3)">Factorial</td>
+        <td onclick="putExample(4)">Factor</td>
+        <td onclick="putExample(2)">Hello world! 2.0</td>
+        <td onclick="putExample(5)">Binomial</td>
       </tr>
     </table>
     <p></p>`;
@@ -866,18 +871,20 @@ var examples = {
 1:
 "\"!dlrow olleH\"v,_@\n              >:^"
 ,2:
-`#vt#vt#vt#vt#vt>"wH"v
- v  v  v  v  "
- v  v  v  v  o
- v  v  v  "  e
- v  v  v  r  "
- v  v  "  l
- v  v  l  "
- v  "  l
- v  d  "
- "  o
+`#vt#vt#vt#vt#vt#vr
+ v  v  v  v  v  "
+ v  v  v  v  v  e
+ v  v  v  v  "  H
+ v  v  v  v  l  "
+ v  v  v  "  l
+ v  v  v     "
+ v  v  "  o
+ v  v  o  "
+ v  "  w
+ v  l  "
+ "  r
  !  "
-
+ d
  "
 >>>>>>>>>>>>>>>>>>>>>,,@`
 ,3:
@@ -898,8 +905,27 @@ v          _0.@
           g0
           ^<`
 ,5:
-`0>&:v
- ^ +_$.@
-calculates the sum of the numbers you enter!
-enter 0 (or nothing) to stop`
+`>            a         4         v
+ calculates n^ choose k^
+v                                < makes k>n-k
+>:1aa*p \\ :0aa*p \\ -: 1aa*g \\\`#v_ 1aa*g2av
+ n-k!                    vp*aa2<vp*aa1p*a<
+v:g*aa2     tv#     tv#  <      <
+>3aa*p1-:v    v:g*aa0<        >16aa*p@
+^ *g*aa3:_v   >4aa*p:1aa*g1+-v
+   @p*aa51<   ^ * g*aa4 : -1 _^
+<v -1  g*aa5 <
+$
+ >6aa*g 1-v
+^      _v#<
+^       _4aa*g3aa*g/.q`
 };
+
+// functions to be available after minification
+window['stop'] = stop;
+window['runBefunge'] = runBefunge;
+window['toggleDisplay'] = toggleDisplay;
+window['pauseBefunge'] = pauseBefunge;
+window['stepOnce'] = stepOnce;
+window['toggleExamples'] = toggleExamples;
+window['putExample'] = putExample;
