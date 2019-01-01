@@ -1,10 +1,4 @@
-h1.title {
-  font-size: 32pt;
-  text-align: center;
-  font-family: "Baskerville";
-  font-variant: small-caps;
-  font-weight: lighter;
-}
+@import "../style.css";
 
 h3.subsection {
   font-size: 1em;
@@ -15,56 +9,8 @@ h4 {
   font-weight: normal;
 }
 
-#content {
-  /*position: sticky;*/
-  display: inline-block;
-  left: calc(100% / 3 - 100% / 6);
-  width: calc(100% * 2 / 3);
-  font-family: "Times New Roman";
-  font-weight: normal;
-}
-
-body {
-  background-color: #FFF0FF;
-}
-
-a {
-  text-decoration: none;
-
-  &:link, &:active {
-    color: #1042EC;
-  }
-  &:hover {
-    text-decoration: underline;
-  }
-  &:visited {
-    color: purple;
-  }
-
-  &.sidebarlink {
-    color: black;
-    text-decoration: none;
-
-    &:hover {
-      font-weight: bold;
-    }
-  }
-}
-
 p.centered {
   text-align: center;
-}
-
-#navdiv {
-  float: left;
-  padding: auto;
-  width: 100% / 3 - 100% / 6;
-  text-align: center;
-}
-
-ul {
-  list-style-type: none;
-  padding-left: 0px;
 }
 
 ol {
@@ -73,6 +19,11 @@ ol {
   li {
     margin: 10px 0;
   }
+}
+
+#befunge1 #content {
+  font-weight: 400;
+  font-family: Arial, sans-serif;
 }
 
 #display {
@@ -119,10 +70,6 @@ button {
 }
 
 span {
-  &.befungeText {
-    font-weight: 400;
-    font-family: sans-serif;
-  }
   &.borderedChar {
     display: inline-block;
     outline: 1px solid black;
@@ -161,7 +108,6 @@ textarea { // input
   margin: 0 0;
   padding: 0 0;
   background-color: white;
-
   &:hover {
     cursor: default;
   }

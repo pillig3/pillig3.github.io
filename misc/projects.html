@@ -1,0 +1,46 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png"><link rel="manifest" href="/favicon/site.webmanifest"><link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5"><link rel="shortcut icon" href="/favicon/favicon.ico"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/favicon/browserconfig.xml"><meta name="theme-color" content="#ffffff">
+  <link href="style.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8">
+  <title>Projects</title>
+  <meta name="description" content="web">
+  <meta name="author" content="Peter Illig">
+  <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</head>
+
+<body>
+  <h1 class="title" id="top"> Projects </h1>
+
+  <div id="navdiv"></div>
+
+  <div id="content">
+
+    <h2>Mandelbrot Set Explorer</h2>
+    <p>
+      This is a simple program, written for my Software Design class, that allows the user to explore the Mandelbrot set.
+      Zoom in by clicking, and move around using the arrow keys or WASD.
+      The user may also manually choose the location they wish to see by entering a complex number and screen radius.
+      These images are generated using the <a class="textlink" href="//en.wikipedia.org/wiki/Mandelbrot_set#Escape_time_algorithm">escape time algorithm</a>, and the user may choose how many iterations the map will be applied to each point before deciding whether or not it escapes.
+      A low number of iterations will result in faster rendering times, but a fuzzier and less accurate picture.
+      It's probably best to use a small number (~\(1000\)) while moving to the desired location, and a larger number to then render the image.
+    </p>
+    <p>
+      Program (12 KB jar): <a class="textlink" href="/code/mandelbrot.zip">mandelbrot.zip</a><br />
+      Source code (221 KB): <a class="textlink" href="/code/mandelbrotsource.zip">mandelbrotsource.zip</a>
+    </p>
+    <p>
+      Screenshot (at \( -0.7655+0.10115i \), with radius \( 0.0015 \)):
+      <img src="/photos/mandelbrot.png" width="100%" />
+    </p>
+
+    <br /><br /><br /><br /><br /><br />
+    <p class="eqn">
+      <a class="textlink" href="#top">top of page</a>
+    </p>
+  </div>
+  <script type="text/javascript" src="/js/nav.js"></script>
+
+</body>

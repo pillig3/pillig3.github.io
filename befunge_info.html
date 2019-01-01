@@ -2,13 +2,13 @@
 
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" href="/photos/pi.png">
-  <link href="/css/befunge_style.css" rel="stylesheet" type="text/css">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png"><link rel="manifest" href="/favicon/site.webmanifest"><link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5"><link rel="shortcut icon" href="/favicon/favicon.ico"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/favicon/browserconfig.xml"><meta name="theme-color" content="#ffffff">
+  <link href="/css/befunge.css" rel="stylesheet" type="text/css">
   <meta charset="utf-8">
-  <title>peterillig</title>
+  <title>Befunge Info</title>
   <meta name="description" content="web">
-  <meta name="author" content="illigp@carleton.edu">
-  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <meta name="author" content="Peter Illig">
+  <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </head>
 
 <body>
@@ -25,8 +25,8 @@
       Furthermore, the IP will wrap around the top, bottom, or sides of the program, making your code a torus!
     </p>
     <p>
-      The original Befunge language, officially called <a href="https://github.com/catseye/Befunge-93/blob/master/doc/Befunge-93.markdown">Befunge 93</a>, has an 80\(\times\)25-character area for input, an IP, and a stack.
-      The second iteration, <a href="https://quadium.net/funge/spec98.html">Befunge 98</a>, introduced a lot of fun new features; it has an unbounded input area, supports multithreading with multiple instruction pointers, and
+      The original Befunge language, officially called <a href="//github.com/catseye/Befunge-93/blob/master/doc/Befunge-93.markdown">Befunge 93</a>, has an 80\(\times\)25-character area for input, an IP, and a stack.
+      The second iteration, <a href="//quadium.net/funge/spec98.html">Befunge 98</a>, introduced a lot of fun new features; it has an unbounded input area, supports multithreading with multiple instruction pointers, and
       gives each IP a modifiable velocity vector and a stack of stacks. It also supports libraries via "fingerprints," and the specification dexcribes variants
       of Befunge in three dimensions or higher.
     </p>
@@ -35,12 +35,12 @@
       Basically it's Befunge 93 with unbounded input, unbounded integers, multithreading, arbitrary IP velocities, and stacks of stacks.
     </p>
     <p>
-      You'll need Chrome to use it for now, as it's the only browser that supports <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">BigInt</a>.
+      You'll need Chrome to use it for now, as it's the only browser that supports <a href="//developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">BigInt</a>.
     </p>
 
     <h3 id="Notes"> Notes </h3>
     <p>
-      Back at <a href="./befunge.html">befunge.html</a>, you can run code with or without the "state,"
+      Back at <a href="/befunge.html">befunge.html</a>, you can run code with or without the "state,"
       which shows the code, pointers, and stack of stacks after each step.
       If the state is displayed, the "wait" time is how long to pause between steps.
       Even with a wait time of 0 it's pretty slow; running with the state hidden is much faster.
@@ -50,8 +50,8 @@
       (when a new pointer is created, it is placed onto the list of pointers one spot "below" the current pointer).
     </p>
     <p>
-      For more sophisticated example programs, see <a href="https://github.com/catseye/Befunge-93/blob/master/eg/README.markdown">here</a> &ndash; aturley.bf, befbef2.bf, and life.bf are especially cool.
-      Also check out <a href="https://www.bedroomlan.org/coding/soup/">this</a> beautiful almost-quine.
+      For more sophisticated example programs, see <a href="//github.com/catseye/Befunge-93/blob/master/eg/README.markdown">here</a> &ndash; aturley.bf, befbef2.bf, and life.bf are especially cool.
+      Also check out <a href="//www.bedroomlan.org/coding/soup/">this</a> beautiful almost-quine.
     </p>
 
     <h3 id="details">Details</h3>
@@ -103,11 +103,6 @@
         <th>        Name             </th>
         <th>        Explanation      </th>
       </tr>
-      <!-- <tr>
-        <td colspan="3">
-          Movement Instructions
-        </td>
-      </tr> -->
       <tr>
         <td>0,1,..., or 9</td><td>Push number</td><td>Pushes 0,1,..., or 9 to the top-of-stack stack (TOSS)</td>
       </tr>

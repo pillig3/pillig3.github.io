@@ -2,13 +2,13 @@
 
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" href="/photos/pi.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png"><link rel="manifest" href="/favicon/site.webmanifest"><link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5"><link rel="shortcut icon" href="/favicon/favicon.ico"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/favicon/browserconfig.xml"><meta name="theme-color" content="#ffffff">
   <link href="style.css" rel="stylesheet" type="text/css">
   <meta charset="utf-8">
-  <title>peterillig</title>
+  <title>Comps</title>
   <meta name="description" content="web">
-  <meta name="author" content="illigp@carleton.edu">
-  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <meta name="author" content="Peter Illig">
+  <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </head>
 
 <body>
@@ -27,15 +27,15 @@
     <h2>Introduction</h2>
 
     <p>
-      This project focuses on the <a class="textlink" href="https://en.wikipedia.org/wiki/Irreducible_polynomial">reducibility</a> of polynomial iterates. If \( f(x) \) is an arbitrary polynomial, define the \(n\)th iterate of \(f\) to be
+      This project focuses on the <a href="//en.wikipedia.org/wiki/Irreducible_polynomial">reducibility</a> of polynomial iterates. If \( f(x) \) is an arbitrary polynomial, define the \(n\)th iterate of \(f\) to be
     </p>
-    <p class="eqn">
+    <p class="centered">
       \( f^n(x) = \underbrace{f(f(...(f(x))))}_{n\ f\text{'s}}. \)
     </p>
     <p>
       We also say that \( f^n(x) \) is <i>newly reducible</i>, or that \(f\) has a <i>newly reducible \(n\)th iterate</i>, when all of \( f(x), f^2(x), ..., f^{n-1}(x) \) are irreducible, but \( f^n(x) \) is reducible (over \(\mathbb{Q}\), although we can study this for any field). Note that if some iterate \( f^n(x) \) is reducible, then \( f^n(x)=h_1(x)h_2(x) \), so we also have
     </p>
-    <p class="eqn">
+    <p class="centered">
       \( f^{n+1}(x) = f^n(f(x)) = h_1(f(x))h_2(f(x)), \)
     </p>
     <p>
@@ -44,7 +44,7 @@
     <p>
       Here's an example: the polynomial \( f(x) = x^2 - x - 1 \) is a famous one, being the minimal polynomial of the golden ratio \( \varphi \). It is irreducible, since \( \varphi \) is irrational. Now let's iterate it:
     </p>
-    <p class="eqn">
+    <p class="centered">
       \( \begin{align*}
       f^2(x) &= x^4 - 2x^3 - 2x^2 + 3x + 1                          &\text{    is irreducible.} \\
       f^3(x) &= (x^4 - 3x^3 + 4x - 1) (x^4 - x^3 - 3x^2 + x + 1)    &\text{    is reducible!}
@@ -54,31 +54,30 @@
       So this polynomial has a newly reducible third iterate. This makes it very rare; there are only <i>eight</i> other integer polynomials of the form \( x^2 + ax + b \), with \( |a| \le 10^5, |b| \le 10^9 \), that have newly reducible third iterates.
       It's not hard to show that there are infinitely many rational polynomials of the form \( x^2 + ax + b \) with newly reducible <i>second</i> iterates, but it's more difficult to see whether there are infinitely many with newly reducible <i>third</i> iterates.
     </p>
-    <p>
-      So, our preliminary questions were:
-      <ul class="numberedlist">
-        <li> How many polynomials of the above form have newly reducible third iterates? </li>
-        <li> Why is the minimal polynomial of \( \varphi \) one of them? </li>
-      </ul>
-    </p>
-    <p>
-      In the time since, we've tackled some additional questions, though they remain unsolved:
-      <ul class="numberedlist">
-        <li>
-          Given a degree \(d\), how many rational, monic, degree-\(d\) polynomials have newly reducible second iterates?
-        </li>
-        <li>
-          Are there <i>any</i> rational polynomials with newly reducible fourth iterate?
-        </li>
-        <li>
-          Given \( n\geq 4 \), are there any rational polynomials with newly reducible \(n\)th iterate?
-        </li>
-      </ul>
-      Although the first is unsolved, we've made some progress;
-      it turns out that if \(d=3\), \(d=4\), or \(d\equiv 2\ (\text{mod } 4)\), then there are infinitely many rational, monic, degree-\(d\) polynomials with newly reducible second iterate!
-      Additionally, this result still holds if we require the polynomials to have integer coefficients.
-      For other \(d>1\), it is completely unknown how many such polynomials exist.
-    </p>
+    So, our preliminary questions were:
+
+    <ol type="1">
+      <li> How many polynomials of the above form have newly reducible third iterates? </li>
+      <li> Why is the minimal polynomial of \( \varphi \) one of them? </li>
+    </ol>
+
+    In the time since, we've tackled some additional questions, though they remain unsolved:
+
+    <ol type="1" start="3">
+      <li>
+        Given a degree \(d\), how many rational, monic, degree-\(d\) polynomials have newly reducible second iterates?
+      </li>
+      <li>
+        Are there <i>any</i> rational polynomials with newly reducible fourth iterate?
+      </li>
+      <li>
+        Given \( n\geq 4 \), are there any rational polynomials with newly reducible \(n\)th iterate?
+      </li>
+    </ol>
+    Although the first is unsolved, we've made some progress;
+    it turns out that if \(d=3\), \(d=4\), or \(d\equiv 2\ (\text{mod } 4)\), then there are infinitely many rational, monic, degree-\(d\) polynomials with newly reducible second iterate!
+    Additionally, this result still holds if we require the polynomials to have integer coefficients.
+    For other \(d>1\), it is completely unknown how many such polynomials exist.
 
 
 
@@ -97,13 +96,13 @@
     </p>
     <p>
       Now let's suppose \(f^2(x)\) is newly reducible, and see what that tells us about \(m\) and \(\gamma\). If \(f^2(x)\) is newly reducible, we can write it as
-      <p class="eqn">
+      <p class="centered">
         \( f^2(x) = \left((x-\gamma)^2 + b_1(x-\gamma) + a_1\right)\left((x-\gamma)^2 - b_2(x-\gamma) + a_2\right). \)
       </p>
       For some rational \(a_1,a_2,b_1,b_2\). We're ignoring the possibility that \(f^2(x) = (\text{degree }1\text{ factor})(\text{degree }3\text{ factor})\),
       because it turns out that this cannot actually happen when \(f(x)\) is irreducible (if you know a bit of field theory, a more general statement can be proven).
       On the other hand, we also know that
-      <p class="eqn">
+      <p class="centered">
         \( \begin{align*}
           f^2(x)  &= f(f(x)) \\
                   &= \left( (x-\gamma)^2 + m + \gamma - \gamma \right)^2 + m + \gamma \\
@@ -111,7 +110,7 @@
         \end{align*} \)
       </p>
       We then equate the coefficients of \((x-\gamma)\) in these two expressions to get the following system of equations:
-      <p class="eqn">
+      <p class="centered">
         \(\begin{align}
           m^2+m+\gamma  &= a_1a_2 \\
           0             &= a_1b_2 + a_2b_1 \\
@@ -120,7 +119,7 @@
         \end{align}\)
       </p>
       Substituting \( -b_1 \) for \( b_2 \) gives
-      <p class="eqn">
+      <p class="centered">
         \(\begin{align}
           m^2+m+\gamma  &= a_1a_2 \\
           0             &= -a_1b_1 + a_2b_1 \\
@@ -130,12 +129,12 @@
       Now we would like to divide the second equation by \(b_1\), but it may be zero.
       Well, suppose that it is. Then solving the remaining equations for \(m\) and \(\gamma\), and plugging these values into \(f(x)\),
       shows that
-      <p class="eqn">
+      <p class="centered">
         \( f(x+\gamma) = \frac{1}{4}(2x - a_1 + a_2)(2x + a_1 - a_2) \),
       </p>
       and this contradicts our assumption that \(f^2\) is <i>newly</i> reducible. Therefore, \(b_1\neq 0\).
       Then we have \( a_1 = a_2 \), and solving the remaining two equations gives
-      <p class="eqn">
+      <p class="centered">
         \( m = \frac{1}{2} \left(2 a_1-b_1^2\right), \qquad
         \gamma = \frac{1}{4} \left(4 a_1 b_1^2-4 a_1-b_1^4+2 b_1^2\right) \tag{$\ast$} \)
       </p>
@@ -144,7 +143,7 @@
     <p>
       But what about the converse? Suppose we do have \( m,\gamma,a_1,b_1 \) such that equations \( (\ast) \) hold.
       Then
-      <p class="eqn">
+      <p class="centered">
         \(\begin{align*}
           f(x+\gamma)   &= x^2 + a_1 b_1^2 - \frac{1}{4} b_1^4, \\
           f^2(x+\gamma) &= \left(x^2+b_1 x+a_1\right) \left(x^2-b_1 x+a_1\right).
@@ -153,7 +152,7 @@
       We find that \( f^2(x) \) is in fact reducible for all \(a_1\) and \(b_1\)!
       To determine when it is newly reducible, we look at when \(f(x)\) is irreducible &mdash;
       recall that this happens exactly when \(-m-\gamma\) is not a square. In our case, we have
-      <p class="eqn">
+      <p class="centered">
         \( -m-\gamma = - a_1 b_1^2 + \frac{1}{4} b_1^4 \)
       </p>
       And we can find infinitely many \( a_1,b_1 \) such that this is not the square of a rational number.
@@ -164,11 +163,11 @@
       Therefore, \( f^2(x) \) is newly reducible for all such \( a_1 \) and \( b_1 \)!
     </p>
     <p>
-      <a class="textlink" href="/code/NRSIs.nb">Here</a> is a Mathematica notebook illustrating the proof (13 KB). :)
+      <a href="/code/NRSIs.nb">Here</a> is a Mathematica notebook illustrating the proof (13 KB). :)
     </p>
     <br /><br /><br /><br /><br /><br />
-    <p class="eqn">
-      <a class="textlink" href="#top">top of page</a>
+    <p class="centered">
+      <a href="#top">top of page</a>
     </p>
   </div>
   <script type="text/javascript" src="/js/nav.js"></script>
