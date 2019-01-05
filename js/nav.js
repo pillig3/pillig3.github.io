@@ -1,15 +1,8 @@
 document.getElementById("navdiv").innerHTML=`<ul class="sidebarlist">
   <li>
-    <a class="sidebarlink" href="/index.html">
+    <a class="sidebarlink" href="/">
       <p class="linkp">
         <img src="/photos/home.png" height=16px width=16px /> Home
-      </p>
-    </a>
-  </li>
-  <li>
-    <a class="sidebarlink" href="/comps.html">
-      <p class="linkp">
-        <img src="/photos/pencil.png" height=16px width=16px /> Comps
       </p>
     </a>
   </li>
@@ -34,12 +27,19 @@ document.getElementById("navdiv").innerHTML=`<ul class="sidebarlist">
       </p>
     </a>
   </li>
+  <li>
+    <a class="sidebarlink" href="/misc.html">
+      <p class="linkp">
+        <img src="/photos/heart.png" height=16px width=16px /> Miscellanea
+      </p>
+    </a>
+  </li>
 </ul>`;
 
 // <li>
-//   <a class="sidebarlink" href="/projects.html">
+//   <a class="sidebarlink" href="/comps.html">
 //     <p class="linkp">
-//       <img src="/photos/cpu.png" height=16px width=16px /> Projects
+//       <img src="/photos/pencil.png" height=16px width=16px /> Comps
 //     </p>
 //   </a>
 // </li>

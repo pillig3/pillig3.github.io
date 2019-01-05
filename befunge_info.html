@@ -31,11 +31,8 @@
       of Befunge in three dimensions or higher.
     </p>
     <p>
-      Befunge 93&ndash;&infin; is my combination of the two, with a few extra features.
-      Basically it's Befunge 93 with unbounded input, unbounded integers, multithreading, arbitrary IP velocities, and stacks of stacks.
-    </p>
-    <p>
-      You'll need Chrome to use it for now, as it's the only browser that supports <a href="//developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">BigInt</a>.
+      Befunge 93&ndash;&infin; is the result of me taking the parts of each that I like and putting them together.
+      It's basically like Befunge 93 with unbounded size and unbounded integers (hence the name), multithreading, arbitrary IP velocities, and stacks of stacks.
     </p>
 
     <h3 id="Notes"> Notes </h3>
@@ -65,18 +62,21 @@
           the new smallest bounding box containing all cells including the new one, and identify these edges to create a larger torus.
         </li>
         <li>
-          We can still only write to cells with positive integer coordinates, so the grid is unbounded just to the East and South.
+          We can still only write to cells with non-negative integer coordinates, so the grid is unbounded to the East and South.
         </li>
         <li>
-          Arbitrarily large integers are supported. Program size is <em>theoretically</em> also unbounded, but practically the height and width must be under \( 2^{32}-1 \approx 4.29 \) billion (the maximum size of a JavaScript array).
+          Arbitrarily large integers are supported, and program size is theoretically unbounded but in practice limited to \( 2^{32}-1 \approx 4.29 \) billion rows/columns (the maximum size of a JavaScript array).
         </li>
         <li>
           The IP initially moves right at a speed of one cell per step, and will remain at that speed if only Befunge-93 commands are used.
-          However, it can be set to any velocity using "x".
+          However, it can also be set to any velocity using "x".
         </li>
         <li>
           Instead of a single stack there is a stack of stacks, which initially contains one stack. All stack operations from
           Befunge 93 operate on the stack that is at the top of the stack of stacks (called the Top-Of-Stack Stack, or the TOSS).
+        </li>
+        <li>
+          Multithreading is supported with the "t" instruction, which splits the current pointer in two.
         </li>
       </ol>
       Despite the differences, this implementation should be able to run most Befunge 93 programs, with the exception of those that depend on something strange like not being able to write
@@ -145,7 +145,7 @@
         <td>!</td><td>Negate!</td><td>Pops the top value off the TOSS, and pushes its negation: 1 if the value is 0, and 0 if the value is nonzero.</td>
       </tr>
       <tr>
-        <td>` (backtick)</td><td>Greater than</td><td>Pops two values (b and a) off the TOSS and compares them. Pushes 1 if a>b, otherwise pushes 0.</td>
+        <td>` (backtick)</td><td>Greater than</td><td>Pops b, then a, off the TOSS and compares them. Pushes 1 if a>b, otherwise pushes 0.</td>
       </tr>
       <tr>
         <td>:</td><td>Duplicate</td><td>Pops a value off the TOSS, then pushes two copies of that value back onto the TOSS.</td>

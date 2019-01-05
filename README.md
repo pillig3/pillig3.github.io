@@ -7,10 +7,10 @@ people from [The Noun Project](https://thenounproject.com).
 Image                                     | Creator
 :----------------------------------------:|:----------------------------------------:
 home.png                                  | [Rafael Farias Leão](https://thenounproject.com/rafaleao)
-pencil.png                                | [Anam](https://thenounproject.com/a_6icon)
 compass.png                               | [Romzicon](https://thenounproject.com/romzicon)
 choco.png                                 | [Baboon Designs](https://thenounproject.com/baboondesigns)
 mushroom.png                              | [Lucian Novosel](https://thenounproject.com/lucian.novosel)
+heart.png                                 | [Bohdan Burmich](http://thenounproject.com/b4bb)
 
 
 All code in this repository was written by me. To the extent legally possible,

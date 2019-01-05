@@ -2,7 +2,7 @@ var losing_positions = [];
 var board = [3,3,3,3];
 /* represents the board:
  * [a_1, a_2, ..., a_c] represents the board with c columns
- * that is a_1 tall in the first column, etc. */
+ * that has a_1 squares in the first column, etc. */
 var rows = 3;
 var cols = 4;
 var playerCanMove = true;
@@ -19,25 +19,27 @@ async function playerMove(c,r) {
       playerCanMove = true;
       return;
     }
-    var time = Date.now();
-    var move = getBestMove();
-    time = Date.now()-time;
-    if (time < 1000) {
-      // Wait a second so it's not overwhelmingly fast
-      await sleep(1000-time);
-    }
-    monch(move[0],move[1]);
-    playerCanMove = true;
-    clearLoadingImg();
-    if(gameIsOver()) {
-      document.getElementById("message_space").innerHTML = "Nice! You won!";
-    }
+    setTimeout(cpuMove, 0); // so board and loading div update before cpu starts working
   }
 }
 
-function cheat() {
-  monch(1,1);
-  document.getElementById("message_space").innerHTML = "You won! It wasn't entirely fair and square though, was it? Still, your sense of accomplishment assuages your guilt. Nice!";
+/*
+ * computer move, called after playerMove
+ */
+async function cpuMove(){
+  var time = Date.now();
+  var move = getBestMove();
+  time = Date.now()-time;
+  if (time < 1000) {
+    // Wait a second so it's not 2 fast
+    await sleep(1000-time);
+  }
+  monch(move[0],move[1]);
+  playerCanMove = true;
+  clearLoadingImg();
+  if(gameIsOver()) {
+    document.getElementById("message_space").innerHTML = "Nice! You won!";
+  }
 }
 
 function makeLoadingImg() {
@@ -51,7 +53,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/* returns true iff game is over */
+/* returns true if game is over */
 function gameIsOver() {
   return ( board.indexOf(0) == 0 ); /* if board is all zeros */
 }

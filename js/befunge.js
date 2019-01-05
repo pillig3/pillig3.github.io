@@ -649,7 +649,7 @@ function doInstruction(ip, delta, toss, i) {
     case "u": // stack under stack
       if (toss.length > 0) {
         let n = bigIntAsInt(toss.pop());
-        for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
           let item = stacks[i][stacks[i].length-2].pop();
           toss.push(typeof item === "undefined" ? 0 : item);
         }
@@ -758,75 +758,75 @@ function doInstruction(ip, delta, toss, i) {
 
 
 // Colors to display instructions
-var coColor = "black";
-var arColor = "blue";
-var moColor = "limegreen";
-var ioColor = "purple";
-var stColor = "orange";
-var quColor = "red";
-var gpColor = "cyan";
+var a = "black";
+var b = "blue";
+var c = "limegreen";
+var d = "purple";
+var e = "orange";
+var f = "red";
+var g = "cyan";
 var instructionColorTable = {
   // Constants
-  "0": coColor,
-  "1": coColor,
-  "2": coColor,
-  "3": coColor,
-  "4": coColor,
-  "5": coColor,
-  "6": coColor,
-  "7": coColor,
-  "8": coColor,
-  "9": coColor,
-  "a": coColor,
-  "b": coColor,
-  "c": coColor,
-  "d": coColor,
-  "e": coColor,
-  "f": coColor,
+  "0": a,
+  "1": a,
+  "2": a,
+  "3": a,
+  "4": a,
+  "5": a,
+  "6": a,
+  "7": a,
+  "8": a,
+  "9": a,
+  "a": a,
+  "b": a,
+  "c": a,
+  "d": a,
+  "e": a,
+  "f": a,
   // pop -> operation -> push
-  "+": arColor,
-  "-": arColor,
-  "*": arColor,
-  "/": arColor,
-  "%": arColor,
-  "!": arColor,
-  "`": arColor,
+  "+": b,
+  "-": b,
+  "*": b,
+  "/": b,
+  "%": b,
+  "!": b,
+  "`": b,
   // Movement
-  "<": moColor,
-  "^": moColor,
-  ">": moColor,
-  "v": moColor,
-  "?": moColor,
-  "_": moColor,
-  "|": moColor,
-  "#": moColor,
-  "r": moColor,
-  "x": moColor,
-  "[": moColor,
-  "]": moColor,
-  "w": moColor,
+  "<": c,
+  "^": c,
+  ">": c,
+  "v": c,
+  "?": c,
+  "_": c,
+  "|": c,
+  "#": c,
+  "r": c,
+  "x": c,
+  "[": c,
+  "]": c,
+  "w": c,
   // Stack instructions
-  ":": stColor,
-  "\\": stColor,
-  "$": stColor,
-  "n": stColor,
-  "{": stColor,
-  "}": stColor,
-  "u": stColor,
+  ":": e,
+  "\\": e,
+  "$": e,
+  "n": e,
+  "{": e,
+  "}": e,
+  "u": e,
   // I/O(-ish)
-  ".": ioColor,
-  ",": ioColor,
-  "&": ioColor,
-  "~": ioColor,
-  "\"": ioColor,
-  "'":ioColor,
-  "s":ioColor,
+  ".": d,
+  ",": d,
+  "&": d,
+  "~": d,
+  "\"": d,
+  "'":d,
+  "s":d,
   // Quit
-  "q": quColor,
-  "@": quColor,
+  "q": f,
+  "@": f,
   // Storage
-  "g": gpColor,
-  "p": gpColor,
+  "g": g,
+  "p": g,
   // Misc
   "t": "magenta",
 };
@@ -894,9 +894,10 @@ var examples = {
   0   :
 .@^0 :_00g`
 ,4:
-`&:." =",,: v
-v          _0.@
-  ;factor;
+`&:." =",,:v ; Factors an integer
+v  _v#\`0:<_0.@
+ -10<    ^*-10\\
+
 >00p>00g1-#v_>:#._@
 ^/\\g00:<   2
      >   1+v
@@ -915,8 +916,7 @@ v:g*aa2     tv#     tv#  <      <
 ^ *g*aa3:_v   >4aa*p:1aa*g1+-v
    @p*aa51<   ^ * g*aa4 : -1 _^
 <v -1  g*aa5 <
-$
- >6aa*g 1-v
+$>6aa*g 1-v
 ^      _v#<
 ^       _4aa*g3aa*g/.q`
 };
