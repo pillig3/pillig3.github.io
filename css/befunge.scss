@@ -38,13 +38,14 @@ ol {
   #befungeStack {
     height: 60px;
     line-height: 30px;
-    margin: 10px 0;
     border-top: 0;
   }
 }
 
 #befungeCodeWrapper {
   margin-right: 5px;
+  margin-top: 0;
+  margin-bottom: 0;
   padding: 0 0;
 }
 
@@ -96,16 +97,20 @@ span {
   resize: vertical;
   font-family: monospace, monospace;
   font-kerning: none;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 textarea { // input
   @include codeFormatting();
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .codeOutput {
   @include codeFormatting();
-  margin: 0 0;
+  margin-left: 0;
+  margin-right: 0;
   padding: 0 0;
   background-color: white;
   &:hover {

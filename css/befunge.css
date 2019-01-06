@@ -139,12 +139,13 @@ ol li {
 #display #befungeStack {
   height: 60px;
   line-height: 30px;
-  margin: 10px 0;
   border-top: 0;
 }
 
 #befungeCodeWrapper {
   margin-right: 5px;
+  margin-top: 0;
+  margin-bottom: 0;
   padding: 0 0;
 }
 
@@ -192,7 +193,10 @@ textarea {
   resize: vertical;
   font-family: monospace, monospace;
   font-kerning: none;
-  margin: auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .codeOutput {
@@ -206,7 +210,10 @@ textarea {
   resize: vertical;
   font-family: monospace, monospace;
   font-kerning: none;
-  margin: 0 0;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 0;
+  margin-right: 0;
   padding: 0 0;
   background-color: white;
 }
