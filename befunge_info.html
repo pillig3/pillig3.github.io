@@ -23,6 +23,7 @@
       Befunge is a two-dimensional, toroidal, self-modifying programming language; it was created in 1993 in an attempt to create a language as difficult to compile as possible.
       Instead of having a program counter that just counts lines, Befunge features a program counter with both x and y coordinates (now called an <em>instruction pointer</em> [IP]).
       Furthermore, the IP will wrap around the top, bottom, or sides of the program, making your code a torus!
+      Oh, and it's also self-modifying.
     </p>
     <p>
       The original Befunge language, officially called <a href="//github.com/catseye/Befunge-93/blob/master/doc/Befunge-93.markdown">Befunge 93</a>, has an 80\(\times\)25-character area for input, an IP, and a stack.
@@ -125,8 +126,8 @@
         <td>?</td><td>Go away</td><td>Randomly acts like one of ^, v, >, or <.</td>
       </tr>
       <tr>
-        <td>+, -, *, /, %</td><td>Add,subtract, multiply, divide, modulo</td><td>Pops the top two values off the TOSS, performs the operation in question, and pushes the result
-        onto the TOSS. The first value popped will be on the right hand side of the operator. For instance, 53- becomes 2.
+        <td>+, -, *, /, %</td><td>Add, subtract, multiply, divide, modulo</td><td>Pops the top two values off the TOSS, performs the operation in question, and pushes the result
+        onto the TOSS. The first value popped will be on the right hand side of the operator. For instance, 5 3 - becomes 2.
         Division is integer division, with the result rounded down to the nearest integer.
         Modulo behaves as it does in JavaScript, C, etc. &ndash; it will be \(\leq\)0 iff the left hand side is negative. Anything mod 0 is 0 by convention.</td>
       </tr>
