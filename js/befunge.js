@@ -18,7 +18,7 @@ const ONE = BigInt(1);
 function stop(calledFromButton) {
   keepRunning = false;
   if (showDisplay) {
-    updateDisplay();
+    updateDisplays();
     pointersUpdated = pointersUpdated.fill(true);
     paused = false;
     steppingOnce = false;
@@ -139,7 +139,7 @@ function step() {
     setTimeout(step); // try again later
     return;
   }
-  updateDisplay();
+  updateDisplays();
   pointersUpdated = pointersUpdated.fill(false);
   for (var i = 0; i < pointers.length; i++) {
     let ip = pointers[i].ip;
@@ -270,7 +270,16 @@ function updatePositionQuickly(ip, delta, i) {
 
 // Prints a string to the output
 function print(str) {
-  document.getElementById("befungeOutput").innerHTML += str.replace(/\n/g, "<br/>").replace(/ /g, "&nbsp;");
+  if (str === null) { // signal for ascii character 8 (backspace)
+    var output = document.getElementById("befungeOutput").innerHTML;
+    if (output.length >= 6 && output.substring(output.length-6) === "&nbsp;") {
+      document.getElementById("befungeOutput").innerHTML = output.substring(0, output.length-6);
+    } else {
+      document.getElementById("befungeOutput").innerHTML = output.substring(0, output.length-1);
+    }
+  } else {
+    document.getElementById("befungeOutput").innerHTML += str.replace(/\n/g, "<br/>").replace(/ /g, "&nbsp;");
+  }
   document.getElementById("befungeOutput").scrollTop = document.getElementById("befungeOutput").scrollHeight; // Scroll down
 }
 
@@ -299,7 +308,7 @@ function put(item, x, y) {
 
 // Takes a BigInt and returns the corresponding integer, if bigint is in the
 // range (-2^53, 2^53). Otherwise returns zero.
-// Not to be confused with BigInt.asIntN, although BigInt.asIntN used to support this use (until I was halfway through this project)
+// Not to be confused with BigInt.asIntN
 function bigIntAsInt(bigint) {
   if (-Number.MAX_SAFE_INTEGER <= bigint && bigint <= Number.MAX_SAFE_INTEGER) {
     return parseInt(bigint.toString(10));
@@ -307,13 +316,17 @@ function bigIntAsInt(bigint) {
   return 0;
 }
 
-
 // Display the current grid and location of pointer(s), as well as
 // the current stack. Values on the stack are displayed as integers,
 // Values on the grid are displayed as their corresponding ascii char, if
 // not a printable ascii char it's displayed as Ø
-function updateDisplay() {
-  // Update code display
+function updateDisplays() {
+  updateState()
+  updateStack()
+}
+
+// Update dynamic code grid
+function updateState() {
   var str = "";
   var ptrIndex = {};
   for (ptr of pointers) {
@@ -321,13 +334,11 @@ function updateDisplay() {
   }
   for (var y in codeArray) {
     for (var x in codeArray[y]) {
-
       if (ptrIndex[x + "," + y]) {
         str += "<span class=\"borderedChar\" ";
       } else {
         str += "<span ";
       }
-
       var curItem = codeArray[y][x];
       if (typeof curItem === "string") {
         if (typeof instructionColorTable[curItem] === "undefined") {
@@ -349,9 +360,12 @@ function updateDisplay() {
     str += "<br/>";
   }
   document.getElementById("befungeDisplay").innerHTML = str;
+}
 
-  // update stack
-  str = "";
+// Update stack-of-stacks -- if there are multiple pointers,
+// only the SOS of the top pointer is displayed
+function updateStack() {
+  var str = "";
   let firstSOS = stacks[stacks.length-1];
   for (var i = firstSOS.length-1; i >= 0; i--) {
     let stack = firstSOS[i];
@@ -362,11 +376,7 @@ function updateDisplay() {
     str += "<br/>";
   }
   document.getElementById("befungeStack").innerHTML = str;
-  //document.getElementById("befungeStack").scrollLeft = document.getElementById("befungeStack").scrollWidth;
 }
-
-
-
 
 
 
@@ -400,7 +410,7 @@ function updateDisplay() {
 function doInstruction(ip, delta, toss, i) {
   switch (codeArray[ip.y][ip.x]) {
     case "q":
-      stop();
+      stop(false);
       return "stopped";
     case "0":
     case "1":
@@ -488,7 +498,12 @@ function doInstruction(ip, delta, toss, i) {
       break;
     case ",": // output character
       if (toss.length > 0) {
-        print(String.fromCharCode(bigIntAsInt(toss.pop())));
+        var num = bigIntAsInt(toss.pop());
+        if (num == 8) {
+          print(null);
+        } else {
+          print(String.fromCharCode(num));
+        }
       }
       break;
     case "&": // input integer
@@ -556,6 +571,16 @@ function doInstruction(ip, delta, toss, i) {
           break;
       }
       break;
+    case "‽":
+      let rand1 = 0;
+      let rand2 = 0;
+      while (rand1 === 0 && rand2 === 0) {
+        rand1 = Math.floor(Math.random()*2*codeArray.length+1)-codeArray.length;
+        rand2 = Math.floor(Math.random()*2*codeArray[0].length+1)-codeArray[0].length;
+      }
+      delta.x = BigInt(rand1);
+      delta.y = BigInt(rand2);
+      break;
     case "\`": // Greater than
       if (toss.length > 1) {
         let b = toss.pop();
@@ -606,7 +631,7 @@ function doInstruction(ip, delta, toss, i) {
       break;
     case "@": // remove current pointer
       if (pointers.length === 1) {
-        stop();
+        stop(false);
         return "stopped";
       } else {
         pointers.splice(i, 1);
@@ -797,6 +822,7 @@ var instructionColorTable = {
   ">": c,
   "v": c,
   "?": c,
+  "‽": c,
   "_": c,
   "|": c,
   "#": c,
@@ -831,6 +857,15 @@ var instructionColorTable = {
   "t": "magenta",
 };
 
+var wordwrap = false;
+function toggleWrap() {
+  if (!wordwrap) {
+    document.getElementById("befungeOutput").classList.add("wordwrap");
+  } else {
+    document.getElementById("befungeOutput").classList.remove("wordwrap");
+  }
+  wordwrap=!wordwrap;
+}
 
 /**********************
 *  Code for examples  *
@@ -921,6 +956,12 @@ $>6aa*g 1-v
 ^       _4aa*g3aa*g/.q`
 };
 
+// better minification - copy in
+/*
+var à="black",á="blue",â="limegreen",ã="purple",ä="orange",å="red",æ="cyan", N={0:à,1:à,2:à,3:à,4:à,5:à,6:à,7:à,8:à,9:à,a:à,b:à,c:à,d:à,e:à,f:à,"+":á,"-":á,"*":á,"/":á,"%":á,"!":á,"`":á,"<":â,"^":â,">":â,v:â,"?":â,_:â,"|":â,"#":â,r:â,x:â,"[":â,"]":â,w:â,":":ä,"\\":ä,$:ä,n:ä,"{":ä,
+"}":ä,u:ä,".":ã,",":ã,"&":ã,"~":ã,'"':ã,"'":ã,s:ã,q:å,"@":å,g:æ,p:æ,t:"magenta"}
+*/
+
 // functions to be available after minification
 window['stop'] = stop;
 window['runBefunge'] = runBefunge;
@@ -929,3 +970,4 @@ window['pauseBefunge'] = pauseBefunge;
 window['stepOnce'] = stepOnce;
 window['toggleExamples'] = toggleExamples;
 window['putExample'] = putExample;
+window['toggleWrap']=toggleWrap;

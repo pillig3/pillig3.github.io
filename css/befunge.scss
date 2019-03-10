@@ -76,6 +76,10 @@ span {
     outline: 1px solid black;
     outline-offset: -1px;
   }
+  &.rightAligned {
+    float: right;
+    text-align: right;
+  }
   &#exampleToggler {
     color: #1042EC;
 
@@ -101,12 +105,14 @@ span {
   margin-bottom: 5px;
 }
 
-textarea { // input
+// Input
+textarea {
   @include codeFormatting();
   margin-left: auto;
   margin-right: auto;
 }
 
+// State, stack, and output
 .codeOutput {
   @include codeFormatting();
   margin-left: 0;
@@ -116,6 +122,15 @@ textarea { // input
   &:hover {
     cursor: default;
   }
+}
+
+// For wrapping output
+.wordwrap {
+   white-space: pre-wrap;      /* CSS3 */
+   white-space: -moz-pre-wrap; /* Firefox */
+   white-space: -pre-wrap;     /* Opera <7 */
+   white-space: -o-pre-wrap;   /* Opera 7 */
+   word-wrap: break-word;      /* IE */
 }
 
 #befungeOutput {

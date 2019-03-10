@@ -123,7 +123,7 @@
         <td><</td><td>Go West</td><td>Sets delta to be a unit vector pointing West. IP will begin traveling left at a speed of 1 instruction per step.</td>
       </tr>
       <tr>
-        <td>?</td><td>Go away</td><td>Randomly acts like one of ^, v, >, or <.</td>
+        <td>?</td><td>Go away!</td><td>Randomly acts like one of ^, v, >, or <.</td>
       </tr>
       <tr>
         <td>+, -, *, /, %</td><td>Add, subtract, multiply, divide, modulo</td><td>Pops the top two values off the TOSS, performs the operation in question, and pushes the result
@@ -132,7 +132,7 @@
         Modulo behaves as it does in JavaScript, C, etc. &ndash; it will be \(\leq\)0 iff the left hand side is negative. Anything mod 0 is 0 by convention.</td>
       </tr>
       <tr>
-        <td>. (period)</td><td>Output integer</td><td>Pops a value off the TOSS and writes it to output as an integer in base ten, followed by a space.</td>
+        <td>. (period)</td><td>Output integer</td><td>Pops a value off the TOSS and writes it to output as an integer in base ten, followed by a space. (if you don't want the space, print a backspace character after (character code 8) </td>
       </tr>
       <tr>
         <td>, (comma)</td><td>Output character</td><td>Pops a value off the TOSS and writes the corresponding unicode character to output.</td>
@@ -230,7 +230,10 @@
         <td>r</td><td>Reflect</td><td>Reflects the IP, multiplying its velocity vector by \(-1\).</td>
       </tr>
       <tr>
-        <td>x</td><td>Set velocity</td><td>Pops y then x from the TOSS, and sets delta to (x, y). If there are fewer than 2 values on the TOSS, does nothing.</td>
+        <td>x</td><td>Set velocity</td><td>Pops y then x from the TOSS, and sets delta to \((x,y)\). If there are fewer than 2 values on the TOSS, does nothing.</td>
+      </tr>
+      <tr>
+        <td>‽ (interrobang)</td><td>Go away‽‽</td><td>Randomly chooses a new velocity vector \((x,y)\) where \(x\) and \(y\) are not both 0.</td>
       </tr>
       <tr>
         <td>[</td><td>Turn left</td><td>Rotate delta left by 90 degrees.</td>
