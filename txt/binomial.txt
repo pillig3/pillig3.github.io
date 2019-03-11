@@ -1,0 +1,13 @@
+>            a         4         v
+ calculates n^ choose k^
+v                                < makes k>n-k
+>:1aa*p \ :0aa*p \ -: 1aa*g \`#v_ 1aa*g2av
+ n-k!                    vp*aa2<vp*aa1p*a<
+v:g*aa2     tv#     tv#  <      <
+>3aa*p1-:v    v:g*aa0<        >16aa*p@
+^ *g*aa3:_v   >4aa*p:1aa*g1+-v
+   @p*aa51<   ^ * g*aa4 : -1 _^
+<v -1  g*aa5 <
+$>6aa*g 1-v
+^      _v#<
+^       _4aa*g3aa*g/.q

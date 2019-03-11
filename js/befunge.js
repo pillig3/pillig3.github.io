@@ -46,10 +46,8 @@ function runBefunge() {
 
   var codeLines = code.split("\n");
   codeArray = codeLines.map(x => x.split(""));
-  width = codeArray.reduce((x, y) => Math.max(x, y.length), -Infinity);
-  height = codeLines.length;
-  width = BigInt(width);
-  height = BigInt(height);
+  width = BigInt(codeArray.reduce((x, y) => Math.max(x, y.length), -Infinity));
+  height = BigInt(codeLines.length);
   // List of Instruction Pointers (position) and their Deltas (velocity)
   pointers = [{ip: {x: BigInt(0), y: BigInt(0)}, delta: {x: BigInt(1), y: BigInt(0)}},];
   // List of stacks of stacks - that of pointer i is in stacks[i]
@@ -391,8 +389,6 @@ function updateStack() {
  *    DANGER AHEAD   *
  *   TURN BACK NOW   *
  *********************/
-
-
 
 
 
@@ -790,6 +786,11 @@ var d = "purple";
 var e = "orange";
 var f = "red";
 var g = "cyan";
+// better minification
+/*
+var à="black",á="blue",â="limegreen",ã="purple",ä="orange",å="red",æ="cyan", N={0:à,1:à,2:à,3:à,4:à,5:à,6:à,7:à,8:à,9:à,a:à,b:à,c:à,d:à,e:à,f:à,"+":á,"-":á,"*":á,"/":á,"%":á,"!":á,"`":á,"<":â,"^":â,">":â,v:â,"?":â,_:â,"|":â,"#":â,r:â,x:â,"[":â,"]":â,w:â,":":ä,"\\":ä,$:ä,n:ä,"{":ä,
+"}":ä,u:ä,".":ã,",":ã,"&":ã,"~":ã,'"':ã,"'":ã,s:ã,q:å,"@":å,g:æ,p:æ,t:"magenta"}
+*/
 var instructionColorTable = {
   // Constants
   "0": a,
@@ -867,100 +868,29 @@ function toggleWrap() {
   wordwrap=!wordwrap;
 }
 
-/**********************
-*  Code for examples  *
-*    on main page     *
-**********************/
-
-
 var examplesCurrentlyVisible = false;
 function toggleExamples() {
   if (!examplesCurrentlyVisible) {
-    document.getElementById("examples").innerHTML = `<table id="exampleTable">
-      <colgroup>
-        <col style="width:calc(100%/5)">
-        <col style="width:calc(100%/5)">
-        <col style="width:calc(100%/5)">
-        <col style="width:calc(100%/5)">
-        <col style="width:calc(100%/5)">
-      </colgroup>
-      <tr>
-        <td onclick="putExample(1)">Hello world!</td>
-        <td onclick="putExample(3)">Factorial</td>
-        <td onclick="putExample(4)">Factor</td>
-        <td onclick="putExample(2)">Hello world! 2.0</td>
-        <td onclick="putExample(5)">Binomial</td>
-      </tr>
-    </table>
-    <p></p>`;
+    var client = new XMLHttpRequest();
+    client.open('GET', './txt/exampleTable.txt');
+    client.onreadystatechange = function() {
+      document.getElementById("examples").innerHTML = client.responseText;
+    }
+    client.send();
   } else {
     document.getElementById("examples").innerHTML = "";
   }
   examplesCurrentlyVisible = !examplesCurrentlyVisible;
 }
-function putExample(n) {
-  document.getElementById("befungeCode").value = examples[n];
+
+function putExample(name) {
+  var client = new XMLHttpRequest();
+  client.open('GET', './txt/'+name+'.txt');
+  client.onreadystatechange = function() {
+    document.getElementById("befungeCode").value = client.responseText;
+  }
+  client.send();
 }
-
-var examples = {
-1:
-"\"!dlrow olleH\"v,_@\n              >:^"
-,2:
-`#vt#vt#vt#vt#vt#vr
- v  v  v  v  v  "
- v  v  v  v  v  e
- v  v  v  v  "  H
- v  v  v  v  l  "
- v  v  v  "  l
- v  v  v     "
- v  v  "  o
- v  v  o  "
- v  "  w
- v  l  "
- "  r
- !  "
- d
- "
->>>>>>>>>>>>>>>>>>>>>,,@`
-,3:
-`&:>00pv
-  *   1
-  g   -
-  0   :
-.@^0 :_00g`
-,4:
-`&:." =",,:v ; Factors an integer
-v  _v#\`0:<_0.@
- -10<    ^*-10\\
-
->00p>00g1-#v_>:#._@
-^/\\g00:<   2
-     >   1+v
-     ^_^#%<:
-          \\0
-          g0
-          ^<`
-,5:
-`>            a         4         v
- calculates n^ choose k^
-v                                < makes k>n-k
->:1aa*p \\ :0aa*p \\ -: 1aa*g \\\`#v_ 1aa*g2av
- n-k!                    vp*aa2<vp*aa1p*a<
-v:g*aa2     tv#     tv#  <      <
->3aa*p1-:v    v:g*aa0<        >16aa*p@
-^ *g*aa3:_v   >4aa*p:1aa*g1+-v
-   @p*aa51<   ^ * g*aa4 : -1 _^
-<v -1  g*aa5 <
-$>6aa*g 1-v
-^      _v#<
-^       _4aa*g3aa*g/.q`
-};
-
-// better minification - copy in
-/*
-var à="black",á="blue",â="limegreen",ã="purple",ä="orange",å="red",æ="cyan", N={0:à,1:à,2:à,3:à,4:à,5:à,6:à,7:à,8:à,9:à,a:à,b:à,c:à,d:à,e:à,f:à,"+":á,"-":á,"*":á,"/":á,"%":á,"!":á,"`":á,"<":â,"^":â,">":â,v:â,"?":â,_:â,"|":â,"#":â,r:â,x:â,"[":â,"]":â,w:â,":":ä,"\\":ä,$:ä,n:ä,"{":ä,
-"}":ä,u:ä,".":ã,",":ã,"&":ã,"~":ã,'"':ã,"'":ã,s:ã,q:å,"@":å,g:æ,p:æ,t:"magenta"}
-*/
 
 // functions to be available after minification
 window['stop'] = stop;
@@ -970,4 +900,4 @@ window['pauseBefunge'] = pauseBefunge;
 window['stepOnce'] = stepOnce;
 window['toggleExamples'] = toggleExamples;
 window['putExample'] = putExample;
-window['toggleWrap']=toggleWrap;
+window['toggleWrap'] = toggleWrap;
