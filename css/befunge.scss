@@ -55,6 +55,7 @@ button {
   padding: 8px 16px;
   text-align: center;
   border-radius: 20px;
+  border: 0;
 
   &#runButton {
     background-color: #66e2b3;
@@ -74,6 +75,11 @@ span {
   &.borderedChar {
     display: inline-block;
     outline: 1px solid black;
+    outline-offset: -1px;
+  }
+  &.borderedCharDarkMode {
+    display: inline-block;
+    outline: 1px solid white;
     outline-offset: -1px;
   }
   &.rightAligned {
@@ -140,6 +146,7 @@ textarea {
 input[type="number"] {
     width: 40px;
     outline: none;
+    border: none;
 
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {

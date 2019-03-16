@@ -92,6 +92,11 @@ function toggleDisplay() {
     document.getElementById("pauseOptions").hidden = false;
     document.getElementById("display").innerHTML = "<span class=\"befungeText\">State</span><div class=\"codeOutput\" id=\"befungeDisplay\"></div><div class=\"codeOutput\" id=\"befungeStack\"></div>";
     document.getElementById("displayButton").innerHTML = "Hide state";
+    if (darkMode) {
+      setColors(darkModeBkgColor, darkModeTxtColor);
+    } else {
+      setColors(lightModeBkgColor, lightModeTxtColor);
+    }
   }
 }
 
@@ -333,25 +338,37 @@ function updateState() {
   for (var y in codeArray) {
     for (var x in codeArray[y]) {
       if (ptrIndex[x + "," + y]) {
-        str += "<span class=\"borderedChar\" ";
+        str += darkMode ? "<span class=\"borderedCharDarkMode\" " : "<span class=\"borderedChar\" ";
       } else {
         str += "<span ";
       }
       var curItem = codeArray[y][x];
       if (typeof curItem === "string") {
-        if (typeof instructionColorTable[curItem] === "undefined") {
+        let curColor = instructionColorTable[curItem];
+        if (typeof curColor === "undefined") {
           if (curItem === " ") {
-            str += ">&nbsp;";
+            str += "title=\"32\">&nbsp;";
           } else {
-            str += "style=\"color: lightgray\">" + curItem;
+            str += "style=\"color: " + (darkMode ? "darkgray" : "lightgray");
+            str += "\" title=\"" + curItem.charCodeAt(0) + "\">" + curItem;
           }
         } else {
-          str += "style=\"color: " + instructionColorTable[curItem] + "\">" + curItem;
+          if (darkMode) {
+            if (curColor == "black") {
+              curColor = "lightgray";
+            } else if (curColor == "purple") {
+              curColor = "#cc00ff";
+            }
+            str += "style=\"color: " + curColor + "\" title=\"" + curItem.charCodeAt(0) + "\">" + curItem;
+          } else {
+            str += "style=\"color: " + curColor + "\" title=\"" + curItem.charCodeAt(0) + "\">" + curItem;
+          }
         }
       } else if (typeof curItem === "undefined") {
-        str += ">&nbsp;";
+        str += "title=\"32\">&nbsp;";
       } else { // bigint out of ascii range
-        str += "style=\"color: lightgray\">Ø";
+        str += "style=\"color: " + (darkMode ? "darkgray" : "lightgray");
+        str += "\" title=\"" + curItem.toString() + "\">Ø";
       }
       str += "</span>";
     }
@@ -858,15 +875,60 @@ var instructionColorTable = {
   "t": "magenta",
 };
 
+/*********************
+ *
+ * Dark mode functions
+ *
+ *********************/
+
+const darkModeBkgColor = "#343434";
+const darkModeTxtColor = "lightgray";
+const lightModeBkgColor = "white";
+const lightModeTxtColor = "black";
+
+var darkMode = false;
+function toggleDarkMode(){
+  darkMode = !darkMode;
+  if (!darkMode) {
+    setColors(lightModeBkgColor, lightModeTxtColor);
+  } else {
+    setColors(darkModeBkgColor, darkModeTxtColor);
+  }
+}
+
+function setColors(bkgColor, txtColor) {
+  document.body.style.backgroundColor = darkMode ? "darkgray" : "#fff0ff";
+  var ids = ["befungeOutput", "befungeCode"];
+  if (showDisplay) {
+    ids = ids.concat("befungeDisplay", "befungeStack", "pauseInterval");
+  }
+  for (id of ids) {
+    document.getElementById(id).style.backgroundColor = bkgColor;
+    document.getElementById(id).style.color = txtColor;
+  }
+}
+
+/*********************
+ *
+ * Output wrapping functions
+ *
+ *********************/
+
 var wordwrap = false;
 function toggleWrap() {
-  if (!wordwrap) {
+  wordwrap=!wordwrap;
+  if (wordwrap) {
     document.getElementById("befungeOutput").classList.add("wordwrap");
   } else {
     document.getElementById("befungeOutput").classList.remove("wordwrap");
   }
-  wordwrap=!wordwrap;
 }
+
+/*********************
+ *
+ * Example table functions
+ *
+ *********************/
 
 var examplesCurrentlyVisible = false;
 function toggleExamples() {
@@ -901,3 +963,4 @@ window['stepOnce'] = stepOnce;
 window['toggleExamples'] = toggleExamples;
 window['putExample'] = putExample;
 window['toggleWrap'] = toggleWrap;
+window['toggleDarkMode'] = toggleDarkMode;

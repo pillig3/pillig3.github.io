@@ -155,6 +155,7 @@ button {
   padding: 8px 16px;
   text-align: center;
   border-radius: 20px;
+  border: 0;
 }
 button#runButton {
   background-color: #66e2b3;
@@ -172,6 +173,11 @@ button#stepButton {
 span.borderedChar {
   display: inline-block;
   outline: 1px solid black;
+  outline-offset: -1px;
+}
+span.borderedCharDarkMode {
+  display: inline-block;
+  outline: 1px solid white;
   outline-offset: -1px;
 }
 span.rightAligned {
@@ -245,6 +251,7 @@ textarea {
 input[type=number] {
   width: 40px;
   outline: none;
+  border: none;
 }
 input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;

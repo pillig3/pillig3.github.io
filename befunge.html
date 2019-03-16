@@ -37,26 +37,26 @@
       </colgroup>
       <tr>
         <td>
-          <button id="runButton" onclick="runBefunge()">Run</button>
+          <button class="controlButton" id="runButton" onclick="runBefunge()">Run</button>
         </td>
         <td>
-          <button id="displayButton" onclick="toggleDisplay()">Hide state</button>
+          <button class="controlButton" id="displayButton" onclick="toggleDisplay()">Hide state</button>
         </td>
         <td>
-          <button id="stepButton" onclick="stepOnce()">Step</button>
+          <button class="controlButton" id="stepButton" onclick="stepOnce()">Step</button>
         </td>
         <td>
-          <button id="pauseButton" onclick="pauseBefunge()">Pause</button>
+          <button class="controlButton" id="pauseButton" onclick="pauseBefunge()">Pause</button>
         </td>
         <td>
           <span id="pauseOptions">
-            Wait: <input id="pauseInterval" type="number" id="pauseInterval" value="20" />ms
+            Wait: <input id="pauseInterval" type="number" id="pauseInterval" value="20" /> ms
           </span>
         </td>
       </tr>
     </table>
 
-    Input
+    <span>Input</span><span class="rightAligned"> Darkmode <input type="checkbox" onclick="toggleDarkMode()" /></span>
     <div id="befungeCodeWrapper">
       <textarea id="befungeCode" placeholder="Write some code here, or choose an example above!" rows="10" autofocus=true autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
     </div>
@@ -74,7 +74,6 @@
     </div>
 
     <br /><br /><br /><br /><br /><br />
-
 
   </div>
   <script type="text/javascript" src="/js/nav.js"></script>
