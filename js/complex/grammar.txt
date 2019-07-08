@@ -1,0 +1,35 @@
+
+complexFunction -> expr
+
+expr -> expr infixFunction expr
+      | namedFunction '(' [expr]* ')'
+      | prefixFunction expr
+      | '(' expr ')'
+      | special
+      | unit
+
+infixFunction -> + | - | * | / | ^
+
+prefixFunction -> -
+
+namedFunction -> 'sin'
+                | 'cos'
+                | 'ln'
+                | 'log'
+                | 'exp'
+
+special -> 'sum_{' variable '=' number '}^{' number '}' expr
+
+unit -> number
+      | variable
+      | number 'i'
+      | 'i'
+      | specialNumber
+
+variable -> [A-z]+ [0-9 | A-z]*  && not number (e.g. not pi) or 'i'
+
+number -> [0-9]+
+        | [0-9]* '.' [0-9]+'
+
+specialNumber -> 'e'
+               | 'pi'
