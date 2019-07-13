@@ -58,6 +58,13 @@ ul {
       margin: 16px 0;
     }
   }
+
+  &.mathList {
+    li {
+      padding-bottom: 0.75em;
+      list-style-type: circle;
+    }
+  }
 }
 
 img#portrait {

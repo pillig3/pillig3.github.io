@@ -59,16 +59,16 @@ function test() {
   // Parse
   let p = parse(tokenize('x^2'));
   assertEqual(p.f, raise);
-  assertEqual(p.children[0].children[0], 'x');
-  assertEqual(p.children[1].children[0], real(2));
+  assertEqual(p.children[0], 'x');
+  assertEqual(p.children[1], real(2));
   p = parse(tokenize('2*x^2'));
   assertEqual(p.f, mult);
-  assertEqual(p.children[0].children[0], real(2));
+  assertEqual(p.children[0], real(2));
   assertEqual(p.children[1].f, raise);
-  assertEqual(p.children[1].children[0].children[0], 'x');
+  assertEqual(p.children[1].children[0], 'x');
   p = parse(tokenize('x^(2i)'));
   assertEqual(p.f, raise);
-  assertEqual(p.children[0].children[0], 'x');
+  assertEqual(p.children[0], 'x');
   assertEqual(p.children[1].f, mult);
   // let's test some implicit mult
   p = parse(tokenize('2+2x^2'));
@@ -80,6 +80,9 @@ function test() {
   assertEqual(p.children[0].f, mult);
   assertEqual(p.children[0].children[1].f, add);
   assertEqual(p.children[0].children[1].children[0].f, raise);
+  // don't confuse implicit mult with function application
+  p = parse(tokenize('sin x'));
+  assertEqual(p.f, sine);
 
   // All together
   fn = strToFunc('x^2');

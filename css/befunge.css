@@ -52,6 +52,10 @@ ul.sidebarlist {
 ul.sidebarlist li a p {
   margin: 16px 0;
 }
+ul.mathList li {
+  padding-top: 0.75em;
+  list-style-type: circle;
+}
 
 img#portrait {
   padding-left: 20px;

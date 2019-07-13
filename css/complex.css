@@ -4,7 +4,7 @@
 }
 
 canvas {
-  background: #eee;
+  background: black;
   position: absolute;
   top: 0;
   left: 0;
@@ -26,7 +26,8 @@ textarea#input {
   outline: none;
   width: inherit;
   white-space: nowrap;
-  overflow: visible;
+  overflow-x: visible;
+  overflow-y: hidden;
   font-family: monospace, monospace;
   font-kerning: none;
   margin-top: 0.5em;
@@ -35,6 +36,9 @@ textarea#input {
   padding-bottom: 0.7em;
   resize: none;
   margin-left: 5px;
+}
+textarea#input::-webkit-scrollbar {
+  display: none;
 }
 
 /*# sourceMappingURL=complex.css.map */
