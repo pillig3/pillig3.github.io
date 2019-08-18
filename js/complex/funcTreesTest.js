@@ -122,3 +122,29 @@ function assertEqual(a, b){
     "\nActual: " + a);
   }
 }
+
+
+
+// var f1 = functify(parse(tokenize('12(sin(x+2))')));
+// var f2 = function(x) {
+//   return mult(sine(add(x, 2)));
+// }
+//
+// var begin = performance.now();
+// for (var i = 0; i < 20; i+=0.4) {
+//   for (var j = 0; j < 20; j++) {
+//     f1(new ComNum(i-10,j-10));
+//   }
+// }
+// begin = performance.now()-begin;
+// cl('tree structure took '+begin);
+//
+//
+// begin = performance.now();
+// for (var i = 0; i < 20; i+=0.4) {
+//   for (var j = 0; j < 20; j++) {
+//     f2(new ComNum(i-10,j-10));
+//   }
+// }
+// begin = performance.now()-begin;
+// cl('Non-nested way took '+begin);

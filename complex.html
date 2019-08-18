@@ -13,11 +13,22 @@
 
   <canvas id="myCanvas" width="1440" height="900"></canvas>
 
+<div id = allInputDiv>
   <div id="inputDiv">
-    <textarea id="input" rows="1" cols="20" autofocus=true autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <textarea id="input" contenteditable autofocus=true autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <span class="hoverText">function</span>
   </div>
+  <div id="widthDiv">
+    <textarea id="widthInput" contenteditable autofocus=true autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <span class="hoverText">width</span>
+  </div>
+  <div id="heightDiv">
+    <textarea id="heightInput" contenteditable autofocus=true autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <span class="hoverText">height</span>
+  </div>
+</div>
 
 </body>
-<script type="module" src="/js/complex/complexNumbersTest.js"></script>
-<script type="module" src="/js/complex/funcTreesTest.js"></script>
+<!-- <script type="module" src="/js/complex/complexNumbersTest.js"></script> -->
+<!-- <script type="module" src="/js/complex/funcTreesTest.js"></script> -->
 <script type="module" src="/js/complex/complex.js"></script>

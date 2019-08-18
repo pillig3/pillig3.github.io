@@ -3,31 +3,27 @@
 <html lang="en">
 <head>
   <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png"><link rel="manifest" href="/favicon/site.webmanifest"><link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5"><link rel="shortcut icon" href="/favicon/favicon.ico"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/favicon/browserconfig.xml"><meta name="theme-color" content="#ffffff">
-  <link href="style.css" rel="stylesheet" type="text/css">
   <meta charset="utf-8">
-  <title>peterillig.xyz</title>
+  <title>Complex Plotter</title>
   <meta name="description" content="web">
   <meta name="author" content="Peter Illig">
+  <link rel="stylesheet" href="css/emojipasta.css" type="text/css">
+  <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
 </head>
-
 <body>
-  <h1 class="title"> Hello! </h1>
-
-  <div id="navdiv"></div>
+  <h1 class="title"> e m o j i p a s t a 🍝 g e n e r a t o r </h1>
 
   <div id="content">
-    <p>
-      <img id="portrait" src="/photos/portrait.jpg" height=200px width=200px alt="Just a picture of me." />
-      <p style="padding-top: 10px;">
-        Hello, and welcome!
-      </p>
-      <p>
-        I'm a software developer and math hobbyist based in the beautiful isthmused city of Madison, WI.
-      </p>
-      <p>
-        Outside of math and programming, I also enjoy reading, video/tabletop games, hiking, origami, and cross-country skiing.
-      </p>
-    </p>
+    Press enter to generate, shift+enter to actually make a new line.
+    <br/>
+    <br/>
+    Input
+    <textarea id="input" style="width: 100%" rows="10" autofocus=true autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    Output &nbsp;&nbsp;&nbsp;&nbsp;
+    <button type="button" id="copyButt">Copy to clipboard</button>
+    <div id="output"><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></div>
+
+
   </div>
-  <script type="text/javascript" src="/js/nav.js"></script>
 </body>
+<script type="text/javascript" src="/js/emojipasta.js"></script>

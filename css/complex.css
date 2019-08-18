@@ -17,28 +17,83 @@ canvas {
 body {
   overflow: hidden;
   overscroll-behavior-x: none;
+  font-family: sans-serif;
 }
 
-textarea#input {
-  font-size: 12pt;
+div#inputDiv, div#widthDiv, div#heightDiv {
+  background: white;
+  background-color: white;
   border-style: solid;
   border-width: thin;
-  outline: none;
-  width: inherit;
-  white-space: nowrap;
+  border-color: black;
+  border-radius: 5px;
+  height: 1em;
   overflow-x: visible;
-  overflow-y: hidden;
+  overflow-y: visible;
+  margin: 0.5em;
+  padding-top: 0.5em;
+  padding-bottom: 0.7em;
+  position: sticky;
+  float: left;
+}
+div#inputDiv textarea, div#widthDiv textarea, div#heightDiv textarea {
+  font-size: 12pt;
+  border: none;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  white-space: nowrap;
+  overflow: auto;
+  resize: none;
   font-family: monospace, monospace;
   font-kerning: none;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  padding: 0.5em;
-  padding-bottom: 0.7em;
-  resize: none;
-  margin-left: 5px;
 }
-textarea#input::-webkit-scrollbar {
+div#inputDiv textarea::-webkit-scrollbar, div#widthDiv textarea::-webkit-scrollbar, div#heightDiv textarea::-webkit-scrollbar {
   display: none;
+}
+div#inputDiv:hover span.hoverText, div#widthDiv:hover span.hoverText, div#heightDiv:hover span.hoverText {
+  opacity: 0.9;
+}
+div#inputDiv:hover span.hoverText:hover, div#widthDiv:hover span.hoverText:hover, div#heightDiv:hover span.hoverText:hover {
+  opacity: 0;
+}
+div#inputDiv {
+  width: 240pt;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+div#inputDiv .hoverText {
+  margin-left: -0.5em;
+  margin-right: -0.5em;
+}
+div#widthDiv, div#heightDiv {
+  width: 60pt;
+  margin-left: 0;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+}
+div#widthDiv .hoverText, div#heightDiv .hoverText {
+  margin-left: -0.25em;
+  margin-right: -0.25em;
+}
+div::-webkit-scrollbar {
+  display: none;
+}
+div span.hoverText {
+  border-radius: 5px;
+  opacity: 0;
+  width: 100%;
+  top: 100%;
+  color: black;
+  text-align: center;
+  padding: 0 0;
+  background-color: lightgrey;
+  position: absolute;
+  z-index: 100;
+  -moz-transition: all 0.4s ease-in-out 0s;
+  -webkit-transition: all 0.4s ease-in-out 0s;
+  -ms-transition: all 0.4s ease-in-out 0s;
+  transition: all 0.4s ease-in-out 0s;
 }
 
 /*# sourceMappingURL=complex.css.map */

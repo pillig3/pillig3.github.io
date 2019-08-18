@@ -9,10 +9,36 @@ import {strToFunc} from '/js/complex/funcTrees.js';
 // (1/((x/1)^5)-i)(1/((x/4)^5)+i)
 // (1/((x/1)^5)-i)(1/((x/4)^5)+i)(1/(x/2)^5-1)(1/(x/3)^5+1)
 
-document.addEventListener('keydown', onKeyPressed)
 var input = document.getElementById('input');
+var widthInput = document.getElementById('widthInput');
+var heightInput = document.getElementById('heightInput');
+var allInputDiv=document.getElementById('allInputDiv');
 var canvas = document.getElementById('myCanvas');
+var ctx = canvas.getContext('2d');
+var imageData = new ImageData(canvas.width, canvas.height);
+var data = imageData.data;
+var lastTimeoutID;
+var view = {
+  center: [0, 0],
+  width: 10,
+  height: (window.innerHeight / window.innerWidth)*10,
+  setHeight: function(width){
+    this.height = (window.innerHeight / window.innerWidth)*width;
+  },
+  manuallySet: 0,
+  hasChanged: 0,
+  lastFunc: ((x) => 0)
+};
+
+for (var div of allInputDiv.children) {
+  console.log(div);
+  div.addEventListener('click', onInputDivClick);
+}
+
+allInputDiv.addEventListener('keydown', onInputKey);
+canvas.addEventListener('keydown', onCanvasKey);
 canvas.onwheel = onWheel;
+
 window.onresize = (() => {view.hasChanged = 1;});
 window.onload = function() {
   canvas.height = window.innerHeight;
@@ -26,59 +52,111 @@ window.onload = function() {
   view.hasChanged = 1;
 }
 
-var ctx = canvas.getContext('2d');
-var imageData = new ImageData(canvas.width, canvas.height);
-var data = imageData.data;
-// ctx.putImageData(imageData, 0, 0);
-var lastTimeoutID;
-var view = {
-  center: [0, 0],
-  width: 10,
-  height: (window.innerHeight / window.innerWidth)*10,
-  setHeight: function(width){
-    this.height = (window.innerHeight / window.innerWidth)*width;
-  },
-  manuallySet: 0,
-  hasChanged: 0
-};
-
 
 
 //========================//
-//   onAction functions   //
+//          ZOOM          //
 //========================//
 
 const MAX_SPEED = 600; //approx
 
-function onWheel(e) {
+function onWheel(e) {return;
+  console.log(e);
   e.preventDefault(); // don't navigate back/forward
-
-  let speed = Math.sqrt(e.deltaX**2 + e.deltaY**2);
+  // let speed = Math.sqrt(e.deltaX**2 + e.deltaY**2);
   // if(speed > maxSpeed) {
   //   console.log(speed);
   //   maxSpeed = speed;
   // }
+  // turn the speed into range [0,2] with 0 speed -> scaleFac=1
+  // let scaleFac = 1.5 * (Math.atan(e.deltaY)+Math.PI)/Math.PI - 0.5;
+  let deltaPx,scale;
+  if (e.deltaY > 0) {
+    // Zoom in
+    scale = e.deltaY / (MAX_SPEED*100);
+    console.log(scale);
+    let sampleWidth = Math.floor(imageData.width - (imageData.width / 2)*(scale));
+    let sampleHeight = Math.floor(imageData.height - (imageData.height / 2)*(scale));
+    let centerX = e.clientX;
+    let centerY = e.clientY;
+    imageData = ctx.getImageData(Math.floor(centerX - sampleWidth/2),
+                                 Math.floor(centerY - sampleHeight/2),
+                                 sampleWidth, sampleHeight);
+    //
+    ctx.putImageData(imageData, 0,0);
+    return;
+  } else {
+    // Zoom out
+    deltaPx = 2;
+  }
+
+  let oldPixelWidth = imageData.width;
+  let oldPixelHeight = imageData.height; // ?
+
+  let pixelWidth = oldPixelWidth + deltaPx; //Math.round(imageData.width * scaleFac/2 + .5);
+  let pixelHeight = oldPixelHeight + deltaPx; //Math.round(imageData.height * scaleFac/2 + .5);
+  let pixelCenter = [e.clientX, e.clientY];
+  let topLeft = [Math.round(pixelCenter[0] - pixelWidth/2),
+                 Math.round(pixelCenter[1] - pixelHeight/2)];
+  imageData = ctx.getImageData(topLeft[0], topLeft[1], pixelWidth, pixelHeight);
+  ctx.putImageData(imageData, 0, 0, 0, 0, canvas.width, canvas.height);
+
 
 }
 
-function onKeyPressed(e) {
+
+
+//========================//
+//       keypresses       //
+//========================//
+
+// when focus is on the canvas
+function onCanvasKey(e) {
   if (e.isComposing || e.keyCode === 229) {
     return;
   }
-
   switch (e.code) {
     case 'Tab':
       e.preventDefault();
       input.focus();
       break;
+    default:
+
+  }
+}
+
+// Since the <textarea>s are padded, sets focus from the containing
+// div to the <textarea> on click
+function onInputDivClick(e) {
+  if (e.path[0].children.length>0 && e.path[0].children[0]) {
+    e.path[0].children[0].focus();
+  }
+}
+
+// When button pressed in one of the input boxes
+function onInputKey(e) {
+  if (e.isComposing || e.keyCode === 229) {
+    return;
+  }
+
+  switch (e.code) {
     case 'Enter':
       e.preventDefault();
       onEnterPressed();
       break;
-    default:
+    case 'Tab':
+      // Tab btwn last & first box
+      if (e.path[0].id === 'input') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          // ??? TODO
+        } else {
+          widthInput.focus();
+        }
+      }
+      // TODO once known what the last box is
       break;
   }
-
 }
 
 // Draw what they entered
@@ -86,6 +164,8 @@ function onEnterPressed() {
   let f;
   let str = input.value;
   if (typeof str !== 'string' || str == ''){ return; }
+  setViewHW('width', widthInput.value);
+  setViewHW('height', heightInput.value);
   try {
     f = strToFunc(str);
   } catch (e) {
@@ -95,37 +175,19 @@ function onEnterPressed() {
   draw(f);
 }
 
-// Hash is something like
-// #function&centerX,centerY&width,height
-function drawFromHash(hash) {
-  let p = hash.indexOf('&');
-  if (p === -1) {
-    input.value = hash.slice(1);
-  } else {
-    input.value = hash.slice(1, p);
-  }
-  let [f, center, wh] = hash.slice(1).split('&');
-  if (center !== undefined && center !== '') {
-    view.center = center.split(',').map((x) => parseFloat(x));
-  }
-  if (wh !== undefined && wh !== '') {
-    let [width, height] = wh.split(',').map((x) => parseFloat(x));
-    view.width = width;
-    if (height !== undefined) {
-      view.height = height;
-      view.manuallySet = 1;
-    } else {
-      view.setHeight(width);
-    }
-    view.hasChanged = 1;
-  }
-  try {
-    f = strToFunc(f);
-  } catch (e) {
-    logError(e);
+// Set height or width
+function setViewHW(prop, val) {
+  if (val === '') {
     return;
   }
-  draw(f);
+  let newVal = parseFloat(val);
+  if (typeof newVal !== 'number' || newVal <= 0 || [NaN, Infinity].includes(newVal)) {
+    logError(prop[0].toUpperCase() + prop.slice(1) + ' should be a positive number')
+  } else if (newVal !== view[prop]) {
+    view[prop] = newVal;
+    view.hasChanged = true;
+    view.manuallySet = true;
+  }
 }
 
 // TODO: actually show errors
@@ -140,6 +202,7 @@ function logError(e) {
 //=======================//
 
 function draw(f) {
+  view.lastFunc = f;
   if (view.hasChanged) {
     if (!view.manuallySet) {
       view.setHeight(view.width);
@@ -288,4 +351,37 @@ function realMod(x, y) {
   } else {
   return x%y;
   }
+}
+
+// For when the url has a hash -
+// #function&centerX,centerY&width,height
+function drawFromHash(hash) {
+  let p = hash.indexOf('&');
+  if (p === -1) {
+    input.value = hash.slice(1);
+  } else {
+    input.value = hash.slice(1, p);
+  }
+  let [f, center, wh] = hash.slice(1).split('&');
+  if (center !== undefined && center !== '') {
+    view.center = center.split(',').map((x) => parseFloat(x));
+  }
+  if (wh !== undefined && wh !== '') {
+    let [width, height] = wh.split(',').map((x) => parseFloat(x));
+    view.width = width;
+    if (height !== undefined) {
+      view.height = height;
+      view.manuallySet = 1;
+    } else {
+      view.setHeight(width);
+    }
+    view.hasChanged = 1;
+  }
+  try {
+    f = strToFunc(f);
+  } catch (e) {
+    logError(e);
+    return;
+  }
+  draw(f);
 }
