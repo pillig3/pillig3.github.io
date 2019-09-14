@@ -1,10 +1,10 @@
-import {ComNum, real, imag, add, subtract, mult, divide, exp, log, raise, sine, cosine} from '/js/complex/complexNumbers.js';
+import {ComNum, real, imag, add, subtract, mult, divide, exp, log, raise, sine, cosine, tangent} from '/js/complex/complexNumbers.js';
 export {Node, functify, strToFunc};
 // For testing
 export {StrBuffer, Token, tokenize, parse, getNextCloseParen, getNamedFunc, findLastFunc};
 
-const namedFuncStrings = ['exp', 'ln', 'log', 'cos', 'sin'];
-const namedFuncs       = [exp, log, log, cosine, sine];
+const namedFuncStrings = ['exp', 'ln', 'log', 'cos', 'sin', 'tan'];
+const namedFuncs       = [exp, log, log, cosine, sine, tangent];
 const arithFuncs = '+-*/^'.split('');
 const parens = '()'.split('')
 const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -165,7 +165,7 @@ function parse(tokens) {
 }
 function parse2(tokens) {
   if (tokens.length === 0) {
-    throw 'Missing number or variable';
+    throw 'Syntax error (I don\'t know what to do with this input)';
   }
   let children=[];
   let [func, index] = findLastFunc(tokens);

@@ -23,6 +23,8 @@
 ehthumbs.db
 Thumbs.db
 
+# tests etc #
+#############
 js/test.js
 test.html
 test/*

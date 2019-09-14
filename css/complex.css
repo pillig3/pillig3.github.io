@@ -10,19 +10,23 @@ canvas {
   left: 0;
   width: 100vw;
   height: 100vh;
-  overflow: auto;
   z-index: -1;
 }
 
 body {
   overflow: hidden;
-  overscroll-behavior-x: none;
   font-family: sans-serif;
+  background: black;
 }
 
-div#inputDiv, div#widthDiv, div#heightDiv {
+/*******************/
+/*   Input boxes   */
+/*******************/
+div#allInputDiv div::-webkit-scrollbar {
+  display: none;
+}
+div#allInputDiv div.input {
   background: white;
-  background-color: white;
   border-style: solid;
   border-width: thin;
   border-color: black;
@@ -33,10 +37,12 @@ div#inputDiv, div#widthDiv, div#heightDiv {
   margin: 0.5em;
   padding-top: 0.5em;
   padding-bottom: 0.7em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
   position: sticky;
   float: left;
 }
-div#inputDiv textarea, div#widthDiv textarea, div#heightDiv textarea {
+div#allInputDiv div.input textarea {
   font-size: 12pt;
   border: none;
   outline: none;
@@ -48,52 +54,131 @@ div#inputDiv textarea, div#widthDiv textarea, div#heightDiv textarea {
   font-family: monospace, monospace;
   font-kerning: none;
 }
-div#inputDiv textarea::-webkit-scrollbar, div#widthDiv textarea::-webkit-scrollbar, div#heightDiv textarea::-webkit-scrollbar {
+div#allInputDiv div.input textarea::-webkit-scrollbar {
   display: none;
 }
-div#inputDiv:hover span.hoverText, div#widthDiv:hover span.hoverText, div#heightDiv:hover span.hoverText {
-  opacity: 0.9;
-}
-div#inputDiv:hover span.hoverText:hover, div#widthDiv:hover span.hoverText:hover, div#heightDiv:hover span.hoverText:hover {
-  opacity: 0;
-}
-div#inputDiv {
+div#allInputDiv div.input#inputDiv {
   width: 240pt;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
 }
-div#inputDiv .hoverText {
-  margin-left: -0.5em;
-  margin-right: -0.5em;
-}
-div#widthDiv, div#heightDiv {
+div#allInputDiv div.input#widthDiv, div#allInputDiv div.input#heightDiv {
   width: 60pt;
-  margin-left: 0;
-  padding-left: 0.25em;
-  padding-right: 0.25em;
 }
-div#widthDiv .hoverText, div#heightDiv .hoverText {
-  margin-left: -0.25em;
-  margin-right: -0.25em;
-}
-div::-webkit-scrollbar {
-  display: none;
-}
-div span.hoverText {
+div#allInputDiv div.input span.hoverText {
   border-radius: 5px;
   opacity: 0;
   width: 100%;
+  left: 0;
+  height: 1em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
   top: 100%;
   color: black;
   text-align: center;
-  padding: 0 0;
   background-color: lightgrey;
   position: absolute;
-  z-index: 100;
-  -moz-transition: all 0.4s ease-in-out 0s;
-  -webkit-transition: all 0.4s ease-in-out 0s;
-  -ms-transition: all 0.4s ease-in-out 0s;
-  transition: all 0.4s ease-in-out 0s;
+  -moz-transition: all 0.75s ease-in-out 0s;
+  -webkit-transition: all 0.75s ease-in-out 0s;
+  -ms-transition: all 0.75s ease-in-out 0s;
+  transition: all 0.75s ease-in-out 0s;
+}
+div#allInputDiv div.input:hover span.hoverText {
+  opacity: 0.9;
+}
+div#allInputDiv div.input:hover span.hoverText:hover {
+  opacity: 0;
+}
+div#allInputDiv div#plusMinusDiv {
+  float: right;
+}
+div#allInputDiv div#plusMinusDiv div {
+  float: left;
+  padding: 0.4em;
+  width: 1.4em;
+  height: 1.4em;
+  margin-left: 0;
+  margin-right: 1em;
+}
+div#allInputDiv div#plusMinusDiv div div.horiz {
+  background-color: black;
+  padding: 0;
+  float: left;
+  border-radius: 0;
+  margin: 0;
+  position: absolute;
+  height: 0.25em;
+  width: 1.8em;
+  margin-top: 0.575em;
+  margin-left: -0.2em;
+}
+div#allInputDiv div#plusMinusDiv div div.vert {
+  background-color: black;
+  padding: 0;
+  float: left;
+  border-radius: 0;
+  margin: 0;
+  position: absolute;
+  width: 0.25em;
+  height: 1.8em;
+  margin-left: 0.575em;
+  margin-top: -0.2em;
+}
+div#allInputDiv div#plusMinusDiv div#originDiv {
+  background-image: url("/photos/mathcalO.png");
+  background-size: 1.8em;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+div#allInputDiv div#plusMinusDiv div#chevronDiv {
+  background-image: url("/photos/chevronne.png");
+  background-size: 1.8em;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+div#allInputDiv div#plusMinusDiv div#chevronDiv.upsidedown {
+  -webkit-transform: scaleY(-1);
+  transform: scaleY(-1);
+}
+
+div#errorDiv {
+  background: white;
+  border-style: solid;
+  border-width: thin;
+  border-color: black;
+  border-radius: 5px;
+  height: 1em;
+  overflow-x: visible;
+  overflow-y: visible;
+  margin: 0.5em;
+  padding-top: 0.5em;
+  padding-bottom: 0.7em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  position: sticky;
+  float: left;
+  float: none;
+  padding: 0;
+  position: absolute;
+  background-color: yellow;
+  color: black;
+  bottom: 0;
+  width: 75%;
+  height: 1.5em;
+  margin-left: 12.5%;
+  text-align: center;
+  text-shadow: 1px 1px 2px lightgrey;
+  font-size-adjust: auto;
+  opacity: 0;
+  -moz-transition: all 2s ease-in-out 0s;
+  -webkit-transition: all 2s ease-in-out 0s;
+  -ms-transition: all 2s ease-in-out 0s;
+  transition: all 2s ease-in-out 0s;
+}
+div#errorDiv.visible {
+  opacity: 1;
+  -moz-transition: all 0s ease-in-out 0s;
+  -webkit-transition: all 0s ease-in-out 0s;
+  -ms-transition: all 0s ease-in-out 0s;
+  transition: all 0s ease-in-out 0s;
 }
 
 /*# sourceMappingURL=complex.css.map */

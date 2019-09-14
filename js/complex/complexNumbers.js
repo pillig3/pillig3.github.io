@@ -1,4 +1,4 @@
-export {ComNum, real, imag, add, subtract, mult, divide, exp, log, raise, sine, cosine};
+export {ComNum, real, imag, add, subtract, mult, divide, exp, log, raise, sine, cosine, tangent};
 
 const PI = Math.PI;
 
@@ -89,6 +89,11 @@ function sine(z) {
 function cosine(z) {
   return divide(add(exp(mult(I, z)), exp(mult(negate(I), z))), TWO);
 }
+
+function tangent(z) {
+  return divide(sine(z), cosine(z));
+}
+
 
 
 //===================//

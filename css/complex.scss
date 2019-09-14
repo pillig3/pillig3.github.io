@@ -1,4 +1,8 @@
-* { padding: 0; margin: 0; }
+* {
+  padding: 0;
+  margin: 0;
+}
+
 canvas {
   background: black;
   position: absolute;
@@ -6,30 +10,36 @@ canvas {
   left: 0;
   width: 100vw;
   height: 100vh;
-  overflow: auto;
   z-index: -1;
 }
 
 body{
   overflow:hidden;
-  overscroll-behavior-x: none;
   font-family: sans-serif;
+  background: black;
 }
+
+/*******************/
+/*   Input boxes   */
+/*******************/
+$input-margin: 0.5em;
+$border-radius: 5px;
+$inputDiv-height: 1em;
 
 @mixin inputDivFormat() {
   background: white;
-  background-color: white;
   border-style: solid;
   border-width: thin;
   border-color: black;
-  border-radius: 5px;
-  height: 1em;
+  border-radius: $border-radius;
+  height: $inputDiv-height;
   overflow-x: visible;
   overflow-y: visible;
-  margin: .5em;
-  padding-top: .5em;
+  margin: $input-margin;
+  padding-top: $input-margin;
   padding-bottom: .7em;
-
+  padding-left: $input-margin;
+  padding-right: $input-margin;
   position: sticky;
   float: left;
 }
@@ -47,65 +57,143 @@ body{
   font-kerning: none;
 }
 
-div {
-  &#inputDiv, &#widthDiv, &#heightDiv {
-    @include inputDivFormat();
-    & textarea {
-      @include inputFormat();
-      &::-webkit-scrollbar {
-        display: none;
+@mixin rectangleFormat() {
+  background-color: black;
+  padding: 0;
+  float: left;
+  border-radius: 0;
+  margin: 0;
+  position: absolute;
+}
+
+@mixin ease-in-out($time) {
+  -moz-transition: all $time ease-in-out 0s;
+  -webkit-transition: all $time ease-in-out 0s;
+  -ms-transition: all $time ease-in-out 0s;
+  transition: all $time ease-in-out 0s;
+}
+
+@mixin hoverTextFormat {
+  border-radius: 5px;
+  opacity: 0;
+  width: 100%;
+  left: 0;
+  height: $inputDiv-height;
+  padding-top: $input-margin;
+  padding-bottom: $input-margin;
+  top: 100%;
+  color: black;
+  text-align: center;
+  background-color: lightgrey;
+  position: absolute;
+  @include ease-in-out(0.75s);
+}
+
+// Input formatting
+div#allInputDiv {
+  div {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &.input {
+      @include inputDivFormat();
+      & textarea {
+        @include inputFormat();
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+      &#inputDiv {
+        width: 240pt;
+      }
+      &#widthDiv, &#heightDiv {
+        width: 60pt;
+      }
+
+      span.hoverText {
+        @include hoverTextFormat();
+      }
+      &:hover span.hoverText {
+        opacity: .9;
+        &:hover {
+          opacity: 0;
+        }
       }
     }
-    &:hover span.hoverText {
-      opacity: .9;
-      &:hover {
-        opacity: 0;
+
+    &#plusMinusDiv {
+      float: right;
+
+      div {
+        $inner-size: 1.4em;
+        $inner-padding: 0.4em;
+        float: left;
+        padding: $inner-padding;
+        width: $inner-size;
+        height: $inner-size;
+        margin-left: 0;
+        margin-right: 2*$input-margin;
+
+        $short-side: 0.25em;
+        //Horizontal line
+        div.horiz {
+          @include rectangleFormat();
+          height: $short-side;
+          width: $inner-size + $inner-padding;
+          margin-top: $inner-size / 2 - $short-side / 2;
+          margin-left: -$inner-padding / 2;
+        }
+        //Vertical line
+        div.vert {
+          @include rectangleFormat();
+          width: $short-side;
+          height: $inner-size + $inner-padding;
+          margin-left: $inner-size / 2 - $short-side / 2;
+          margin-top: -$inner-padding / 2;
+        }
+
+        &#originDiv {
+          background-image: url('/photos/mathcalO.png');
+          background-size: $inner-size+$inner-padding;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+
+        &#chevronDiv {
+          background-image: url('/photos/chevronne.png');
+          background-size: $inner-size+$inner-padding;
+          background-position: center;
+          background-repeat: no-repeat;
+          &.upsidedown {
+            -webkit-transform: scaleY(-1);
+            transform: scaleY(-1);
+          }
+        }
+        
       }
     }
   }
+}
 
-  &#inputDiv {
-    // 20 chars
-    width: 240pt;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    & .hoverText {
-      margin-left: -0.5em;
-      margin-right: -0.5em;
-    }
-  }
-  &#widthDiv, &#heightDiv {
-    // 5 chars
-    width: 60pt;
-    margin-left: 0;
-    padding-left: 0.25em;
-    padding-right: 0.25em;
-    & .hoverText {
-      margin-left: -0.25em;
-      margin-right: -0.25em;
-    }
-  }
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  & span.hoverText {
-    border-radius: 5px;
-    opacity: 0;
-    width: 100%;
-    top: 100%;
-    color: black;
-    text-align: center;
-    padding: 0 0;
-    background-color: lightgrey;
-
-    position: absolute;
-    z-index: 100;
-
-    -moz-transition: all 0.4s ease-in-out 0s;
-  	-webkit-transition: all 0.4s ease-in-out 0s;
-  	-ms-transition: all 0.4s ease-in-out 0s;
-  	transition: all 0.4s ease-in-out 0s;
+div#errorDiv {
+  @include inputDivFormat();
+  float: none;
+  padding: 0;
+  position: absolute;
+  background-color: yellow;
+  color: black;
+  bottom: 0;
+  width: 75%;
+  height: $inputDiv-height + $input-margin;
+  margin-left: 12.5%;
+  text-align: center;
+  text-shadow: 1px 1px 2px lightgrey;
+  font-size-adjust: auto;
+  opacity: 0;
+  @include ease-in-out(2s);
+  &.visible {
+    opacity: 1;
+    @include ease-in-out(0s);
   }
 }

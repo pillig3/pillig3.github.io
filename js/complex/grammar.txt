@@ -26,10 +26,10 @@ unit -> number
       | 'i'
       | specialNumber
 
-variable -> [A-z]+ [0-9 | A-z]*  && not number (e.g. not pi) or 'i'
+variable -> [A-z]+ [0-9 | A-z]*  but not (specialNumber or 'i')
 
 number -> [0-9]+
-        | [0-9]* '.' [0-9]+'
+        | [0-9]* '.' [0-9]+
 
 specialNumber -> 'e'
                | 'pi'

@@ -8,15 +8,24 @@ import {strToFunc} from '/js/complex/funcTrees.js';
 // i x^2/((x-1)(x-(-1/2+3^(1/2)i/2))(x-(-1/2-3^(1/2)i/2)))
 // (1/((x/1)^5)-i)(1/((x/4)^5)+i)
 // (1/((x/1)^5)-i)(1/((x/4)^5)+i)(1/(x/2)^5-1)(1/(x/3)^5+1)
+// sin(ln(exp(x^2)))sin(ln(exp(x^3-pi/2)))
 
-var input = document.getElementById('input');
-var widthInput = document.getElementById('widthInput');
-var heightInput = document.getElementById('heightInput');
-var allInputDiv=document.getElementById('allInputDiv');
-var canvas = document.getElementById('myCanvas');
+function dgebi(e) { return document.getElementById(e); }
+var input = dgebi('mainInput');
+var widthInput = dgebi('widthInput');
+var heightInput = dgebi('heightInput');
+var allInputDiv = dgebi('allInputDiv');
+var inputBoxes = ['mainInput', 'widthInput', 'heightInput'];
+var otherDivs = ['plusDiv', 'minusDiv'];
+var canvas = dgebi('myCanvas');
 var ctx = canvas.getContext('2d');
 var imageData = new ImageData(canvas.width, canvas.height);
 var data = imageData.data;
+var plusButton = dgebi('plusDiv');
+var minusButton = dgebi('minusDiv');
+var originButton = dgebi('originDiv');
+var errorDiv = dgebi('errorDiv');
+var chevronDiv = dgebi('chevronDiv');
 var lastTimeoutID;
 var view = {
   center: [0, 0],
@@ -30,14 +39,15 @@ var view = {
   lastFunc: ((x) => 0)
 };
 
-for (var div of allInputDiv.children) {
-  console.log(div);
-  div.addEventListener('click', onInputDivClick);
+for (var name of ['inputDiv', 'widthDiv', 'heightDiv']) {
+  dgebi(name).addEventListener('click', onInputDivClick);
 }
+plusButton.addEventListener('click', (e) => { zoomIn(); });
+minusButton.addEventListener('click', (e) => { zoomOut(); });
+originButton.addEventListener('click', (e) => { center(); });
 
 allInputDiv.addEventListener('keydown', onInputKey);
 canvas.addEventListener('keydown', onCanvasKey);
-canvas.onwheel = onWheel;
 
 window.onresize = (() => {view.hasChanged = 1;});
 window.onload = function() {
@@ -53,55 +63,112 @@ window.onload = function() {
 }
 
 
+// Drag and drop
+var dragStart;
+canvas.onmousedown = function(e) {
+  canvas.onmousemove = dragCanvas;
+  dragStart = [e.pageX, e.pageY];
+  if (lastTimeoutID !== undefined) {
+    clearTimeout(lastTimeoutID);
+  }
+}
+
+canvas.onmouseup = function(e) {
+  canvas.onmousemove = undefined;
+  // if (Math.abs(e.pageX-dragStart[0]) < 2 && Math.abs(e.pageY-dragStart[1]) < 2) {
+  //   // user probs wasn't trying to drag
+  //   return;
+  // }
+  let dx = ((e.pageX-dragStart[0])/canvas.width)*view.width;
+  let dy = -((e.pageY-dragStart[1])/canvas.height)*view.height;
+  view.center = [view.center[0]-dx, view.center[1]-dy];
+  imageData = ctx.getImageData(0,0,canvas.width,canvas.height);
+  data = imageData.data;
+
+  draw(view.lastFunc);
+}
+
+function dragCanvas(e) {
+  let [dx, dy] = [e.pageX-dragStart[0], e.pageY-dragStart[1]];
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.putImageData(imageData, dx, dy);
+}
+
+// Origin button
+function center() {
+  view.center = [0, 0];
+  view.width = 10;
+  view.setHeight(view.width);
+  view.hasChanged = 1;
+  view.manuallySet = 0;
+  draw(view.lastFunc);
+}
+
 
 //========================//
 //          ZOOM          //
 //========================//
 
-const MAX_SPEED = 600; //approx
+const MAX_SPEED = 600;
+const floor = Math.floor;
 
-function onWheel(e) {return;
-  console.log(e);
-  e.preventDefault(); // don't navigate back/forward
-  // let speed = Math.sqrt(e.deltaX**2 + e.deltaY**2);
-  // if(speed > maxSpeed) {
-  //   console.log(speed);
-  //   maxSpeed = speed;
-  // }
-  // turn the speed into range [0,2] with 0 speed -> scaleFac=1
-  // let scaleFac = 1.5 * (Math.atan(e.deltaY)+Math.PI)/Math.PI - 0.5;
-  let deltaPx,scale;
-  if (e.deltaY > 0) {
-    // Zoom in
-    scale = e.deltaY / (MAX_SPEED*100);
-    console.log(scale);
-    let sampleWidth = Math.floor(imageData.width - (imageData.width / 2)*(scale));
-    let sampleHeight = Math.floor(imageData.height - (imageData.height / 2)*(scale));
-    let centerX = e.clientX;
-    let centerY = e.clientY;
-    imageData = ctx.getImageData(Math.floor(centerX - sampleWidth/2),
-                                 Math.floor(centerY - sampleHeight/2),
-                                 sampleWidth, sampleHeight);
-    //
-    ctx.putImageData(imageData, 0,0);
-    return;
-  } else {
-    // Zoom out
-    deltaPx = 2;
+// Zoom in to half the current window size
+function zoomIn(){
+  // Make quick pixellated version to show while loading
+  let [pixelWidth, pixelHeight] = [canvas.width, canvas.height];
+  imageData = ctx.getImageData(Math.ceil(pixelWidth/4), Math.ceil(pixelHeight/4), floor(3*pixelWidth/4), floor(3*pixelHeight/4));
+  data = imageData.data;
+  let newData = new Uint8ClampedArray(pixelWidth*pixelHeight*4);
+  let ind = 0;
+  for (var row = 0; row < pixelHeight; row++) {
+    let dataInd = floor(row/2)*imageData.width*4;
+    for (var col = 0; col < pixelWidth; col++) {
+      newData[ind] = data[dataInd];
+      newData[ind+1] = data[dataInd+1];
+      newData[ind+2] = data[dataInd+2];
+      newData[ind+3] = data[dataInd+3];
+      ind += 4;
+      if (col%2 == 1) {
+        dataInd += 4;
+      }
+    }
   }
+  imageData = new ImageData(newData, pixelWidth);
+  data = imageData.data;
+  ctx.putImageData(imageData, 0, 0);
+  // Now draw more detailed image
+  view.width /= 2;
+  view.height /= 2;
+  draw(view.lastFunc);
+}
 
-  let oldPixelWidth = imageData.width;
-  let oldPixelHeight = imageData.height; // ?
-
-  let pixelWidth = oldPixelWidth + deltaPx; //Math.round(imageData.width * scaleFac/2 + .5);
-  let pixelHeight = oldPixelHeight + deltaPx; //Math.round(imageData.height * scaleFac/2 + .5);
-  let pixelCenter = [e.clientX, e.clientY];
-  let topLeft = [Math.round(pixelCenter[0] - pixelWidth/2),
-                 Math.round(pixelCenter[1] - pixelHeight/2)];
-  imageData = ctx.getImageData(topLeft[0], topLeft[1], pixelWidth, pixelHeight);
-  ctx.putImageData(imageData, 0, 0, 0, 0, canvas.width, canvas.height);
-
-
+// Zoom out to twice the current window size
+function zoomOut(){
+  // Make quick pixellated version to show while loading
+  let [pixelWidth, pixelHeight] = [canvas.width, canvas.height];
+  imageData = ctx.getImageData(0, 0, pixelWidth, pixelHeight);
+  data = imageData.data;
+  let newData = new Uint8ClampedArray(floor(pixelWidth/2)*floor(pixelHeight/2)*4);
+  let dataInd = 0, ind = 0;
+  for (var row = 0; row < floor(pixelHeight/2); row++) {
+    dataInd = pixelWidth*2*row*4;
+    for (var col = 0; col < floor(pixelWidth/2); col++) {
+      newData[ind] = data[dataInd];
+      newData[ind+1] = data[dataInd+1];
+      newData[ind+2] = data[dataInd+2];
+      newData[ind+3] = data[dataInd+3];
+      ind += 4;
+      dataInd += 8;
+    }
+  }
+  ctx.fillRect(0, 0, pixelWidth, pixelHeight);
+  ctx.putImageData(new ImageData(newData, floor(pixelWidth/2)), floor(pixelWidth/4), floor(pixelHeight/4));
+  imageData = ctx.getImageData(0, 0, pixelWidth, pixelHeight);
+  data = imageData.data;
+  // Now draw more detailed image
+  view.width *= 2;
+  view.height *= 2;
+  draw(view.lastFunc);
 }
 
 
@@ -120,13 +187,17 @@ function onCanvasKey(e) {
       e.preventDefault();
       input.focus();
       break;
-    default:
-
+    case 'Equal':
+      zoomIn();
+      break;
+    case 'Minus':
+      zoomOut();
+      break;
   }
 }
 
 // Since the <textarea>s are padded, sets focus from the containing
-// div to the <textarea> on click
+// div to the <textarea> if user clicks div outside of textarea
 function onInputDivClick(e) {
   if (e.path[0].children.length>0 && e.path[0].children[0]) {
     e.path[0].children[0].focus();
@@ -138,29 +209,28 @@ function onInputKey(e) {
   if (e.isComposing || e.keyCode === 229) {
     return;
   }
-
+  let elem = e.path[0].id;
+  // console.log(elem);
   switch (e.code) {
     case 'Enter':
       e.preventDefault();
-      onEnterPressed();
-      break;
-    case 'Tab':
-      // Tab btwn last & first box
-      if (e.path[0].id === 'input') {
-        e.preventDefault();
-        if (e.shiftKey) {
-          // ??? TODO
-        } else {
-          widthInput.focus();
-        }
+      if (inputBoxes.includes(elem)) {
+        drawOnEnter();
+        break;
       }
-      // TODO once known what the last box is
+      // Otherwise see if it's plus or minus
+    case 'Space':
+      if (elem === 'plusDiv') {
+        zoomIn();
+      } else if (elem === 'minusDiv') {
+        zoomOut();
+      }
       break;
   }
 }
 
 // Draw what they entered
-function onEnterPressed() {
+function drawOnEnter() {
   let f;
   let str = input.value;
   if (typeof str !== 'string' || str == ''){ return; }
@@ -172,7 +242,8 @@ function onEnterPressed() {
     logError(e);
     return;
   }
-  draw(f);
+  draw(f, (view.lastFuncStr === str ? false : true));
+  view.lastFuncStr = str;
 }
 
 // Set height or width
@@ -190,9 +261,10 @@ function setViewHW(prop, val) {
   }
 }
 
-// TODO: actually show errors
 function logError(e) {
-  console.log(e);
+  errorDiv.innerHTML = '❗&nbsp;&nbsp;&nbsp;&nbsp;' + e + '&nbsp;&nbsp;&nbsp;&nbsp;❗';
+  errorDiv.classList.add('visible');
+  setTimeout((ed) => { ed.classList.remove('visible'); }, 4000, errorDiv);
 }
 
 
@@ -201,28 +273,62 @@ function logError(e) {
 //   Drawing functions   //
 //=======================//
 
-function draw(f) {
+function draw(f, showLowRes) {
   view.lastFunc = f;
+  let pixelWidth = canvas.width;
+  let pixelHeight = canvas.height;
   if (view.hasChanged) {
     if (!view.manuallySet) {
       view.setHeight(view.width);
     }
-    imageData = new ImageData(canvas.width, canvas.height);
+    imageData = new ImageData(pixelWidth, pixelHeight);
     data = imageData.data;
+    showLowRes = true;
     view.hasChanged = 0;
   }
+  widthInput.value = view.width;
+  heightInput.value = view.height;
   if (lastTimeoutID !== undefined) {
     clearTimeout(lastTimeoutID);
   }
-  let pixelWidth = imageData.width;
-  let pixelHeight = imageData.height;
   let toCoords = getPixelToCoords(pixelWidth, pixelHeight);
   let scaleMod = getScaleMod(f, toCoords, pixelWidth, pixelHeight)
 
-  let ind,x,y,res,r,g,b;
+  if (showLowRes) {
+    drawLowRes(f, toCoords, scaleMod, pixelWidth, pixelHeight);
+  }
   lastTimeoutID = setTimeout(drawTimeout, 0, f, 0, toCoords, scaleMod, pixelWidth, pixelHeight);
 }
 
+// Draw a low resolution version of the image while full image loads
+const NUM_PIXELS = 20;
+function drawLowRes(f, toCoords, scaleMod, width, height) {
+  let ind;
+  for (var row = 0; row < Math.ceil(height / NUM_PIXELS); row++) {
+    for (var col = 0; col < Math.ceil(width / NUM_PIXELS); col++) {
+      let i = col*NUM_PIXELS;
+      let j = row*NUM_PIXELS;
+      let [x, y] = toCoords(i + NUM_PIXELS/2, j + NUM_PIXELS/2);
+      let res = f(new ComNum(x, y));
+      let [r, g, b] = hl2rgb(res.θ, scaleMod(res.r));
+      let baseInd = ind = width*4*j + 4*i;
+      for (j = 0; j < NUM_PIXELS; j++) {
+        ind = baseInd + width*4*j
+        for (i = 0; i < NUM_PIXELS; i++) {
+          data[ind] = r;
+          data[ind+1] = g;
+          data[ind+2] = b;
+          data[ind+3] = 255; // Always 255
+          ind += 4;
+        }
+      }
+    }
+  }
+  ctx.putImageData(imageData, 0, 0);
+}
+
+
+//Draw image & update screen every handful of columns
 function drawTimeout(f, i, toCoords, scaleMod, width, height) {
   if (i >= width) {
     return;
@@ -307,7 +413,7 @@ function getPixelToCoords(pixelWidth, pixelHeight) {
   }
 }
 
-// median
+// get median
 function getMedian(ary) {
   ary.sort((x,y) => y-x);
   if (ary.length % 2 === 0) {
@@ -383,5 +489,5 @@ function drawFromHash(hash) {
     logError(e);
     return;
   }
-  draw(f);
+  draw(f, true);
 }

@@ -9,6 +9,9 @@
   <meta name="description" content="web">
   <meta name="author" content="Peter Illig">
   <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.css" integrity="sha384-BdGj8xC2eZkQaxoQ8nSLefg4AV4/AwB3Fj+8SUSo7pnKP6Eoy18liIKTPn9oBYNG" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.js" integrity="sha384-JiKN5O8x9Hhs/UE5cT5AAJqieYlOZbGT3CHws/y97o3ty4R7/O5poG9F3JoiOYw1" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script> -->
 </head>
 
 <body>
@@ -45,10 +48,10 @@
       Here's an example: the polynomial \( f(x) = x^2 - x - 1 \) is a famous one, being the minimal polynomial of the golden ratio \( \varphi \). It is irreducible, since \( \varphi \) is irrational. Now let's iterate it:
     </p>
     <p class="centered">
-      \( \begin{align*}
-      f^2(x) &= x^4 - 2x^3 - 2x^2 + 3x + 1                          &\text{    is irreducible.} \\
-      f^3(x) &= (x^4 - 3x^3 + 4x - 1) (x^4 - x^3 - 3x^2 + x + 1)    &\text{    is reducible!}
-      \end{align*} \)
+      \( \begin{aligned}
+      f^2(x) &= x^4 - 2x^3 - 2x^2 + 3x + 1                          &&\text{is irreducible.} \\
+      f^3(x) &= (x^4 - 3x^3 + 4x - 1) (x^4 - x^3 - 3x^2 + x + 1)    &&\text{is reducible!}
+      \end{aligned} \)
     </p>
     <p>
       So this polynomial has a newly reducible third iterate. This makes it very rare; there are only <i>eight</i> other integer polynomials of the form \( x^2 + ax + b \), with \( |a| \le 10^5, |b| \le 10^9 \), that have newly reducible third iterates.
