@@ -1,6 +1,6 @@
 import {ComNum, real, imag, add, subtract, mult, divide, exp, log, raise, sine, cosine} from "/js/complex/complexNumbers.js";
 import {StrBuffer, Token, tokenize, parse, getNextCloseParen,
-  getNamedFunc, findLastFunc, Node, functify, strToFunc} from '/js/complex/funcTrees.js';
+  findLastFunc, Node, functify, strToFunc} from '/js/complex/funcTrees.js';
 import {approxEquals} from '/js/complex/complexNumbersTest.js';
 
 function cl(x){ console.log(x); }

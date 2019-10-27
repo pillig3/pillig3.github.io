@@ -53,7 +53,7 @@ ul.sidebarlist li a p {
   margin: 16px 0;
 }
 ul.mathList li {
-  padding-top: 0.75em;
+  padding-bottom: 0.75em;
   list-style-type: circle;
 }
 
@@ -106,6 +106,23 @@ ol#problems li p {
   outline: none;
   font-family: monospace, monospace;
   font-kerning: none;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+table tr th {
+  font-weight: normal;
+  padding: 10px;
+  background-color: lightgray;
+}
+table tr td {
+  padding: 5px;
+}
+table tr th, table tr td {
+  border-style: solid;
+  border-width: thin;
 }
 
 h3.subsection {
@@ -285,6 +302,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 }
 #buttonTable tr td {
   text-align: center;
+  border-style: none;
 }
 
 #exampleTable {
@@ -302,6 +320,13 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 }
 #exampleTable tr td:hover {
   cursor: pointer;
+}
+
+/* Mozilla only: use for all URLs prefixed with '' (that is, all urls) */
+@-moz-document url-prefix() {
+  textarea {
+    white-space: pre;
+  }
 }
 
 /*# sourceMappingURL=befunge.css.map */

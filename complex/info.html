@@ -1,0 +1,160 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png"><link rel="manifest" href="/favicon/site.webmanifest"><link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5"><link rel="shortcut icon" href="/favicon/favicon.ico"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/favicon/browserconfig.xml"><meta name="theme-color" content="#ffffff">
+  <link href="/style.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8">
+  <title>Complex: About</title>
+  <meta name="description" content="web">
+  <meta name="author" content="Peter Illig">
+  <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</head>
+<body>
+  <h1 class="title">About the Complex Function Plotter</h1>
+
+  <div id="navdiv"></div>
+
+  <div id="content">
+    <p>
+      The complex function plotter plots a function \(f:\mathbb{C}\rightarrow \mathbb{C}\), by taking each pixel as a complex number.
+      Roughly, for a pixel at position (x, y), it will calculate \( f(\mathrm{scale}(x)+\mathrm{scale}(y)i) \), where 'scale' represents the scaling and offset depending on the window size and position.
+      <br />
+      It then colors the pixel based on the value of \(f\) at that point; the hue varies with the argument of the value, and the lightness varies with the modulus of the value, so that zero is black and infinity is white.
+    </p>
+    <p>
+      You can use pretty much any alphanumeric string as a variable, except the reserved numbers (\(i, e,\) and \(pi\)) and function names.
+      Well, with the caveat that you might sometimes be able to use a reserved function name as a variable, depending on its position in the expression (see "<a href="/complex.html#sin%20sin&0,0&10">sin sin</a>")
+    </p>
+    <p>
+      Supported Functions (along with the usual +, -, *, /, and ^)
+      <table>
+        <colgroup>
+          <col style="width:25%">
+          <col style="width:75%">
+        </colgroup>
+        <tr>
+          <th>
+            Function
+          </th>
+          <th>
+            Meaning
+          </th>
+        </tr>
+        <tr>
+          <td>
+            sin, cos, tan
+          </td><td>
+            Yer standard trig functions, \( \cos(z) = \dfrac{e^{i z} + e^{-i z}}{2} \) and so on
+          </td>
+        </tr>
+        <tr>
+          <td>
+            exp
+          </td><td>
+            \( \exp(z) = e^{z} \)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            ln, log
+          </td><td>
+            Log base \(e\)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            log[n]
+          </td><td>
+            Log base \(n\) &mdash; e.g. "log2(z)"
+          </td>
+        </tr>
+        <tr>
+          <td>
+            sinh, cosh
+          </td><td>
+            Hyperbolic sin and cos
+          </td>
+        </tr>
+        <tr>
+          <td>
+            tet
+          </td><td>
+            \( \mathrm{tet}(z, n) = \left. z^{z^{...^z}} \right\} n \) copies of \(z\).<br />
+            If \(n\) is not an integer, it will be turned into one via \( n\mapsto \mathrm{floor}(\mathrm{Re}(n)) \)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Re, Im
+          </td><td>
+            The real/imaginary part of the input
+          </td>
+        </tr>
+      </table>
+    </p>
+    <p>
+      If hovering over the input boxes doesn't work, the inputs are from left to right: the function, the width, and the center.
+      Clicking the button with the lock will add an input for height, after the width input.
+    </p>
+    <p>
+      Non-obvious buttons:
+      <table>
+        <colgroup>
+          <col style="width:25%">
+          <col style="width:75%">
+        </colgroup>
+        <tr>
+          <th>
+            Button
+          </th>
+          <th>
+            Effect
+          </th>
+        </tr>
+        <tr>
+          <td style="text-align: center;">
+            <img src="/photos/mathcalO.png" alt="fancy O" style="width: 32px;">
+          </td><td>
+            Resets the view, so that the center is 0 and the width is 10.
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">
+            <img src="/photos/lockAspectRatio.png" alt="lock" style="width: 32px;">
+          </td><td>
+            Locks/unlocks the aspect ratio, and hides/shows an input box for window height.
+            If the aspect ratio is locked (default), the height is automatically set based on the width.
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">
+            <img src="/photos/magnifier.png" alt="magnifying glass" style="width: 32px;">
+          </td><td>
+            Changes the resolution (number of pixels)
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">
+            <img src="/photos/link.png" alt="chain link" style="width: 32px;">
+          </td><td>
+            Copies a link to the current view to the clipboard.
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: center;">
+            <img src="/photos/i.png" alt="i" style="width: 32px;">
+          </td><td>
+            Takes you to this page... you probably already figured this one out
+          </td>
+        </tr>
+      </table>
+    </p>
+  </div>
+
+  <br /><br /><br /><br /><br /><br />
+  <p class="centered">
+    <a href="#top">top of page</a>
+  </p>
+  <script type="text/javascript" src="/js/nav.js"></script>
+</body>

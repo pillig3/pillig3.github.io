@@ -110,6 +110,9 @@ div#allInputDiv {
       &#widthDiv, &#heightDiv {
         width: 60pt;
       }
+      &#centerDiv {
+        width: 100pt;
+      }
 
       span.hoverText {
         @include hoverTextFormat();
@@ -124,10 +127,10 @@ div#allInputDiv {
 
     &#plusMinusDiv {
       float: right;
+      $inner-size: 1.4em;
+      $inner-padding: 0.4em;
 
-      div {
-        $inner-size: 1.4em;
-        $inner-padding: 0.4em;
+      div.input {
         float: left;
         padding: $inner-padding;
         width: $inner-size;
@@ -170,7 +173,28 @@ div#allInputDiv {
             transform: scaleY(-1);
           }
         }
-        
+
+      }
+
+      div#menuBox {
+        div.input {
+          background-size: $inner-size+$inner-padding;
+          background-position: center;
+          background-repeat: no-repeat;
+
+          &#infoButt {
+            background-image: url('/photos/i.png');
+          }
+          &#copyButt {
+            background-image: url('/photos/link.png');
+          }
+          &#ARButton {
+            background-image: url('/photos/lockAspectRatio.png');
+          }
+          &#rslnButt {
+            background-image: url('/photos/magnifier.png');
+          }
+        }
       }
     }
   }
@@ -181,7 +205,6 @@ div#errorDiv {
   float: none;
   padding: 0;
   position: absolute;
-  background-color: yellow;
   color: black;
   bottom: 0;
   width: 75%;
@@ -195,5 +218,11 @@ div#errorDiv {
   &.visible {
     opacity: 1;
     @include ease-in-out(0s);
+  }
+  &.notAnError {
+    background-color: lightgrey;
+  }
+  &.anError {
+    background-color: yellow;
   }
 }

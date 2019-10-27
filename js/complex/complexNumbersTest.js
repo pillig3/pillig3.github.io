@@ -108,6 +108,17 @@ function test(){
     ZERO
   ]
   testFunc(cn.sine, inputs, results, tolerance);
+
+  // Tetration
+  inputs = [
+    [real(2), 4],  // 2^2^2^2
+    [I, 2]
+  ]
+  results = [
+    real(2**16),
+    real(0.207879576350761908546955619835)
+  ]
+  testFunc(cn.tetrate, inputs, results, tolerance);
 }
 
 function testFunc(f, inputs, results, tolerance) {

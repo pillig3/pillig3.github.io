@@ -179,6 +179,7 @@ input[type="number"] {
   table-layout: fixed;
   tr td {
     text-align: center;
+    border-style: none;
   }
 }
 
@@ -196,5 +197,12 @@ input[type="number"] {
     &:hover {
       cursor: pointer;
     }
+  }
+}
+
+/* Mozilla only: use for all URLs prefixed with '' (that is, all urls) */
+@-moz-document url-prefix() {
+  textarea {
+    white-space: pre;
   }
 }

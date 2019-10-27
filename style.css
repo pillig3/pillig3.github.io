@@ -108,4 +108,21 @@ ol#problems li p {
   font-kerning: none;
 }
 
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+table tr th {
+  font-weight: normal;
+  padding: 10px;
+  background-color: lightgray;
+}
+table tr td {
+  padding: 5px;
+}
+table tr th, table tr td {
+  border-style: solid;
+  border-width: thin;
+}
+
 /*# sourceMappingURL=style.css.map */

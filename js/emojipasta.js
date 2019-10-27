@@ -203,7 +203,7 @@ function consolidate() {
 //============================================================================//
 //                                                                            //
 //                            look out below                                  //
-//          by which i mean absolutely do not look at what follows            //
+//       by which i mean absolutely do not look at that which follows         //
 //                                                                            //
 //============================================================================//
 

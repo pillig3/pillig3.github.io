@@ -1,10 +1,10 @@
-import {ComNum, real, imag, add, subtract, mult, divide, exp, log, raise, sine, cosine, tangent} from '/js/complex/complexNumbers.js';
-export {Node, functify, strToFunc};
-// For testing
-export {StrBuffer, Token, tokenize, parse, getNextCloseParen, getNamedFunc, findLastFunc};
+import {
+  ComNum, real, imag, add, subtract, mult, divide, exp, log, raise,
+  sine, cosine, tangent, sinh, cosh, tetrate, logBaseN, Re, Im
+} from '/js/complex/complexNumbers.js';
+export {strToFunc, strToNum};
+export {StrBuffer, Token, Node, functify, tokenize, parse, getNextCloseParen, findLastFunc}; // for testing
 
-const namedFuncStrings = ['exp', 'ln', 'log', 'cos', 'sin', 'tan'];
-const namedFuncs       = [exp, log, log, cosine, sine, tangent];
 const arithFuncs = '+-*/^'.split('');
 const parens = '()'.split('')
 const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -15,12 +15,31 @@ types.FUNCTION = 1;
 types.PAREN = 2;
 types.STR = 3;
 types.NUM = 4;
+types.COMMA = 5;
 
 function cl(x){ console.log(x); }
 
-// Main export: takes a string and returns the function
+// Takes a string and returns the function
 function strToFunc(str) {
   return functify(parse(tokenize(str)));
+}
+
+// Takes a string and returns the number
+function strToNum(str) {
+  varName = ""; //Don't allow variables
+  let rslt;
+  try {
+    rslt = parse2(tokenize(str));
+  } catch (e) {
+    throw 'Center should be a complex number'
+  }
+
+  if (rslt instanceof ComNum) {
+    return rslt
+  } else if (typeof rslt === 'string') {
+    throw 'Center should be a complex number'
+  }
+  return functify(rslt)();
 }
 
 //===========//
@@ -42,7 +61,7 @@ class Node {
 //===========================//
 
 // Turns a Node into a function
-// Node n
+// could be improved a lot
 function functify(n) {
   if (n.children === undefined || n.children.length === 0) {
     return n.f;
@@ -61,12 +80,14 @@ function functify(n) {
       results.push(() => child);
     }
     else if (typeof child === 'number') {
-      results.push(() => new ComNum(child, 0));
+      results.push(() => real(child));
     }
     else if (typeof child === 'function') {
       results.push(child);
     }
   }
+  // cl(n.f);
+  // cl(results);
 
   let func = function(...args) {
     return n.f(...results.map((g) => g(...args)));
@@ -114,6 +135,9 @@ function tokenize(str) {
     else if (parens.includes(c)) {
       type = types.PAREN;
     }
+    else if (c === ',') {
+      type = types.COMMA;
+    }
     else if (letters.includes(c)) {
       // var, i, pi, e, sin, exp, ln, etc...
       while (alphanum.includes(c = sb.nextChar())) {
@@ -150,13 +174,18 @@ function tokenize(str) {
 }
 
 
+
 //==========================//
 //           Parse          //
 //      Tokens -> Node      //
 //==========================//
 
+// i'm sorry
+var varName;
+
 // Takes array from tokenize & turns it into a Node
 function parse(tokens) {
+  varName = undefined;
   let rslt = parse2(tokens);
   if (rslt instanceof ComNum || typeof rslt === 'string') {
     return new Node((x) => x, rslt);
@@ -171,9 +200,10 @@ function parse2(tokens) {
   let [func, index] = findLastFunc(tokens);
   if (func !== undefined) {
     if (func === subtract && index === 0) {
-      // Actually a negative rather than a function
+      // Actually a negative sign
       children.push(real(0));
-    } else {
+    }
+    else {
       children.push(parse2(tokens.slice(0, index)));
     }
     if (func === implicit_mult) {
@@ -204,19 +234,26 @@ function parse2(tokens) {
   }
 
   // Named function?
-  if (namedFuncStrings.includes(token1.text)) {
-    func = getNamedFunc(token1.text);
+  if ((func = matchKnownFunc(token1.text)) !== null) {
     if (tokens[1].text === '(' ) {
       let endInd = getNextCloseParen(tokens, 1);
-      if (endInd === tokens.length - 1) {
-        return new Node(func, parse2(tokens.slice(2, endInd)));
+      let args = splitArguments(tokens.slice(2, endInd));
+      if (args.length !== func.length) {
+        throw 'Wrong number of parameters passed to ' + token1.text;
       }
-      // Otherwise implicit mult
-      children.push(new Node(func, parse2(tokens.slice(2, endInd))));
-      children.push(parse2(tokens.slice(endInd + 1)));
+      if (endInd === tokens.length-1) {
+        return new Node(func, ...args.map(parse2));
+      }
+      // otherwise we're multiplying with the next part
+      children.push(new Node(func, ...args.map(parse2)));
+      children.push(parse2(tokens.slice(endInd+1)));
       return new Node(mult, ...children);
     }
     // Otherwise no parens (e.g.  'cos x', or even 'cos sin x')
+    // Only allow this with 1-arg functions
+    if (func.length > 1) {
+      throw 'Missing parentheses';
+    }
     return new Node(func, parse2(tokens.slice(1)));
   }
 
@@ -226,26 +263,38 @@ function parse2(tokens) {
   return new Node(mult, ...children);
 }
 
-// turns a token into a ComNum
+// turns a token into a ComNum or variable
 function unitize(token) {
   switch (token.type) {
     case types.STR:
       if (token.text === 'i') {
         return imag(1);
-      } else if (token.text === 'e') {
+      }
+      else if (token.text === 'e') {
         return real(Math.E);
-      } else if (token.text === 'pi') {
+      }
+      else if (token.text === 'pi') {
         return real(Math.PI);
+      }
+      // Otherwise it's a variable - only allow one variable
+      else if (varName === undefined) {
+        varName = token.text;
+      }
+      else if (token.text !== varName) {
+        throw 'Too many variables: ' + token.text + ' and ' + varName;
       }
       return token.text;
       break;
     case types.NUM:
       return real(parseFloat(token.text));
       break;
+    case types.COMMA:
+      throw 'Rogue comma detected';
     case types.FUNCTION:
     case types.PAREN:
     default:
-      throw 'This should never happen';
+      // cl(token.text);
+      throw 'Something went wrong (this should never happen)';
   }
 }
 
@@ -275,17 +324,60 @@ function getNextCloseParen(tokens, i) {
   return j;
 }
 
-function getNamedFunc(str) {
-  return namedFuncs[namedFuncStrings.indexOf(str)];
+
+
+//===================//
+//  Tools for using  //
+//     functions     //
+//===================//
+
+// Given a list of tokens passed into a function, returns a list where the nth
+// entry is the list of tokens corresponding to the nth argument.
+// e.g. if input is: tet(2*n, 35 tet(1, 2))
+// then pass tokens = ['2', 'n', ',', '35', 'tet', '(', '1', '2', ')']
+// and this returns [ ['2', 'n'], ['35', 'tet', '(', '1', '2', ')'] ]
+function splitArguments(tokens) {
+  let args = [], curArg = [];
+  let level = 0;
+  for (var i = 0; i < tokens.length; i++) {
+    let curToken = tokens[i];
+    switch (curToken.type) {
+      case types.COMMA:
+        if (level === 0) {
+          args.push(curArg);
+          curArg = [];
+        }
+        else {
+          curArg.push(curToken);
+        }
+        break;
+      case types.PAREN:
+        if (curToken.text === '(') {
+          level++;
+        }
+        else {
+          level--;
+        }
+        // Don't break
+      default:
+        curArg.push(curToken);
+        break;
+    }
+  }
+  args.push(curArg);
+  return args;
 }
 
 function implicit_mult(...args) {
   return mult(...args);
 }
 
-// Find lowest priority func outside of parentheses (PEMDAS rules)
+// Find lowest priority elementary function outside of parentheses (PEMDAS)
+// and its index in tokens. E.g.
+// ['2', 'x', '+', 'sin', '3'] => [add, 2]
+// ['2', 'x', '*', 'sin', '3'] => [mult, 2]
+// ['2', 'sin', 'x']           => [implicit_mult, 1]
 function findLastFunc(tokens){
-  // console.log(tokens.map((x) => x.text));
   let strF, index, func;
   for (var i = 0; i < tokens.length; i++) {
     let token = tokens[i];
@@ -294,20 +386,22 @@ function findLastFunc(tokens){
       if (i > 0) {
         let prevToken = tokens[i-1];
         if (prevToken.type !== types.FUNCTION) {
-          if (([types.NUM, types.STR].includes(prevToken.type) || prevToken.text === ')' )
-           && ([types.NUM, types.STR].includes(token.type) || token.text === '(')
-           && !namedFuncStrings.includes(prevToken.text)
-           && !['+', '-'].includes(strF)) {
-              // only lowest priority if no add or subtract
-              strF = 'implicit_mult';
-              index = i;
+          // must have 2 tokens next to each other that are each either
+          // a number, a variable, or a parenthesis
+          if (!['+', '-'].includes(strF)  // +/- are lower priority
+              && ([types.NUM, types.STR].includes(prevToken.type) || prevToken.text === ')')
+              && ([types.NUM, types.STR].includes(token.type) || token.text === '(')
+              && matchKnownFunc(prevToken.text) === null) {
+            strF = 'implicit_mult';
+            index = i;
           }
         }
       }
       if (token.type === types.PAREN) {
         if (token.text === '(') {
           i = getNextCloseParen(tokens, i);
-        } else {
+        }
+        else {
           throw 'Error: unbalanced paremtheses';
         }
       }
@@ -354,3 +448,35 @@ function findLastFunc(tokens){
   }
   return [func, index];
 }
+
+const namedFuncStrings = [
+  'exp', 'ln', 'log', 'cos', 'sin', 'tan', 'sinh', 'cosh', 'tet', 'sqrt',
+  'Re', 'Im'
+];
+const namedFuncs = [
+  exp, log, log, cosine, sine, tangent, sinh, cosh, tetrate, (x) => raise(x, real(0.5)),
+  Re, Im
+];
+
+function matchKnownFunc(strF) {
+  let ind = namedFuncStrings.indexOf(strF);
+  if (ind >= 0) {
+    return namedFuncs[ind];
+  }
+  // Log base n, e.g. 'log10'
+  if (strF.match(/log[0-9]+/g) !== null) {
+    let base = parseFloat(strF.match(/[0-9]+/g));
+    return ((x) => logBaseN(base, x));
+  }
+
+  return null;
+}
+
+
+
+
+
+// cl(parse(tokenize('tet(x, 2)')));
+//
+// let f=functify(parse(tokenize('tet(x, 2)')));
+// cl(f(real(2)));

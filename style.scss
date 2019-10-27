@@ -125,3 +125,22 @@ ol {
   font-family: monospace, monospace;
   font-kerning: none;
 }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  tr {
+    th {
+      font-weight: normal;
+      padding: 10px;
+      background-color: lightgray;
+    }
+    td {
+      padding: 5px;
+    }
+    th, td {
+      border-style: solid;
+      border-width: thin;
+    }
+  }
+}

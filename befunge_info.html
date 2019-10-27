@@ -138,7 +138,7 @@
         <td>. (period)</td><td>Output integer</td><td>Pops a value off the TOSS and writes it to output as an integer in base ten, followed by a space. (if you don't want the space, print a backspace character after (character code 8) </td>
       </tr>
       <tr>
-        <td>, (comma)</td><td>Output character</td><td>Pops a value off the TOSS and writes the corresponding unicode character to output.</td>
+        <td>, (comma)</td><td>Output character</td><td>Pops a value off the TOSS and writes the corresponding unicode character to output. (pro tip: a newline is character 10)</td>
       </tr>
       <tr>
         <td>"</td><td>Enter/Exit stringmode</td><td>When in stringmode, each character under the pointer is pushed to the stack instead of being executed.
@@ -164,7 +164,7 @@
         <td>#</td><td>Bridge</td><td>Skips the next command, so on the next step the IP moves twice as far as it otherwise would.</td>
       </tr>
       <tr>
-        <td>&</td><td>Input integer</td><td>Prompts the user for an integer, then pushes it onto the TOSS. Pushes 10 if no input is entered.</td>
+        <td>&</td><td>Input integer</td><td>Prompts the user for an integer, then pushes it onto the TOSS. Pushes 0 if no input is entered.</td>
       </tr>
       <tr>
         <td>~</td><td>Input character</td><td>Prompts the user for a character, then pushes its ASCII value onto the TOSS. Pushes 10 if no input is entered.</td>
@@ -215,7 +215,7 @@
       </tr>
       <tr>
         <td>{</td><td>Begin block</td><td>Pops a value (\(n\)) from the TOSS, then creates a new stack and pushes it to the stack of stacks. Then the top
-          \(n\) values from the SOSS (which used to be the TOSS) are transferred to the new TOSS. The orders of the values is preserved.
+          \(n\) values from the SOSS (which used to be the TOSS) are transferred to the new TOSS. The order of the values is preserved.
           If the SOSS has \(k\) elements, and \(k < n\), then all elements are copied but with \(n-k\) 0s below them.
           The new TOSS will be empty if \(n\)=0 or if the initial TOSS is empty.</td>
       </tr>
