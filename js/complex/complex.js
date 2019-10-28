@@ -96,18 +96,7 @@ function showOrHideHeight() {
 
 function setCenter(x, y) {
   view.center = [x, y];
-  let xLen = (x+'').length;
-  let yLen = (y+'').length;
-  let xx = x;
-  let yy = y;
-  let MAX_DIGITS = 5;
-  if (xLen > MAX_DIGITS) {
-    xx = Number(x).toPrecision(MAX_DIGITS-2);
-  }
-  if (yLen > MAX_DIGITS) {
-    yy = Number(y).toPrecision(MAX_DIGITS-2);
-  }
-  centerInput.value = xx + '+' + yy + 'i';
+  centerInput.value = x + '+' + y + 'i';
   centerInput.lastValueStr = centerInput.value;
 }
 
