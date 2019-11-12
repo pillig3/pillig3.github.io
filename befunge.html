@@ -1,83 +1,83 @@
 <!doctype html>
 
-<html lang="en">
+<html lang=en>
 <head>
-  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png"><link rel="manifest" href="/favicon/site.webmanifest"><link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5"><link rel="shortcut icon" href="/favicon/favicon.ico"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/favicon/browserconfig.xml"><meta name="theme-color" content="#ffffff">
-  <link href="/css/befunge.css" rel="stylesheet" type="text/css">
-  <meta charset="utf-8">
+  <link rel=apple-touch-icon sizes=180x180 href=/favicon/apple-touch-icon.webp><link rel=icon type=image/png sizes=32x32 href=/favicon/favicon-32x32.webp><link rel=icon type=image/png sizes=16x16 href=/favicon/favicon-16x16.webp><link rel=manifest href=/favicon/site.webmanifest><link rel=mask-icon href=/favicon/safari-pinned-tab.svg color=#5bbad5><link rel=shortcut icon href=/favicon/favicon.ico><meta name=msapplication-TileColor content=#da532c><meta name=msapplication-config content=/favicon/browserconfig.xml><meta name=theme-color content=#ffffff>
+  <meta name=viewport content=width=device-width, initial-scale=1>
+  <link href=/css/befunge.css rel=stylesheet type=text/css>
+  <meta charset=utf-8>
   <title>Befunge</title>
-  <meta name="description" content="web">
-  <meta name="author" content="Peter Illig">
-  <!-- <script type="text/javascript" src="/js/befunge.js"></script> -->
-  <script type="text/javascript" src="/js/befunge.min.js"></script>
+  <meta name=description content=web>
+  <meta name=author content=Peter Illig>
+  <!-- <script type=text/javascript src=/js/befunge.js></script> -->
+  <script type=text/javascript src=/js/befunge.min.js></script>
 </head>
 
-<body id="befunge1">
-  <h1 class="title" id="top"> Befunge 93&ndash;&infin; </h1>
+<body id=befunge1>
+  <h1 class=title id=top> Befunge 93&ndash;&infin; </h1>
 
-  <div id="navdiv"></div>
+  <div id=navdiv></div>
 
-  <div id="content">
+  <div id=content>
 
-    <p id="henloText">
-      An interpreter for <a href="/befunge_info.html">Befunge 93&ndash;&infin;</a>.<br />
-      <!-- Only runs on Chrome for now, but should work on more browsers once they add support for  -->
+    <p id=henloText>
+      An interpreter for <a href=/befunge_info.html>Befunge 93&ndash;&infin;</a>.<br />
       Now runs on Chrome and Firefox! And, eventually, everyone who implements
-      <a href="//developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">BigInt</a>.<br />
-      Click <span id="exampleToggler" onclick="toggleExamples()">here</span> for example programs.
+      <a href=//developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt>BigInt</a>.<br />
+      Click <span id=exampleToggler onclick=toggleExamples()>here</span> for example programs.
     </p>
 
-    <span id="examples" style="font-size: 11pt;"></span>
+    <span id=examples style=font-size: 11pt;></span>
 
-    <table id="buttonTable" style="width:100%">
+    <table id=buttonTable style=width:100%>
       <colgroup>
-        <col style="width:calc(100%/5)">
-        <col style="width:calc(100%/5)">
-        <col style="width:calc(100%/5)">
-        <col style="width:calc(100%/5)">
-        <col style="width:calc(100%/5)">
+        <col style=width:calc(100%/5)>
+        <col style=width:calc(100%/5)>
+        <col style=width:calc(100%/5)>
+        <col style=width:calc(100%/5)>
+        <col style=width:calc(100%/5)>
       </colgroup>
       <tr>
         <td>
-          <button class="controlButton" id="runButton" onclick="runBefunge()">Run</button>
+          <button class=controlButton id=runButton onclick=runBefunge()>Run</button>
         </td>
         <td>
-          <button class="controlButton" id="displayButton" onclick="toggleDisplay()">Hide state</button>
+          <button class=controlButton id=displayButton onclick=toggleDisplay()>Hide state</button>
         </td>
         <td>
-          <button class="controlButton" id="stepButton" onclick="stepOnce()">Step</button>
+          <button class=controlButton id=stepButton onclick=stepOnce()>Step</button>
         </td>
         <td>
-          <button class="controlButton" id="pauseButton" onclick="pauseBefunge()">Pause</button>
+          <button class=controlButton id=pauseButton onclick=pauseBefunge()>Pause</button>
         </td>
         <td>
-          <span id="pauseOptions">
-            Wait: <input id="pauseInterval" type="number" id="pauseInterval" value="20" /> ms
+          <span id=pauseOptions>
+            <label for=pauseInterval>Wait:</label> <input id=pauseInterval type=number id=pauseInterval value=20 /> ms
           </span>
         </td>
       </tr>
     </table>
 
-    <span>Input</span><span class="rightAligned"> Darkmode <input type="checkbox" onclick="toggleDarkMode()" /></span>
-    <div id="befungeCodeWrapper">
-      <textarea id="befungeCode" placeholder="Write some code here, or choose an example above!" rows="10" autofocus=true autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <span><label for=befungeCode>Input</label></span><span class=rightAligned> <label for=dm>Darkmode</label> <input id=dm type=checkbox onclick=toggleDarkMode() /></span>
+    <div id=befungeCodeWrapper>
+      <textarea id=befungeCode placeholder=Write some code here, or choose an example above! rows=10 autofocus=true autocomplete=off autocorrect=off autocapitalize=off spellcheck=false></textarea>
     </div>
 
-    <div id="display">
-      State
-      <div class="codeOutput" id="befungeDisplay"></div>
-      Stack
-      <div class="codeOutput" id="befungeStack"></div>
+    <div id=display>
+      <label for=befungeDisplay>State</label>
+      <div class=codeOutput id=befungeDisplay></div>
+      <label for=befungeStack>Stack</label>
+      <div class=codeOutput id=befungeStack></div>
     </div>
 
-    <div id="output">
-      <span>Output</span> <span class="rightAligned"> Wrap Text <input type="checkbox" onclick="toggleWrap()"></input> </span>
-      <div class="codeOutput" id="befungeOutput"></div>
+    <div id=output>
+      <span><label for=befungeOutput>Output</label></span> <span class=rightAligned> <label for=wrap>Wrap Text</label> <input id=wrap type=checkbox onclick=toggleWrap()></input> </span>
+      <div class=codeOutput id=befungeOutput></div>
     </div>
 
     <br /><br /><br /><br /><br /><br />
 
   </div>
-  <script type="text/javascript" src="/js/nav.js"></script>
+  <script type=text/javascript src=/js/nav.js></script>
 
 </body>

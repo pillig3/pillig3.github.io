@@ -126,13 +126,13 @@ div#allInputDiv div#plusMinusDiv div.input div.vert {
   margin-top: -0.2em;
 }
 div#allInputDiv div#plusMinusDiv div.input#originDiv {
-  background-image: url("/photos/mathcalO.png");
+  background-image: url("/images/mathcalO.webp");
   background-size: 1.8em;
   background-position: center;
   background-repeat: no-repeat;
 }
 div#allInputDiv div#plusMinusDiv div.input#chevronDiv {
-  background-image: url("/photos/chevronne.png");
+  background-image: url("/images/chevronne.webp");
   background-size: 1.8em;
   background-position: center;
   background-repeat: no-repeat;
@@ -147,16 +147,16 @@ div#allInputDiv div#plusMinusDiv div#menuBox div.input {
   background-repeat: no-repeat;
 }
 div#allInputDiv div#plusMinusDiv div#menuBox div.input#infoButt {
-  background-image: url("/photos/i.png");
+  background-image: url("/images/i.webp");
 }
 div#allInputDiv div#plusMinusDiv div#menuBox div.input#copyButt {
-  background-image: url("/photos/link.png");
+  background-image: url("/images/link.webp");
 }
 div#allInputDiv div#plusMinusDiv div#menuBox div.input#ARButton {
-  background-image: url("/photos/lockAspectRatio.png");
+  background-image: url("/images/lockAspectRatio.webp");
 }
 div#allInputDiv div#plusMinusDiv div#menuBox div.input#rslnButt {
-  background-image: url("/photos/magnifier.png");
+  background-image: url("/images/magnifier.webp");
 }
 
 div#errorDiv {

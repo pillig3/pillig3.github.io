@@ -2,7 +2,8 @@
 
 <html lang="en">
 <head>
-  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png"><link rel="manifest" href="/favicon/site.webmanifest"><link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5"><link rel="shortcut icon" href="/favicon/favicon.ico"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/favicon/browserconfig.xml"><meta name="theme-color" content="#ffffff">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.webp"><link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.webp"><link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.webp"><link rel="manifest" href="/favicon/site.webmanifest"><link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5"><link rel="shortcut icon" href="/favicon/favicon.ico"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/favicon/browserconfig.xml"><meta name="theme-color" content="#ffffff">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="/style.css" rel="stylesheet" type="text/css">
   <meta charset="utf-8">
   <title>Complex: About</title>
@@ -64,13 +65,6 @@
         </tr>
         <tr>
           <td>
-            log[n]
-          </td><td>
-            Log base \(n\) &mdash; e.g. "log2(z)"
-          </td>
-        </tr>
-        <tr>
-          <td>
             sinh, cosh
           </td><td>
             Hyperbolic sin and cos
@@ -81,7 +75,7 @@
             tet
           </td><td>
             \( \mathrm{tet}(z, n) = \left. z^{z^{...^z}} \right\} n \) copies of \(z\).<br />
-            If \(n\) is not an integer, it will be turned into one via \( n\mapsto \mathrm{floor}(\mathrm{Re}(n)) \)
+            If \(n\) isn't an integer, it will be turned into one via \( n\mapsto \mathrm{floor}(\mathrm{Re}(n)) \).
           </td>
         </tr>
         <tr>
@@ -91,11 +85,17 @@
             The real/imaginary part of the input
           </td>
         </tr>
+        <tr>
+          <td>
+            iterate[f, n, varName]
+          </td><td>
+            Iterates the function \(f\), \(n\) times, treating \(f\) as a function of varName.
+            For example, if \(f(x,y) = x^2+y\), then iterate[f,2,x] becomes \( (x^2+y)^2+y \). So iterate[f,2,x](y,y) = \( (y^2+y)^2+y \) is a function of a single variable and can be plotted!
+            <br />Another example, <a href="/complex.html#iterate[x^2+z,40,x](z,z)&-0.7332,0&2.8">iterate[x^2+z,40,x](z,z)</a> gives an approximation of the Mandelbrot set.
+            <br />You can even nest it! <a href="/complex.html#iterate[iterate[x^3+y^2+z,5,x](y,y,z),5,y](z,z)&0,0&1.6">iterate[iterate[x^3+y^2+z,5,x](y,y,z),5,y](z,z)</a>
+          </td>
+        </tr>
       </table>
-    </p>
-    <p>
-      If hovering over the input boxes doesn't work, the inputs are from left to right: the function, the width, and the center.
-      Clicking the button with the lock will add an input for height, after the width input.
     </p>
     <p>
       Non-obvious buttons:
@@ -114,14 +114,14 @@
         </tr>
         <tr>
           <td style="text-align: center;">
-            <img src="/photos/mathcalO.png" alt="fancy O" style="width: 32px;">
+            <img src="/images/mathcalO.webp" alt="fancy O" style="width: 32px;">
           </td><td>
             Resets the view, so that the center is 0 and the width is 10.
           </td>
         </tr>
         <tr>
           <td style="text-align: center;">
-            <img src="/photos/lockAspectRatio.png" alt="lock" style="width: 32px;">
+            <img src="/images/lockAspectRatio.webp" alt="lock" style="width: 32px;">
           </td><td>
             Locks/unlocks the aspect ratio, and hides/shows an input box for window height.
             If the aspect ratio is locked (default), the height is automatically set based on the width.
@@ -129,21 +129,21 @@
         </tr>
         <tr>
           <td style="text-align: center;">
-            <img src="/photos/magnifier.png" alt="magnifying glass" style="width: 32px;">
+            <img src="/images/magnifier.webp" alt="magnifying glass" style="width: 32px;">
           </td><td>
             Changes the resolution (number of pixels)
           </td>
         </tr>
         <tr>
           <td style="text-align: center;">
-            <img src="/photos/link.png" alt="chain link" style="width: 32px;">
+            <img src="/images/link.webp" alt="chain link" style="width: 32px;">
           </td><td>
             Copies a link to the current view to the clipboard.
           </td>
         </tr>
         <tr>
           <td style="text-align: center;">
-            <img src="/photos/i.png" alt="i" style="width: 32px;">
+            <img src="/images/i.webp" alt="i" style="width: 32px;">
           </td><td>
             Takes you to this page... you probably already figured this one out
           </td>

@@ -108,14 +108,32 @@ ol#problems li p {
   font-kerning: none;
 }
 
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+table tr th {
+  font-weight: normal;
+  padding: 10px;
+  background-color: lightgray;
+}
+table tr td {
+  padding: 5px;
+}
+table tr th, table tr td {
+  border-style: solid;
+  border-width: thin;
+}
+
 div.loader {
   border: 16px solid #f3f3f3;
   /* Light grey */
   border-radius: 50%;
   width: 120px;
   height: 120px;
-  position: relative;
-  left: calc(50% - 60px);
+  position: sticky;
+  margin: 0;
+  left: calc(50% - (60px+16px));
   border-top: 16px solid #3498db;
   /* Blue */
   animation: spin 2s linear infinite;
@@ -126,8 +144,9 @@ div.fakeloader {
   border-radius: 50%;
   width: 120px;
   height: 120px;
-  position: relative;
-  left: calc(50% - 60px);
+  position: sticky;
+  margin: 0;
+  left: calc(50% - (60px+16px));
 }
 
 @keyframes spin {
@@ -147,6 +166,7 @@ table#chomp_table {
   border-collapse: separate;
   border: 5px black;
   margin: auto;
+  width: auto;
 }
 table#chomp_table td {
   width: 75px;
@@ -164,7 +184,7 @@ button.chomp_button, button.chomp_button:active, button.chomp_button:hover, butt
   height: 75px;
   float: left;
   outline: 0;
-  background-image: url("/photos/chocobar.jpg");
+  background-image: url("/images/chocobar.webp");
   background-position: 0px 0px;
 }
 button.poison_button {
@@ -177,7 +197,7 @@ button.poison_button {
   height: 75px;
   float: left;
   outline: 0;
-  background-image: url("/photos/sans1.png"), url("/photos/chocobar.jpg");
+  background-image: url("/images/sans1.webp"), url("/images/chocobar.webp");
   background-position: 0px 4px, 0px 0px;
 }
 

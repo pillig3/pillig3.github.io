@@ -5,15 +5,16 @@ var board = [3,3,3,3];
 var rows = 3;
 var cols = 4;
 var playerCanMove = 1;
+function gebi(x) { return document.getElementById(x); }
 
 /* when player clicks tile (c, r) */
-async function playerMove(c,r) {
+function playerMove(c,r) {
   if (playerCanMove) {
     playerCanMove = 0;
     monch(c,r);
     makeLoadingImg();
     if (gameIsOver()) {
-      document.getElementById("message_space").innerHTML = "The computer won! Rats!";
+      gebi("message_space").innerHTML = "The computer won! Rats!";
       clearLoadingImg();
       playerCanMove = 1;
       return;
@@ -37,15 +38,15 @@ async function cpuMove(){
   playerCanMove = 1;
   clearLoadingImg();
   if(gameIsOver()) {
-    document.getElementById("message_space").innerHTML = "Nice! You won!";
+    gebi("message_space").innerHTML = "Nice! You won!";
   }
 }
 
 function makeLoadingImg() {
-  document.getElementById("loading_space").innerHTML = "<div class=\"loader\"></div>";
+  gebi("loading_space").innerHTML = "<div class=\"loader\"></div>";
 }
 function clearLoadingImg() {
-  document.getElementById("loading_space").innerHTML = "<div class=\"fakeloader\"></div>";
+  gebi("loading_space").innerHTML = "<div class=\"fakeloader\"></div>";
 }
 
 function sleep(ms) {
@@ -133,8 +134,8 @@ function isLosingPosition(pos) {
 
 /* setup the board that the user selected */
 function setupChomp() {
-  rows = parseInt(document.getElementById("chompRowNumber").value);
-  cols = parseInt(document.getElementById("chompColumnNumber").value);
+  rows = parseInt(gebi("chompRowNumber").value);
+  cols = parseInt(gebi("chompColumnNumber").value);
   board = new Array(cols).fill(rows);
   if (!(rows>1 && cols>1)) {
     alert("invalid board size ("+rows+" by "+cols+")");
@@ -144,16 +145,16 @@ function setupChomp() {
       s += "<tr>";
       for (var c = 1; c <= cols; c++) {
         if (c === 1 && r === 1) {
-          s += "<td><button class=\"poison_button\" onClick=playerMove(1,1)></button></td>";
+          s += "<td><button class=\"poison_button\" onClick=playerMove(1,1) aria-label=\"position 1 1 (poison!)\"></button></td>";
         } else {
-          s += "<td><button class=\"chomp_button\" onClick=playerMove("+c+","+r+")></button></td>";
+          s += "<td><button class=\"chomp_button\" onClick=playerMove("+c+","+r+") aria-label=\"position "+c+" "+r+"\"></button></td>";
         }
       }
       s += "</tr>";
     }
     s += "</tbody>";
-    document.getElementById("chomp_table").innerHTML = s;
-    document.getElementById("message_space").innerHTML = "&nbsp;";
+    gebi("chomp_table").innerHTML = s;
+    gebi("message_space").innerHTML = "&nbsp;";
   }
 }
 
@@ -186,7 +187,7 @@ function changeBoardOnscreen(list) {
   var tableString = "<tbody>";
   tableString += rowStringList.join("");
   tableString += "</tbody>";
-  document.getElementById("chomp_table").innerHTML = tableString;
+  gebi("chomp_table").innerHTML = tableString;
 }
 
 /* table of winning positions */

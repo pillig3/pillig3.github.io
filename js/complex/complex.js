@@ -1,27 +1,27 @@
-import {ComNum} from '/js/complex/complexNumbers.js';
+import {Re, Im, Arg, Mod} from '/js/complex/complexNumbers.js';
 import {strToFunc, strToNum} from '/js/complex/funcTrees.js';
 
+const MIN_PIXELS = 20;
 function dgebi(e) { return document.getElementById(e); }
+const floor = Math.floor;
+
+var lastTimeoutID;
 var input = dgebi('mainInput');
 var widthInput = dgebi('widthInput');
 var heightInput = dgebi('heightInput');
 var centerInput = dgebi('centerInput');
-var allInputDiv = dgebi('allInputDiv');
 var inputBoxes = ['mainInput', 'widthInput', 'heightInput', 'centerInput'];
 var otherDivs = ['plusDiv', 'minusDiv'];
 var canvas = dgebi('myCanvas');
 var ctx = canvas.getContext('2d');
 var imageData = new ImageData(canvas.width, canvas.height);
 var data = imageData.data;
-dgebi('plusDiv').addEventListener('click', zoomIn);
-dgebi('minusDiv').addEventListener('click', zoomOut);
-dgebi('originDiv').addEventListener('click', center);
-dgebi('chevronDiv').addEventListener('click', toggleMenu);
-dgebi('copyButt').addEventListener('click', copyLink);
-dgebi('infoButt').addEventListener('click', () => window.open('/complex/info.html'));
-dgebi('ARButton').addEventListener('click', showOrHideHeight);
-dgebi('rslnButt').addEventListener('click', changeResolution);
-var lastTimeoutID;
+
+dgebi('allInputDiv').addEventListener('keydown', onInputKey);
+dgebi('plusMinusDiv').addEventListener('click', onButtonClick);
+canvas.addEventListener('keydown', onCanvasKey);
+for (let name of ['inputDiv', 'widthDiv', 'heightDiv']) dgebi(name).addEventListener('click', onInputDivClick);
+
 var view = {
   center: [0, 0],
   width: 10,
@@ -39,28 +39,18 @@ var view = {
   fixAspectRatio: true
 };
 
-for (var name of ['inputDiv', 'widthDiv', 'heightDiv']) {
-  dgebi(name).addEventListener('click', onInputDivClick);
-}
-
-allInputDiv.addEventListener('keydown', onInputKey);
-canvas.addEventListener('keydown', onCanvasKey);
-
-window.onresize = (() => {view.hasChanged = 1;});
-window.onload = function() {
+window.onresize = () => {view.hasChanged = 1;};
+window.onload = () => {
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
-  var hash = window.location.hash;
+  let hash = window.location.hash;
   if (hash !== '' && hash !== '#') {
-    setTimeout(() => {
-      drawFromHash(hash.replace(/%20/g, ' '));
-    });
+    setTimeout(drawFromHash, 0, hash.replace(/%20/g, ' '));
   } else {
     setCenter(0, 0);
   }
   view.hasChanged = 1;
 }
-
 
 
 //=========================//
@@ -75,8 +65,7 @@ function toggleMenu() {
   if ([...chevronDiv.classList].includes('upsidedown')) {
     chevronDiv.classList.remove('upsidedown');
     menuBox.hidden = true;
-  }
-  else {
+  } else {
     chevronDiv.classList.add('upsidedown');
     menuBox.hidden = false;
   }
@@ -87,8 +76,7 @@ function showOrHideHeight() {
   if (view.fixAspectRatio) {
     dgebi('heightDiv').hidden = 0;
     view.fixAspectRatio = 0;
-  }
-  else {
+  } else {
     dgebi('heightDiv').hidden = 1;
     view.fixAspectRatio = 1;
   }
@@ -116,11 +104,11 @@ function center() {
 
 // Copy to clipboard button
 function copyLink() {
-  var link = "https://peterillig.xyz/complex.html#"
+  let link = "https://peterillig.xyz/complex.html#"
   link += view.lastFuncStr.replace(/ /g, '%20') + '&'; // Function
   link += view.center[0] + ',' + view.center[1] + '&'; // Center
   link += view.width;
-  if (view.manuallySet) {
+  if (!view.fixAspectRatio) {
     link += ',' + view.height;
   }
   navigator.clipboard.writeText(link);
@@ -146,19 +134,23 @@ function changeResolution() {
   draw(view.lastFunc, 0);
 }
 
-
 //=========================//
 //       Drag n Drop       //
 //=========================//
 
 var dragStart;
 canvas.onmousedown = function(e) {
+  if (e.buttons === 2) { // right-click
+    return;
+  }
   canvas.onmousemove = dragCanvas;
+  canvas.addEventListener('keydown', abortIfEsc);
   dragStart = [e.pageX, e.pageY];
 }
 
 function dragCanvas(e) {
-  let [dx, dy] = [e.pageX-dragStart[0], e.pageY-dragStart[1]];
+  let ratio = imageData.width / window.innerWidth;
+  let [dx, dy] = [(e.pageX-dragStart[0])*ratio, (e.pageY-dragStart[1])*ratio];
   if (lastTimeoutID !== undefined) {
     clearTimeout(lastTimeoutID);
     lastTimeoutID = undefined;
@@ -169,6 +161,7 @@ function dragCanvas(e) {
 
 canvas.onmouseup = function(e) {
   canvas.onmousemove = undefined;
+  canvas.removeEventListener('keydown', abortIfEsc);
   if (dragStart === undefined) {
     return;
   }
@@ -178,10 +171,12 @@ canvas.onmouseup = function(e) {
     if (lastTimeoutID === undefined) {
       draw(view.lastFunc);
     }
+    dragStart = undefined;
     return;
   }
-  let dx = ((e.pageX-dragStart[0])/canvas.width)*view.width;
-  let dy = -((e.pageY-dragStart[1])/canvas.height)*view.height;
+  let ratio = imageData.width / window.innerWidth;
+  let dx = ((e.pageX-dragStart[0])/canvas.width)*view.width*ratio;
+  let dy = -((e.pageY-dragStart[1])/canvas.height)*view.height*ratio;
   view.center = [view.center[0]-dx, view.center[1]-dy];
   setCenter(view.center[0], view.center[1]);
   imageData = ctx.getImageData(0,0,canvas.width,canvas.height);
@@ -191,13 +186,22 @@ canvas.onmouseup = function(e) {
   dragStart = undefined;
 }
 
+function abortIfEsc(e) {
+  if (e.code === 'Escape') {
+    canvas.onmousemove = undefined;
+    dragStart = undefined;
+    canvas.removeEventListener('keydown', abortIfEsc);
+    ctx.putImageData(imageData, 0, 0);
+    if (lastTimeoutID === undefined) {
+      draw(view.lastFunc);
+    }
+  }
+}
+
 
 //========================//
 //          ZOOM          //
 //========================//
-
-const MAX_SPEED = 600;
-const floor = Math.floor;
 
 // Zoom in to half the current window size
 function zoomIn(){
@@ -207,9 +211,9 @@ function zoomIn(){
   data = imageData.data;
   let newData = new Uint8ClampedArray(pixelWidth*pixelHeight*4);
   let ind = 0;
-  for (var row = 0; row < pixelHeight; row++) {
+  for (let row = 0; row < pixelHeight; row++) {
     let dataInd = floor(row/2)*imageData.width*4;
-    for (var col = 0; col < pixelWidth; col++) {
+    for (let col = 0; col < pixelWidth; col++) {
       newData[ind] = data[dataInd];
       newData[ind+1] = data[dataInd+1];
       newData[ind+2] = data[dataInd+2];
@@ -237,9 +241,9 @@ function zoomOut(){
   data = imageData.data;
   let newData = new Uint8ClampedArray(floor(pixelWidth/2)*floor(pixelHeight/2)*4);
   let dataInd = 0, ind = 0;
-  for (var row = 0; row < floor(pixelHeight/2); row++) {
+  for (let row = 0; row < floor(pixelHeight/2); row++) {
     dataInd = pixelWidth*2*row*4;
-    for (var col = 0; col < floor(pixelWidth/2); col++) {
+    for (let col = 0; col < floor(pixelWidth/2); col++) {
       newData[ind] = data[dataInd];
       newData[ind+1] = data[dataInd+1];
       newData[ind+2] = data[dataInd+2];
@@ -286,12 +290,13 @@ function onCanvasKey(e) {
   }
 }
 
+// not literally the 'control' key but like the keys
+// that control the meaning of other keypresses
 function controlKeyHeld(e) {
   return e.ctrlKey || e.metaKey || e.altKey;
 }
 
-// Since the <textarea>s are padded, sets focus from the containing
-// div to the <textarea> if user clicks div outside of textarea
+// sets focus from the containing div to the <textarea>
 function onInputDivClick(e) {
   if (e.target.children.length > 0) {
     e.target.children[0].focus()
@@ -304,20 +309,58 @@ function onInputKey(e) {
     return;
   }
   let elem = e.target.id;
-  switch (e.code) {
-    case 'Enter':
+  if (inputBoxes.includes(elem)) {
+    if (e.code === 'Enter') {
       e.preventDefault();
-      if (inputBoxes.includes(elem)) {
-        drawOnEnter();
-        break;
+      drawOnEnter();
+    }
+    return;
+  } else {
+    if (['Enter', 'Space'].includes(e.code)) {
+      if (elem === 'horiz' || elem === 'vert') {
+        elem = e.target.parentNode.id;
       }
-      // Otherwise see if it's plus or minus
-    case 'Space':
-      if (elem === 'plusDiv') {
-        zoomIn();
-      } else if (elem === 'minusDiv') {
-        zoomOut();
-      }
+      doFuncForElem(elem);
+    }
+  }
+}
+
+// When a button is clicked
+function onButtonClick(e) {
+  let elem = e.target.id;
+  if (['horiz', 'vert'].includes(e.target.classList[0])) {
+    elem = e.target.parentNode.id;
+  }
+  doFuncForElem(elem);
+}
+
+// Returns the function to execute when
+// the doc element is clicked/pushed/etc.
+function doFuncForElem(elem) {
+  switch (elem) {
+    case 'plusDiv':
+      zoomIn();
+      break;
+    case 'minusDiv':
+      zoomOut();
+      break;
+    case 'originDiv':
+      center();
+      break;
+    case 'chevronDiv':
+      toggleMenu();
+      break;
+    case 'copyButt':
+      copyLink();
+      break;
+    case 'infoButt':
+      window.open('/complex/info.html');
+      break;
+    case 'ARButton':
+      showOrHideHeight();
+      break;
+    case 'rslnButt':
+      changeResolution();
       break;
   }
 }
@@ -331,11 +374,9 @@ function drawOnEnter() {
   let center = centerInput.value;
 
   if (center !== centerInput.lastValueStr) {
-    var complexCenter;
     try {
-      complexCenter = strToNum(center);
+      view.center = strToNum(center);
       centerInput.lastValueStr = center;
-      view.center = [complexCenter.x, complexCenter.y];
       view.hasChanged = 1;
     } catch (e) {
       // Just use last valid center
@@ -351,7 +392,7 @@ function drawOnEnter() {
     view.manuallySet = 1;
   }
 
-  if (typeof str !== 'string' || str == ''){ return; }
+  if (typeof str !== 'string' || str == '') return;
   try {
     f = strToFunc(str);
   } catch (e) {
@@ -380,7 +421,7 @@ function setViewHW(prop, val) {
 
 // Pop up the error message
 function logError(e, notAnError) {
-  var cla$$;  // I guess 'class' is a reserved word
+  let cla$$;  // I guess 'class' is a reserved word
   let errorDiv = dgebi('errorDiv');
   if (!notAnError) {
     errorDiv.innerHTML = '❗&nbsp;&nbsp;&nbsp;&nbsp;' + e + '&nbsp;&nbsp;&nbsp;&nbsp;❗';
@@ -434,22 +475,14 @@ function draw(f, showLowRes, callback) {
 }
 
 // Draw a low resolution version of the image while full image loads
-const MIN_PIXELS = 20;
 function drawLowRes(f, toCoords, scaleMod, width, height) {
   let ind;
-  for (var row = 0; row < Math.ceil(height / MIN_PIXELS); row++) {
-    for (var col = 0; col < Math.ceil(width / MIN_PIXELS); col++) {
+  for (let row = 0; row < Math.ceil(height / MIN_PIXELS); row++) {
+    for (let col = 0; col < Math.ceil(width / MIN_PIXELS); col++) {
       let i = col*MIN_PIXELS;
       let j = row*MIN_PIXELS;
-      let [x, y] = toCoords(i + MIN_PIXELS/2, j + MIN_PIXELS/2);
-      let res = f(new ComNum(x, y));
-      if (isNaN(res.r)) {
-        // res.r = Infinity;
-      }
-      if (isNaN(res.θ)) {
-        res.θ = 0;
-      }
-      let [r, g, b] = hl2rgb(res.θ, scaleMod(res.r));
+      let res = f(toCoords(i + MIN_PIXELS/2, j + MIN_PIXELS/2));
+      let [r, g, b] = hl2rgb(Arg(res)[0], scaleMod(Mod(res)[0]));
       let baseInd = ind = width*4*j + 4*i;
       for (j = 0; j < MIN_PIXELS; j++) {
         ind = baseInd + width*4*j
@@ -474,22 +507,12 @@ function drawTimeout(f, i, toCoords, scaleMod, width, height, callback) {
     }
     return;
   }
-  let ind,x,y,res,r,g,b;
-  for (var k=0; k < 5 && i < width; k++) {
-    for (var j = 0; j < height; j++) {
+  let ind,res,r,g,b;
+  for (let k=0; k < 5 && i < width; k++) {
+    for (let j = 0; j < height; j++) {
       ind = width * 4 * j + 4 * i;
-      [x, y] = toCoords(i, j);
-      res = f(new ComNum(x, y));
-      if (isNaN(res.r)) {
-        // So it gets colored white; otherwise
-        // it would be black and could be confused
-        // with zeros of the function
-        // res.r = Infinity;
-      }
-      if (isNaN(res.θ)) {
-        res.θ = 0;
-      }
-      [r, g, b] = hl2rgb(res.θ, scaleMod(res.r));
+      res = f(toCoords(i, j));
+      [r, g, b] = hl2rgb(Arg(res)[0], scaleMod(Mod(res)[0]));
       data[ind] = r;
       data[ind+1] = g;
       data[ind+2] = b;
@@ -501,15 +524,15 @@ function drawTimeout(f, i, toCoords, scaleMod, width, height, callback) {
   lastTimeoutID = setTimeout(() => {drawTimeout(f, i, toCoords, scaleMod, width, height, callback);});
 }
 
-// Get func to turn modulus\in[0,\infty) into Lightness\in[0,1]
+// Returns a function to turn modulus\in[0,\infty) into Lightness\in[0,1]
+// based on the median & standard deviation
 function getScaleMod(f, toCoords, width, height) {
   let mods = [];
   let samples = 6;
-  let x,y,mod;
-  for (var i = 0; i < width; i += Math.floor(width/samples)) {
-    for (var j = 0; j < height; j += Math.floor(height/samples)) {
-      [x, y] = toCoords(i, j);
-      mod = f(new ComNum(x, y)).r;
+  let mod;
+  for (let i = 0; i < width; i += floor(width/samples)) {
+    for (let j = 0; j < height; j += floor(height/samples)) {
+      mod = Mod(f(toCoords(i, j)))[0];
       if (![NaN, Infinity, undefined].includes(mod)) {
         mods.push(mod);
       }
@@ -518,10 +541,8 @@ function getScaleMod(f, toCoords, width, height) {
   if (mods.length === 0) {
     return ((x) => 0); // give up.
   }
-
   let avg = getMedian(mods);
   let max = Math.max(...mods);
-
   let count=0;
   let sd = Math.sqrt(mods.map((x) => (x-avg)**2).reduce(((x, y) => {
     if (y === Infinity) {
@@ -537,10 +558,11 @@ function getScaleMod(f, toCoords, width, height) {
   // finally the actual function
   // https://www.desmos.com/calculator/ef7xcjgqtn
   return function(x) {
+    if (isNaN(x) || x === Infinity) {
+      // Color NaN 1 as well so it's not confused with zeros
+      return 1
+    }
     if (x >= avg) {
-      if (x === Infinity || isNaN(x)) {
-        return 1;
-      }
       return 1/(1 + Math.E**(-(x-avg)/(2**(max))));
     }
     return Math.sqrt(avg**2 - ((Math.max(x, 0)*avg)**(1/2) - avg)**2) / (2*avg);
@@ -551,14 +573,12 @@ function getScaleMod(f, toCoords, width, height) {
 // where i,j are the pixel coordinates
 // and x, y are real and imaginary parts
 function getPixelToCoords(pixelWidth, pixelHeight) {
-  let centerX = view.center[0];
-  let centerY = view.center[1];
   let width = view.width;
   let height = view.height;
   return function(i, j) {
     return [
-      centerX - width/2 + (i/pixelWidth)*width,
-      centerY + height/2 - (j/pixelHeight)*height
+      view.center[0] - width/2 + (i/pixelWidth)*width,
+      view.center[1] + height/2 - (j/pixelHeight)*height
     ];
   }
 }
@@ -567,9 +587,9 @@ function getPixelToCoords(pixelWidth, pixelHeight) {
 function getMedian(ary) {
   ary.sort((x,y) => y-x);
   if (ary.length % 2 === 0) {
-    return (ary[Math.floor(ary.length/2)] + ary[Math.floor(ary.length/2)+1])/2;
+    return (ary[floor(ary.length/2)] + ary[floor(ary.length/2)+1])/2;
   }
-  return ary[Math.floor(ary.length/2)];
+  return ary[floor(ary.length/2)];
 }
 
 // turns Hue \in [0,2\pi] and Lightness \in [0,1] into RGB color
@@ -577,6 +597,9 @@ function getMedian(ary) {
 // Source: https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_RGB
 // Returns [r, g, b] \in {0, 1, ..., 255}^3
 function hl2rgb(h, l) {
+  if (Object.is(h, NaN)) {
+    h = 0;
+  }
   h = realMod(h, 2*Math.PI);
   let h1 = h / (Math.PI/3);
   let c = 1 - Math.abs(2*l - 1);
@@ -598,7 +621,7 @@ function hl2rgb(h, l) {
     [r,g,b] = [c,0,x];
   }
   let m = l-c/2;
-  return [r,g,b].map((x) => Math.floor((x+m)*255));
+  return [r,g,b].map((x) => floor((x+m)*255));
 }
 
 // For when the url has a hash -

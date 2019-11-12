@@ -28,3 +28,4 @@ Thumbs.db
 js/test.js
 test.html
 test/*
+/js/complex/allAtOnce.js

@@ -1,23 +1,17 @@
 import {
-  ComNum, real, imag, add, subtract, mult, divide, exp, log, raise,
-  sine, cosine, tangent, sinh, cosh, tetrate, logBaseN, Re, Im
+  real, imag, Re, Im, Arg, Mod, add, subtract, mult, divide, exp, log, raise,
+  sine, cosine, tangent, sinh, cosh, tetrate, iterate
 } from '/js/complex/complexNumbers.js';
 export {strToFunc, strToNum};
 export {StrBuffer, Token, Node, functify, tokenize, parse, getNextCloseParen, findLastFunc}; // for testing
 
-const arithFuncs = '+-*/^'.split('');
-const parens = '()'.split('')
-const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-const digits = '0123456789'.split('');
-const alphanum = letters.concat(digits);
 const types = {}; // Token types
 types.FUNCTION = 1;
 types.PAREN = 2;
 types.STR = 3;
 types.NUM = 4;
 types.COMMA = 5;
-
-function cl(x){ console.log(x); }
+types.SQUARE_PAREN = 6;
 
 // Takes a string and returns the function
 function strToFunc(str) {
@@ -26,20 +20,19 @@ function strToFunc(str) {
 
 // Takes a string and returns the number
 function strToNum(str) {
-  varName = ""; //Don't allow variables
+  let vars = []; //Don't allow variables
   let rslt;
   try {
-    rslt = parse2(tokenize(str));
+    rslt = parse2(tokenize(str), vars);
+    if (rslt instanceof Array) {
+      return rslt;
+    } else if (typeof rslt === 'string') {
+      throw 'Center should be a complex number'
+    }
+    return functify(rslt)();
   } catch (e) {
     throw 'Center should be a complex number'
   }
-
-  if (rslt instanceof ComNum) {
-    return rslt
-  } else if (typeof rslt === 'string') {
-    throw 'Center should be a complex number'
-  }
-  return functify(rslt)();
 }
 
 //===========//
@@ -54,7 +47,6 @@ class Node {
   }
 }
 
-
 //===========================//
 //          Evaluate         //
 //      Node -> Function     //
@@ -64,37 +56,49 @@ class Node {
 // could be improved a lot
 function functify(n) {
   if (n.children === undefined || n.children.length === 0) {
-    return n.f;
+    if (n.f !== undefined) {
+      return n.f;
+    }
+    return childToFunc(n);
   }
   let results = [];
   for (let i = 0; i < n.children.length; i++) {
-    let child = n.children[i];
-    // Turn everything into a function
-    if (child instanceof Node) {
-      results.push(functify(child));
-    }
-    else if (typeof child === 'string') {
-      results.push(x => x);
-    }
-    else if (child instanceof ComNum) {
-      results.push(() => child);
-    }
-    else if (typeof child === 'number') {
-      results.push(() => real(child));
-    }
-    else if (typeof child === 'function') {
-      results.push(child);
-    }
+    results.push(childToFunc(n.children[i]));
   }
-  // cl(n.f);
-  // cl(results);
-
   let func = function(...args) {
     return n.f(...results.map((g) => g(...args)));
   }
   return func;
 }
 
+function childToFunc(child) {
+  if (child instanceof Node) {
+    return functify(child);
+  } else if (typeof child === 'string') {
+    return x => x;
+  } else if (child instanceof Array) {
+    // needs to come before object
+    return () => child;
+  } else if (typeof child === 'object') {
+    // Variable with specified position
+    let pos = child.pos;
+    if (pos === 1) {
+      return x => x;
+    } else {
+      let str='n1,';
+      for (var i = 2; i < pos; i++) {
+        str += 'n' + i + ',';
+      }
+      str += 'n'+pos;
+      return new Function(str,'return n' + pos + ';');
+    }
+  } else if (typeof child === 'number') {
+    return () => real(child);
+  } else if (typeof child === 'function') {
+    return child;
+  }
+  return undefined; // should never happen
+}
 
 //=========================//
 //         Tokenize        //
@@ -124,29 +128,32 @@ class Token {
 // Tokenize string; return array of Tokens
 function tokenize(str) {
   let sb = new StrBuffer(str);
-  let tokens = [];
+  let tokens = [], letters = [];
+  for (var i=65;i<=90;i++) letters.push(String.fromCharCode(i));
+  for (var i=97;i<=122;i++) letters.push(String.fromCharCode(i));
+  let digits = '0123456789'.split('');
+  let alphanum = letters.concat(digits);
+  let arithFuncs = '+-*/^'.split('');
+
   for (var c = sb.nextChar(); c !== undefined; c = sb.nextChar()) {
-    //
     let token = c;
     let type = 0;
     if (arithFuncs.includes(c)) {
       type = types.FUNCTION;
-    }
-    else if (parens.includes(c)) {
+    } else if (['(', ')'].includes(c)) {
       type = types.PAREN;
-    }
-    else if (c === ',') {
+    } else if (['[', ']'].includes(c)) {
+      type = types.SQUARE_PAREN;
+    } else if (c === ',') {
       type = types.COMMA;
-    }
-    else if (letters.includes(c)) {
+    } else if (letters.includes(c)) {
       // var, i, pi, e, sin, exp, ln, etc...
       while (alphanum.includes(c = sb.nextChar())) {
         token += c;
       }
       sb.backup();
       type = types.STR;
-    }
-    else if (digits.includes(c) || c === '.') {
+    } else if (digits.includes(c) || c === '.') {
       // number
       let hasDot = (c === '.');
       while (digits.includes(c = sb.nextChar()) || c === '.') {
@@ -160,15 +167,12 @@ function tokenize(str) {
       }
       sb.backup();
       type = types.NUM;
-    }
-    else if (c === ' ') {
+    } else if (c === ' ') {
       continue;
-    }
-    else {
+    } else {
       throw ('Unrecognized character: ' + c);
     }
     tokens.push(new Token(token, type));
-    //
   }
   return tokens;
 }
@@ -180,19 +184,21 @@ function tokenize(str) {
 //      Tokens -> Node      //
 //==========================//
 
-// i'm sorry
-var varName;
 
 // Takes array from tokenize & turns it into a Node
-function parse(tokens) {
-  varName = undefined;
-  let rslt = parse2(tokens);
-  if (rslt instanceof ComNum || typeof rslt === 'string') {
+function parse(tokens, vars) {
+  if (vars === undefined) {
+    vars = [null]; //Only allow one variable (for now)
+  }
+  let rslt = parse2(tokens, vars);
+  if (rslt instanceof Array || typeof rslt === 'string') {
     return new Node((x) => x, rslt);
   }
   return rslt;
 }
-function parse2(tokens) {
+// Recursive version
+// vars is an array w/ space for the # of legal vars
+function parse2(tokens, vars) {
   if (tokens.length === 0) {
     throw 'Syntax error (I don\'t know what to do with this input)';
   }
@@ -202,88 +208,117 @@ function parse2(tokens) {
     if (func === subtract && index === 0) {
       // Actually a negative sign
       children.push(real(0));
-    }
-    else {
-      children.push(parse2(tokens.slice(0, index)));
+    } else {
+      children.push(parse2(tokens.slice(0, index), vars));
     }
     if (func === implicit_mult) {
       func = mult;
       index -= 1;
     }
-    children.push(parse2(tokens.slice(index+1)));
+    children.push(parse2(tokens.slice(index+1), vars));
     return new Node(func, ...children);
   }
 
   let token1 = tokens[0];
-
   if (tokens.length === 1) {
-    return unitize(token1);
+    let unit = unitize(token1, vars);
+    if (typeof unit === 'function') {
+      throw token1.text + ' called without arguments';
+    }
+    return unit;
   }
 
-  if (token1.text === '(') {
-    let closePos = getNextCloseParen(tokens, 0);
+  if (['(', '['].includes(token1.text)) {
+    let closePos = getNextCloseParen(tokens, 0, token1.type);
     // entirely inside ()?
     if (closePos === tokens.length - 1) {
-      return parse2(tokens.slice(1, tokens.length-1));
+      return parse2(tokens.slice(1, tokens.length-1), vars);
     }
     // multiplication
     func = mult;
-    children.push(parse2(tokens.slice(1, closePos)));
-    children.push(parse2(tokens.slice(closePos + 1)));
+    children.push(parse2(tokens.slice(1, closePos), vars));
+    children.push(parse2(tokens.slice(closePos + 1), vars));
     return new Node(func, ...children);
   }
 
   // Named function?
   if ((func = matchKnownFunc(token1.text)) !== null) {
     if (tokens[1].text === '(' ) {
-      let endInd = getNextCloseParen(tokens, 1);
+      if (funcHasSquareParens(token1.text)) {
+        throw token1.text + ' should be called with square braces';
+      }
+      let endInd = getNextCloseParen(tokens, 1, types.PAREN);
       let args = splitArguments(tokens.slice(2, endInd));
       if (args.length !== func.length) {
         throw 'Wrong number of parameters passed to ' + token1.text;
       }
       if (endInd === tokens.length-1) {
-        return new Node(func, ...args.map(parse2));
+        return new Node(func, ...args.map((x) => parse2(x, vars)));
       }
       // otherwise we're multiplying with the next part
-      children.push(new Node(func, ...args.map(parse2)));
-      children.push(parse2(tokens.slice(endInd+1)));
+      children.push(new Node(func, ...args.map((x) => parse2(x, vars))));
+      children.push(parse2(tokens.slice(endInd+1), vars));
       return new Node(mult, ...children);
+    } else if (tokens[1].text === '[') {
+      if (!funcHasSquareParens(token1.text)) {
+        throw token1.text + ' should not be called with square braces';
+      }
+      let endInd = getNextCloseParen(tokens, 1, types.SQUARE_PAREN);
+      let output = {};
+      let realFunc = getRealFuncFromSquareParens(func, tokens.slice(2, endInd), output);
+      tokens = tokens.slice(endInd+1)     // Everything after the []
+      if (tokens.length === 0 || tokens[0].text !== '(') {
+        throw 'No parameters passed to ' + token1.text;
+      }
+      // Get arguments
+      endInd = getNextCloseParen(tokens, 0, types.PAREN);
+      let args = splitArguments(tokens.slice(1, endInd));
+      if (args.length < output.length) {
+        throw 'Not enough parameters passed to ' + token1.text;
+      }
+      if (endInd === tokens.length-1) {
+        return new Node(realFunc, ...args.map((x) => parse2(x, vars)));
+      }
+      // otherwise we're multiplying with the next part
+      children.push(new Node(realFunc, ...args.map((x) => parse2(x, vars))));
+      children.push(parse2(tokens.slice(endInd+1), vars));
+      return new Node(mult, ...children);
+
     }
     // Otherwise no parens (e.g.  'cos x', or even 'cos sin x')
     // Only allow this with 1-arg functions
     if (func.length > 1) {
       throw 'Missing parentheses';
     }
-    return new Node(func, parse2(tokens.slice(1)));
+    return new Node(func, parse2(tokens.slice(1), vars));
   }
 
   // Then it's just implicit multiplication
-  children.push(unitize(token1));
-  children.push(parse2(tokens.slice(1)));
+  children.push(unitize(token1, vars));
+  children.push(parse2(tokens.slice(1), vars));
   return new Node(mult, ...children);
 }
 
 // turns a token into a ComNum or variable
-function unitize(token) {
+function unitize(token, vars) {
+  let fn;
   switch (token.type) {
     case types.STR:
       if (token.text === 'i') {
         return imag(1);
-      }
-      else if (token.text === 'e') {
+      } else if (token.text === 'e') {
         return real(Math.E);
-      }
-      else if (token.text === 'pi') {
+      } else if (token.text === 'pi') {
         return real(Math.PI);
+      } else if ((fn = matchKnownFunc(token.text)) !== null) {
+        return fn;
       }
-      // Otherwise it's a variable - only allow one variable
-      else if (varName === undefined) {
-        varName = token.text;
+      // Otherwise, it's a variable
+      if (!canUseVar(token.text, vars)) {
+        throw tooManyVarsErr(token.text, vars);
       }
-      else if (token.text !== varName) {
-        throw 'Too many variables: ' + token.text + ' and ' + varName;
-      }
-      return token.text;
+      let ind = vars.indexOf(token.text);
+      return {text: token.text, pos: ind+1};
       break;
     case types.NUM:
       return real(parseFloat(token.text));
@@ -293,22 +328,67 @@ function unitize(token) {
     case types.FUNCTION:
     case types.PAREN:
     default:
-      // cl(token.text);
+      console.log(token);
       throw 'Something went wrong (this should never happen)';
   }
 }
 
+function canUseVar(varName, varAry) {
+  if (varAry.includes(varName)) {
+    // yep, we've used it before
+    return true;
+  }
+  let nextSpot = varAry.indexOf(null);
+  if (nextSpot < 0) {
+    // nope, too many
+    return false;
+  } else {
+    // yep, add it
+    varAry[nextSpot] = varName;
+    return true;
+  }
+}
+
+function tooManyVarsErr(extraVar, vars) {
+  let err = 'Too many variables: ';
+  if (vars.length === 0) {
+    return err + extraVar;
+  } else if (vars.length === 1) {
+    err += vars[0] + ' ';
+  } else {
+    for (let varName of vars) {
+      err += varName + ', ';
+    }
+  }
+  err += 'and ' + extraVar;
+  return err;
+}
+
 // Gets position of the closing parenthesis matching
 // the opening parenthesis at position i
-function getNextCloseParen(tokens, i) {
+// tokens - token list
+// i - position of the opening paren
+// parenType - either types.PAREN or types.SQUARE_PAREN
+function getNextCloseParen(tokens, i, parenType) {
   let level = 1;
+  let open;
+  let close;
+  if (parenType === types.PAREN) {
+    open = '(';
+    close = ')';
+  } else if (parenType === types.SQUARE_PAREN) {
+    open = '[';
+    close = ']';
+  } else {
+    throw '?????';
+  }
   let j;
   for (j = i+1; j < tokens.length; j++) {
     switch (tokens[j].text) {
-      case '(':
+      case open:
         level++;
         break;
-      case ')':
+      case close:
         level--;
         break;
       default:
@@ -346,16 +426,15 @@ function splitArguments(tokens) {
         if (level === 0) {
           args.push(curArg);
           curArg = [];
-        }
-        else {
+        } else {
           curArg.push(curToken);
         }
         break;
       case types.PAREN:
-        if (curToken.text === '(') {
+      case types.SQUARE_PAREN:
+        if (curToken.text === '(' || curToken.text === '[') {
           level++;
-        }
-        else {
+        } else {
           level--;
         }
         // Don't break
@@ -397,11 +476,10 @@ function findLastFunc(tokens){
           }
         }
       }
-      if (token.type === types.PAREN) {
-        if (token.text === '(') {
-          i = getNextCloseParen(tokens, i);
-        }
-        else {
+      if ([types.PAREN, types.SQUARE_PAREN].includes(token.type)) {
+        if (['(', '['].includes(token.text)) {
+          i = getNextCloseParen(tokens, i, token.type);
+        } else {
           throw 'Error: unbalanced paremtheses';
         }
       }
@@ -411,20 +489,17 @@ function findLastFunc(tokens){
     if (strF === undefined) {
       strF = token.text;
       index = i;
-    }
-    // lowest priority always
-    else if (['+', '-'].includes(token.text)) {
+    } else if (['+', '-'].includes(token.text)) {
+      // always lowest priority
+      strF = token.text;
+      index = i;
+    } else if (['*', '/'].includes(token.text) && !['+', '-'].includes(strF)) {
+      // only lowest priority if no add or subtract
       strF = token.text;
       index = i;
     }
-    // only lowest priority if no add or subtract
-    else if (['*', '/'].includes(token.text) && !['+', '-'].includes(strF)) {
-      strF = token.text;
-      index = i;
-    }
-    // No case for ^ because it's set only if strF is undefined so far
+    // No case for ^ because it's set if(f) strF is undefined so far
   }
-  //
   switch (strF) {
     case '^':
       func = raise;
@@ -451,11 +526,11 @@ function findLastFunc(tokens){
 
 const namedFuncStrings = [
   'exp', 'ln', 'log', 'cos', 'sin', 'tan', 'sinh', 'cosh', 'tet', 'sqrt',
-  'Re', 'Im'
+  'Re', 'Im', 'Arg', 'Mod', 'iterate'
 ];
 const namedFuncs = [
   exp, log, log, cosine, sine, tangent, sinh, cosh, tetrate, (x) => raise(x, real(0.5)),
-  Re, Im
+  Re, Im, Arg, Mod, iterate
 ];
 
 function matchKnownFunc(strF) {
@@ -463,20 +538,47 @@ function matchKnownFunc(strF) {
   if (ind >= 0) {
     return namedFuncs[ind];
   }
-  // Log base n, e.g. 'log10'
-  if (strF.match(/log[0-9]+/g) !== null) {
-    let base = parseFloat(strF.match(/[0-9]+/g));
-    return ((x) => logBaseN(base, x));
-  }
-
   return null;
 }
 
+// Some functions require '[...]' to be complete
+// e.g. 'iterate[func, n, var](z)''
+function funcHasSquareParens(strF) {
+  if (strF === 'iterate') {
+    return true;
+  }
+  return false;
+}
 
+// Turn 'iterate[g,n,x]' into a single function.
+// @param tokens - the tokens from inside the square brackets
+// @param output - output.length is set to the number of
+//  variables within the square brackets
+function getRealFuncFromSquareParens(f, tokens, output){
+  let args = splitArguments(tokens);
+  if (f === iterate) {
+    if (args.length !== 3) {
+      throw 'wrong number of parameters for iterate';
+    } else if (args[2].length !== 1 || args[2][0].type !== types.STR) {
+      throw 'third parameter for iterate should be a single variable';
+    }
+    let varName = args[2][0].text;
+    // Allow hella variables
+    let newVarAry = new Array(2**10).fill(null);
+    newVarAry[0] = varName;
 
-
-
-// cl(parse(tokenize('tet(x, 2)')));
-//
-// let f=functify(parse(tokenize('tet(x, 2)')));
-// cl(f(real(2)));
+    let g = functify(parse2(args[0], newVarAry));
+    let n = functify(parse2(args[1], []))();
+    if (n instanceof Array) {
+      n = n[0];
+    } else {
+      throw 'second parameter for iterate should be an integer';
+    }
+    n = Math.floor(n);
+    if (n <= 0) {
+      throw 'second parameter for iterate should be >0';
+    }
+    output.length = newVarAry.indexOf(null);
+    return iterate(g, n);
+  }
+}

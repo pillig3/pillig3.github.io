@@ -2,7 +2,7 @@
 complexFunction -> expr
 
 expr -> expr infixFunction expr
-      | namedFunction '(' [expr]* ')'
+      | namedFunction '(' [expr ',']* expr ')'
       | prefixFunction expr
       | '(' expr ')'
       | special
@@ -13,10 +13,12 @@ infixFunction -> + | - | * | / | ^
 prefixFunction -> -
 
 namedFunction -> 'sin'
-                | 'cos'
-                | 'ln'
-                | 'log'
-                | 'exp'
+               | 'cos'
+               | 'ln'
+               | 'log'
+               | 'exp'
+               | 'tet'
+               | 'iterate[' expr ',' number ',' variable ']'
 
 special -> 'sum_{' variable '=' number '}^{' number '}' expr
 
