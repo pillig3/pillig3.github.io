@@ -184,7 +184,7 @@ button.chomp_button, button.chomp_button:active, button.chomp_button:hover, butt
   height: 75px;
   float: left;
   outline: 0;
-  background-image: url("/images/chocobar.webp");
+  background-image: url("/images/chocobar.jpg");
   background-position: 0px 0px;
 }
 button.poison_button {
@@ -197,7 +197,7 @@ button.poison_button {
   height: 75px;
   float: left;
   outline: 0;
-  background-image: url("/images/sans1.webp"), url("/images/chocobar.webp");
+  background-image: url("/images/sans1.png"), url("/images/chocobar.jpg");
   background-position: 0px 4px, 0px 0px;
 }
 

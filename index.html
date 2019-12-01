@@ -10,20 +10,25 @@
   <meta name="description" content="web">
   <meta name="author" content="Peter Illig">
   <script type="text/javascript" async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <link href="https://fonts.googleapis.com/css?family=Rokkitt:300&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
-  <h1 class="title"> Hello! </h1>
+  <h1 class="title" style="font-family: cursive;"> Hello! </h1>
 
   <div id="navdiv"></div>
 
   <div id="content">
     <p>
       <p style="padding-top: 10px;">
-        Hello and welcome to my website! It's a collection of things I think are cool, mainly programs and math problems.
+        Welcome to my website! Here I collect and/or create things I think are cool, like programs, or math.
       </p>
       <p class=centered>
-        <img src="/images/tetinv52.webp" height=500px alt="graph of tetration" />
+        <picture>
+          <source type="image/webp" srcset="/images/tetinv52.webp">
+          <img src="/images/tetinv52.png" height=500px alt="graph of tetration" >
+        </picture>
         <br />
         Figure 1. A graph of the complex function \( f(z) = \left. (1/z)^{(1/z)^{...^{(1/z)}}} \right\} 52\textrm{ times} \)
       </p>

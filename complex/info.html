@@ -92,7 +92,7 @@
             Iterates the function \(f\), \(n\) times, treating \(f\) as a function of varName.
             For example, if \(f(x,y) = x^2+y\), then iterate[f,2,x] becomes \( (x^2+y)^2+y \). So iterate[f,2,x](y,y) = \( (y^2+y)^2+y \) is a function of a single variable and can be plotted!
             <br />Another example, <a href="/complex.html#iterate[x^2+z,40,x](z,z)&-0.7332,0&2.8">iterate[x^2+z,40,x](z,z)</a> gives an approximation of the Mandelbrot set.
-            <br />You can even nest it! <a href="/complex.html#iterate[iterate[x^3+y^2+z,5,x](y,y,z),5,y](z,z)&0,0&1.6">iterate[iterate[x^3+y^2+z,5,x](y,y,z),5,y](z,z)</a>
+            <br />You can even nest it! <a href="/complex.html#iterate[iterate[x^3+y^2+z,5,x](y,y,z),5,y](z,z)&0,0&1.6">iterate[iterate[x^3+y^2+z,5,x](y,y,z),5,y](z,z)</a> (the order of the parameters is the order in which they appear in the inner function)
           </td>
         </tr>
       </table>
@@ -114,14 +114,20 @@
         </tr>
         <tr>
           <td style="text-align: center;">
-            <img src="/images/mathcalO.webp" alt="fancy O" style="width: 32px;">
+            <picture>
+              <source type="image/webp" srcset="/images/mathcalO.webp">
+              <img src="/images/mathcalO.png" width=32px alt="fancy O">
+            </picture>
           </td><td>
             Resets the view, so that the center is 0 and the width is 10.
           </td>
         </tr>
         <tr>
           <td style="text-align: center;">
-            <img src="/images/lockAspectRatio.webp" alt="lock" style="width: 32px;">
+            <picture>
+              <source type="image/webp" srcset="/images/lockAspectRatio.webp">
+              <img src="/images/lockAspectRatio.png" width=32px alt="lock">
+            </picture>
           </td><td>
             Locks/unlocks the aspect ratio, and hides/shows an input box for window height.
             If the aspect ratio is locked (default), the height is automatically set based on the width.
@@ -129,21 +135,30 @@
         </tr>
         <tr>
           <td style="text-align: center;">
-            <img src="/images/magnifier.webp" alt="magnifying glass" style="width: 32px;">
+            <picture>
+              <source type="image/webp" srcset="/images/magnifier.webp">
+              <img src="/images/magnifier.png" width=32px alt="magnifying glass">
+            </picture>
           </td><td>
             Changes the resolution (number of pixels)
           </td>
         </tr>
         <tr>
           <td style="text-align: center;">
-            <img src="/images/link.webp" alt="chain link" style="width: 32px;">
+            <picture>
+              <source type="image/webp" srcset="/images/link.webp">
+              <img src="/images/link.png" width=32px alt="chain link">
+            </picture>
           </td><td>
             Copies a link to the current view to the clipboard.
           </td>
         </tr>
         <tr>
           <td style="text-align: center;">
-            <img src="/images/i.webp" alt="i" style="width: 32px;">
+            <picture>
+              <source type="image/webp" srcset="/images/i.webp">
+              <img src="/images/i.png" width=32px alt="i">
+            </picture>
           </td><td>
             Takes you to this page... you probably already figured this one out
           </td>
@@ -153,8 +168,5 @@
   </div>
 
   <br /><br /><br /><br /><br /><br />
-  <p class="centered">
-    <a href="#top">top of page</a>
-  </p>
   <script type="text/javascript" src="/js/nav.js"></script>
 </body>

@@ -133,7 +133,7 @@
         <td>+, -, *, /, %</td><td>Add, subtract, multiply, divide, modulo</td><td>Pops the top two values off the TOSS, performs the operation in question, and pushes the result
         onto the TOSS. The first value popped will be on the right hand side of the operator. For instance, 5 3 - becomes 2.
         Division is integer division, with the result rounded down to the nearest integer.
-        Modulo behaves as it does in JavaScript, C, etc. &ndash; it will be \(\leq\)0 iff the left hand side is negative. Anything mod 0 is 0 by convention.</td>
+        Modulo behaves as it does in JavaScript, C, etc. &ndash; it will be \(\leq\)0 iff the left hand side is negative. Anything mod 0 is 0 by convention (and the Befungian philosophy of not having errors).</td>
       </tr>
       <tr>
         <td>. (period)</td><td>Output integer</td><td>Pops a value off the TOSS and writes it to output as an integer in base ten, followed by a space. (if you don't want the space, print a backspace character after (character code 8) </td>
@@ -263,12 +263,7 @@
       </tr>
     </table>
 
-
     <br /><br /><br /><br /><br /><br />
-    <p class="centered">
-      <a href="#top">top of page</a>
-    </p>
-
   </div>
   <script type="text/javascript" src="/js/nav.js"></script>
 
