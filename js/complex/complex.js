@@ -104,7 +104,7 @@ function center() {
 
 // Copy to clipboard button
 function copyLink() {
-  let link = "https://peterillig.xyz/complex.html#"
+  let link = "https://pillig3.github.io/complex.html#"
   link += view.lastFuncStr.replace(/ /g, '%20') + '&'; // Function
   link += view.center[0] + ',' + view.center[1] + '&'; // Center
   link += view.width;
