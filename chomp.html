@@ -29,15 +29,14 @@
   <div id="navdiv"></div>
 
   <div id="content">
-    <p>
+    <div class="card">
       Chomp is a two-player game about eating chocolate!
       The rules are simple: To play, two people (or in this case, a person and a computer) take turns removing any
       square, plus all squares above and to the right.
       E.g. if you take the square with coordinates \((x,y)\) (the origin is the lower left square), then all squares
       \((i,j)\) with \(i\geq x\) and \(j\geq y\) are also removed.
       Whichever player takes the bottom left square loses, and the other player wins.
-    </p>
-    <p>
+      <br/>
       Since this game is <a href="//mathworld.wolfram.com/FiniteGame.html">finite</a>,
       <a href="//www.whatgamesare.com/determinism.html">deterministic</a>, and
       <a href="//mathworld.wolfram.com/ImpartialGame.html">impartial</a>, with no draws,
@@ -46,11 +45,10 @@
       always has a winning strategy (can you show which player has the winning strategy?).
       However, this strategy is not known in general (for arbitrarily large boards), and only recently have results been
       found for \(3\times n\) boards.
-    </p>
-    <p>
+    </div>
+    <div class="card">
       What size of chocolate bar would you like to play on?
-    </p>
-    <p>
+    <br />
       <select id="chompRowNumber">
         <option value=2>2</option>
         <option selected value=3>3</option>
@@ -76,7 +74,8 @@
         <option value=10>10</option>
       </select> <label for=chompColumnNumber>columns</label>
       <button onClick="setupChomp()">Play!</button></h3>
-    </p>
+    </div>
+    <br />
 
     <table id="chomp_table">
       <tbody>
@@ -101,12 +100,12 @@
       </tbody>
     </table>
 
-    <p id="message_space">&nbsp;</p><br />
+    <p id="message_space">&nbsp;</p>
     <div id="loading_space">
       <div class="fakeloader"></div>
     </div>
     <p>&nbsp;</p>
-    <p>
+    <div class="card">
       For more information on Chomp, see:
       <ul class="mathList">
         <li>
@@ -128,9 +127,9 @@
             and \(3\times n\) chomp</a>
         </li>
       </ul>
-    </p>
+    </div>
     <script src="/ts/gen/chomp.js"></script>
-    <br /><br /><br /><br /><br /><br />
+
   </div>
   <script type="text/javascript" src="/js/nav.js"></script>
 </body>

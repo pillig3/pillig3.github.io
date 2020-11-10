@@ -6,17 +6,35 @@ h1.title {
   font-weight: lighter;
 }
 
+h2 {
+  margin-block-start: auto;
+}
+
+.card {
+  background-color: white;
+  width: 100%;
+  min-height: 20px;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+div.problemNumber {
+  font-size: 14pt;
+  margin-bottom: 5px;
+  border-radius: .5em;
+}
 
 #content {
   display: inline-block;
   left: calc(100% / 3 - 100% / 6);
-  width: calc(100% * 2 / 3);
+  max-width: calc(100% * 2 / 3);
   font-family: "Times New Roman";
   font-weight: normal;
 }
 
 body {
-  background-color: #FFF0FF;
+  background-color: #D3EDED;
 }
 
 a {
@@ -43,6 +61,12 @@ a {
 }
 
 #navdiv {
+  float: left;
+  padding: 0;
+  width: calc(100% / 3 - 100% / 6);
+  text-align: center;
+}
+#navigation_sidebar {
   float: left;
   padding: 0;
   width: calc(100% / 3 - 100% / 6);
@@ -87,10 +111,10 @@ p{
 
 span{
   &.code {
-    background-color: black;
-    color: limegreen;
+    // background-color: black;
+    color: black;
     font-family: monospace;
-    padding: 0 3px;
+    padding: 1px 1px;
   }
 
   &.red {

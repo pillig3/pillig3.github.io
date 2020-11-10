@@ -15,26 +15,15 @@
 </head>
 
 <body>
-  <h1 class="title" style="font-family: cursive;"> Hello! </h1>
+  <h1 class="title"> Hello! </h1>
+  <div id="navigation_sidebar"></div>
+  <div id="content"></div>
 
-  <div id="navdiv"></div>
-
-  <div id="content">
-    <p>
-      <p style="padding-top: 10px;">
-        Welcome to my website! Here you'll find a collection of things I made and/or thought were neat. For instance, Figure [<a href="#fig1">1</a>]
-      </p>
-      <p class=centered id="fig1">
-        <picture>
-          <source type="image/webp" srcset="/images/tetinv52.webp">
-          <img src="/images/tetinv52.png" height=500px alt="graph of tetration" >
-        </picture>
-        <br />
-        Figure 1. A graph of the complex function \( f(z) = \left. (1/z)^{(1/z)^{...^{(1/z)}}} \right\} 52\textrm{ times} \)
-      </p>
-      <p>Pretty neat, right?</p>
-      <br /><br /><br /><br /><br /><br />
-    </p>
-  </div>
-  <script type="text/javascript" src="/js/nav.js"></script>
+  <!-- Load React -->
+  <!-- Note: "development.js" <==> "production.min.js" -->
+  <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+  <!-- Load React components -->
+  <script src="/js/navigation_sidebar.js"></script>
+  <script src="/js/index.js"></script>
 </body>

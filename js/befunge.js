@@ -897,7 +897,7 @@ function toggleDarkMode(){
 }
 
 function setColors(bkgColor, txtColor) {
-  document.body.style.backgroundColor = darkMode ? "darkgray" : "#fff0ff";
+  document.body.style.backgroundColor = darkMode ? "darkgray" : "#D3EDED";
   var ids = ["befungeOutput", "befungeCode"];
   if (showDisplay) {
     ids = ids.concat("befungeDisplay", "befungeStack", "pauseInterval");

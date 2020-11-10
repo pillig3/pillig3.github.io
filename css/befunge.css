@@ -6,6 +6,21 @@ h1.title {
   font-weight: lighter;
 }
 
+.card {
+  background-color: white;
+  width: 100%;
+  min-height: 20px;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+div.problemNumber {
+  font-size: 14pt;
+  margin-bottom: 5px;
+  border-radius: 0.5em;
+}
+
 #content {
   display: inline-block;
   left: calc(100% / 3 - 100% / 6);
@@ -15,7 +30,7 @@ h1.title {
 }
 
 body {
-  background-color: #FFF0FF;
+  background-color: #D3EDED;
 }
 
 a {
@@ -39,6 +54,13 @@ a.sidebarlink:hover {
 }
 
 #navdiv {
+  float: left;
+  padding: 0;
+  width: calc(100% / 3 - 100% / 6);
+  text-align: center;
+}
+
+#navigation_sidebar {
   float: left;
   padding: 0;
   width: calc(100% / 3 - 100% / 6);
@@ -74,10 +96,9 @@ p.centered {
 }
 
 span.code {
-  background-color: black;
-  color: limegreen;
+  color: black;
   font-family: monospace;
-  padding: 0 3px;
+  padding: 1px 1px;
 }
 span.red {
   color: red;
