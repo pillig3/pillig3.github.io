@@ -31,12 +31,12 @@ div#allInputDiv div.input {
   border-width: thin;
   border-color: black;
   border-radius: 5px;
-  height: 1em;
+  height: 1.2em;
   overflow-x: visible;
   overflow-y: visible;
   margin: 0.5em;
   padding-top: 0.5em;
-  padding-bottom: 0.7em;
+  padding-bottom: 0.5em;
   padding-left: 0.5em;
   padding-right: 0.5em;
   position: sticky;
@@ -71,7 +71,7 @@ div#allInputDiv div.input span.hoverText {
   opacity: 0;
   width: 100%;
   left: 0;
-  height: 1em;
+  height: 1.2em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   top: 100%;
@@ -165,12 +165,12 @@ div#errorDiv {
   border-width: thin;
   border-color: black;
   border-radius: 5px;
-  height: 1em;
+  height: 1.2em;
   overflow-x: visible;
   overflow-y: visible;
   margin: 0.5em;
   padding-top: 0.5em;
-  padding-bottom: 0.7em;
+  padding-bottom: 0.5em;
   padding-left: 0.5em;
   padding-right: 0.5em;
   position: sticky;
@@ -181,7 +181,7 @@ div#errorDiv {
   color: black;
   bottom: 0;
   width: 75%;
-  height: 1.5em;
+  height: 1.7em;
   margin-left: 12.5%;
   text-align: center;
   text-shadow: 1px 1px 2px lightgrey;

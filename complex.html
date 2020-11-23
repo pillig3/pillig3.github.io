@@ -1,7 +1,16 @@
 <!doctype html>
 <html lang=en>
+
 <head>
-  <link rel=apple-touch-icon sizes=180x180 href=/favicon/apple-touch-icon.webp><link rel=icon type=image/png sizes=32x32 href=/favicon/favicon-32x32.webp><link rel=icon type=image/png sizes=16x16 href=/favicon/favicon-16x16.webp><link rel=manifest href=/favicon/site.webmanifest><link rel=mask-icon href=/favicon/safari-pinned-tab.svg color=#5bbad5><link rel=shortcut icon href=/favicon/favicon.ico><meta name=msapplication-TileColor content=#da532c><meta name=msapplication-config content=/favicon/browserconfig.xml><meta name=theme-color content=#ffffff>
+  <link rel=apple-touch-icon sizes=180x180 href=/favicon/apple-touch-icon.webp>
+  <link rel=icon type=image/png sizes=32x32 href=/favicon/favicon-32x32.webp>
+  <link rel=icon type=image/png sizes=16x16 href=/favicon/favicon-16x16.webp>
+  <link rel=manifest href=/favicon/site.webmanifest>
+  <link rel=mask-icon href=/favicon/safari-pinned-tab.svg color=#5bbad5>
+  <link rel=shortcut icon href=/favicon/favicon.ico>
+  <meta name=msapplication-TileColor content=#da532c>
+  <meta name=msapplication-config content=/favicon/browserconfig.xml>
+  <meta name=theme-color content=#ffffff>
   <meta name=viewport content="width=device-width, initial-scale=1">
   <meta charset=utf-8>
   <title>Complex Plotter</title>
@@ -9,29 +18,34 @@
   <meta name=author content=Peter Illig>
   <link rel=stylesheet href=/css/complex.css>
 </head>
+
 <body id=body>
   <canvas id=myCanvas width=1440 height=900 tabindex=0></canvas>
   <div id=allInputDiv>
     <div class=input id=inputDiv>
-      <textarea id=mainInput contenteditable autofocus=true autocomplete=off autocorrect=off autocapitalize=off spellcheck=false></textarea>
+      <textarea id=mainInput contenteditable autofocus=true autocomplete=off autocorrect=off autocapitalize=off
+        spellcheck=false></textarea>
       <label for=mainInput>
         <span class=hoverText>function</span>
       </label>
     </div>
     <div class=input id=widthDiv>
-      <textarea id=widthInput contenteditable autofocus=true autocomplete=off autocorrect=off autocapitalize=off spellcheck=false></textarea>
+      <textarea id=widthInput contenteditable autofocus=true autocomplete=off autocorrect=off autocapitalize=off
+        spellcheck=false></textarea>
       <label for=widthInput>
         <span class=hoverText>width</span>
       </label>
     </div>
     <div class=input id=heightDiv hidden>
-      <textarea id=heightInput contenteditable autofocus=true autocomplete=off autocorrect=off autocapitalize=off spellcheck=false></textarea>
+      <textarea id=heightInput contenteditable autofocus=true autocomplete=off autocorrect=off autocapitalize=off
+        spellcheck=false></textarea>
       <label for=heightInput>
         <span class=hoverText>height</span>
       </label>
     </div>
     <div class=input id=centerDiv>
-      <textarea id=centerInput contenteditable autofocus=true autocomplete=off autocorrect=off autocapitalize=off spellcheck=false></textarea>
+      <textarea id=centerInput contenteditable autofocus=true autocomplete=off autocorrect=off autocapitalize=off
+        spellcheck=false></textarea>
       <label for=centerInput>
         <span class=hoverText>center</span>
       </label>

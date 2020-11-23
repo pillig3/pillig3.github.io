@@ -24,7 +24,7 @@ body{
 /*******************/
 $input-margin: 0.5em;
 $border-radius: 5px;
-$inputDiv-height: 1em;
+$inputDiv-height: 1.2em;
 
 @mixin inputDivFormat() {
   background: white;
@@ -37,7 +37,7 @@ $inputDiv-height: 1em;
   overflow-y: visible;
   margin: $input-margin;
   padding-top: $input-margin;
-  padding-bottom: .7em;
+  padding-bottom: $input-margin;
   padding-left: $input-margin;
   padding-right: $input-margin;
   position: sticky;
