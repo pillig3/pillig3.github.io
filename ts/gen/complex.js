@@ -389,6 +389,7 @@ define("funcTrees", ["require", "exports", "complexNumbers"], function (require,
         }
         return undefined; // should never happen
     }
+    //#endregion
     //=========================//
     //         Tokenize        //
     //     string -> Tokens    //

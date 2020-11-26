@@ -44,10 +44,10 @@ function strToNum(str: string): any {
  * Class for a node in the parse tree
  */
 class Node {
-  f: Function | ((...args: any) => any);
+  f: ComplexFunction;
   children: any[];
 
-  constructor(f: Function | ((...args: any) => any), children: any[]) {
+  constructor(f: ComplexFunction, children: any[]) {
     this.f = f;
     this.children = children;
   }
@@ -57,12 +57,13 @@ class Node {
 //          Evaluate         //
 //      Node -> Function     //
 //===========================//
+//#region Evaluate functions
 
 type ComplexFunction = (...args: ComplexNumber[]) => ComplexNumber;
 
 // Turns a Node into a function
 // could be improved a lot
-function functify(n: Node): Function | ((...args: any) => any) {
+function functify(n: Node): ComplexFunction {
   if (n.children === undefined || n.children.length === 0) {
     if (n.f !== undefined) {
       return n.f;
@@ -79,7 +80,7 @@ function functify(n: Node): Function | ((...args: any) => any) {
   return func;
 }
 
-function childToFunc(child: NodeChild): Function | ((...args: any) => any) {
+function childToFunc(child: NodeChild): ComplexFunction {
   if (child instanceof Node) {
     return functify(child);
   } else if (typeof child === 'string') {
@@ -98,7 +99,7 @@ function childToFunc(child: NodeChild): Function | ((...args: any) => any) {
         str += 'n' + i + ',';
       }
       str += 'n' + pos;
-      return new Function(str, 'return n' + pos + ';');
+      return new Function(str, 'return n' + pos + ';') as ComplexFunction;
     }
   } else if (typeof child === 'number') {
     return () => real(child);
@@ -107,6 +108,8 @@ function childToFunc(child: NodeChild): Function | ((...args: any) => any) {
   }
   return undefined; // should never happen
 }
+
+//#endregion
 
 //=========================//
 //         Tokenize        //
@@ -651,7 +654,7 @@ function funcHasSquareParens(strF: string): boolean {
  * @param output output.length is set to the number of variables within the square brackets
  * @returns The iterated function
  */
-function getRealFuncFromSquareParens(f: (...args: any) => any, tokens: Token[], output: { length: number; }): Function | ((...args: any) => any) {
+function getRealFuncFromSquareParens(f: (...args: any) => any, tokens: Token[], output: { length: number; }): ComplexFunction {
   let args = splitArguments(tokens);
   if (f === iterate) {
     if (args.length !== 3) {

@@ -254,7 +254,7 @@ function normalizeTheta(θ: number): number {
  * @param f The function
  * @param n Number of times to iterate it
  */
-function iterate(f: IterateFunction | Function | ((...args: any) => any), n: number): IterateFunction | Function | ((...args: any) => any) {
+function iterate(f: IterateFunction, n: number): IterateFunction {
   if (n <= 0) {
     return (_x) => 0;
   } else if (n === 1) {
