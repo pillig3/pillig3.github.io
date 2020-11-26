@@ -14,7 +14,3 @@ choco.png                                 | [Baboon Designs](https://thenounproj
 mushroom.png                              | [Lucian Novosel](https://thenounproject.com/lucian.novosel)
 heart.png                                 | [Bohdan Burmich](http://thenounproject.com/b4bb)
 
-
-All code in this repository was written by me. To the extent legally possible,
-I waive all copyright and related or neighboring rights to it through the
-CC0 1.0 Universal public domain dedication.
