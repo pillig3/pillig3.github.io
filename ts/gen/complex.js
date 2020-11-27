@@ -119,6 +119,13 @@ define("complexNumbers", ["require", "exports"], function (require, exports) {
     }
     exports.raise = raise;
     /**
+     * Returns the square root of a complex number
+     */
+    function sqrt(z) {
+        return raise(z, real(0.5));
+    }
+    exports.sqrt = sqrt;
+    /**
      * Returns the sine of the complex number - sin z = ( e^(i z) - e^(-i z) ) / (2i)
      */
     function sine(z) {
@@ -282,119 +289,33 @@ define("complexNumbers", ["require", "exports"], function (require, exports) {
     exports.iterate = iterate;
 });
 //#endregion
-define("funcTrees", ["require", "exports", "complexNumbers"], function (require, exports, complexNumbers_1) {
+define("tokenize", ["require", "exports"], function (require, exports) {
     "use strict";
     exports.__esModule = true;
+    var LETTERS = (function () {
+        var letters = [];
+        for (var i = 65; i <= 90; i++)
+            letters.push(String.fromCharCode(i));
+        for (var i = 97; i <= 122; i++)
+            letters.push(String.fromCharCode(i));
+        return letters;
+    })();
+    var DIGITS = '0123456789'.split('');
+    var ALPHANUMERICS = LETTERS.concat(DIGITS);
+    var ARITHMETIC_FUNCTIONS = '+-*/^'.split('');
+    /**
+     * Enum for the type of a token
+     */
     var TokenType;
     (function (TokenType) {
-        TokenType[TokenType["FUNCTION"] = 1] = "FUNCTION";
-        TokenType[TokenType["PAREN"] = 2] = "PAREN";
-        TokenType[TokenType["STR"] = 3] = "STR";
-        TokenType[TokenType["NUM"] = 4] = "NUM";
-        TokenType[TokenType["COMMA"] = 5] = "COMMA";
-        TokenType[TokenType["SQUARE_PAREN"] = 6] = "SQUARE_PAREN";
+        TokenType[TokenType["Function"] = 0] = "Function";
+        TokenType[TokenType["Parenthesis"] = 1] = "Parenthesis";
+        TokenType[TokenType["String"] = 2] = "String";
+        TokenType[TokenType["Number"] = 3] = "Number";
+        TokenType[TokenType["Comma"] = 4] = "Comma";
+        TokenType[TokenType["SquareBracket"] = 5] = "SquareBracket";
     })(TokenType || (TokenType = {}));
-    /**
-     * Returns the function from the input string
-     * @param str The input string
-     */
-    function strToFunc(str) {
-        return functify(parse(tokenize(str)));
-    }
-    exports.strToFunc = strToFunc;
-    /**
-     * Takes a string and returns the number
-     */
-    function strToNum(str) {
-        var vars = [];
-        var rslt;
-        try {
-            rslt = parse2(tokenize(str), vars);
-            if (rslt instanceof Array) {
-                return rslt;
-            }
-            else if (typeof rslt === 'string') {
-                throw 'Center should be a complex number';
-            }
-            return functify(rslt)();
-        }
-        catch (e) {
-            throw 'Center should be a complex number';
-        }
-    }
-    exports.strToNum = strToNum;
-    /**
-     * Class for a node in the parse tree
-     */
-    var Node = /** @class */ (function () {
-        function Node(f, children) {
-            this.f = f;
-            this.children = children;
-        }
-        return Node;
-    }());
-    // Turns a Node into a function
-    // could be improved a lot
-    function functify(n) {
-        if (n.children === undefined || n.children.length === 0) {
-            if (n.f !== undefined) {
-                return n.f;
-            }
-            return childToFunc(n);
-        }
-        var results = [];
-        for (var i = 0; i < n.children.length; i++) {
-            results.push(childToFunc(n.children[i]));
-        }
-        var func = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            return n.f.apply(n, results.map(function (g) { return g.apply(void 0, args); }));
-        };
-        return func;
-    }
-    function childToFunc(child) {
-        if (child instanceof Node) {
-            return functify(child);
-        }
-        else if (typeof child === 'string') {
-            return function (x) { return x; };
-        }
-        else if (child instanceof Array) {
-            // needs to come before object
-            return function () { return child; };
-        }
-        else if (typeof child === 'object') {
-            // Variable with specified position
-            var pos = child.pos;
-            if (pos === 1) {
-                return function (x) { return x; };
-            }
-            else {
-                var str = 'n1,';
-                for (var i = 2; i < pos; i++) {
-                    str += 'n' + i + ',';
-                }
-                str += 'n' + pos;
-                return new Function(str, 'return n' + pos + ';');
-            }
-        }
-        else if (typeof child === 'number') {
-            return function () { return complexNumbers_1.real(child); };
-        }
-        else if (typeof child === 'function') {
-            return child;
-        }
-        return undefined; // should never happen
-    }
-    //#endregion
-    //=========================//
-    //         Tokenize        //
-    //     string -> Tokens    //
-    //=========================//
-    //#region Tokenize functions
+    exports.TokenType = TokenType;
     /**
      * Represents a string buffer that gets one character at a time
      */
@@ -404,7 +325,7 @@ define("funcTrees", ["require", "exports", "complexNumbers"], function (require,
             this.ary = str.split('');
         }
         /**
-         * Gets the next character in the string
+         * Gets the next character in the string, or undefined if there is not one
          */
         StrBuffer.prototype.nextChar = function () {
             return this.ary[this.ind++];
@@ -427,6 +348,7 @@ define("funcTrees", ["require", "exports", "complexNumbers"], function (require,
         }
         return Token;
     }());
+    exports.Token = Token;
     /**
      * Tokenizes a string and returns a list of the tokens
      * @param str The input string
@@ -435,62 +357,89 @@ define("funcTrees", ["require", "exports", "complexNumbers"], function (require,
     function tokenize(str) {
         var sb = new StrBuffer(str);
         var tokens = [];
-        var letters = [];
-        for (var i = 65; i <= 90; i++)
-            letters.push(String.fromCharCode(i));
-        for (var i = 97; i <= 122; i++)
-            letters.push(String.fromCharCode(i));
-        var digits = '0123456789'.split('');
-        var alphanum = letters.concat(digits);
-        var arithFuncs = '+-*/^'.split('');
         for (var c = sb.nextChar(); c !== undefined; c = sb.nextChar()) {
             var token = c;
-            var type = 0;
-            if (arithFuncs.indexOf(c) >= 0) {
-                type = TokenType.FUNCTION;
+            var type = void 0;
+            if (ARITHMETIC_FUNCTIONS.indexOf(c) >= 0) {
+                type = TokenType.Function;
             }
-            else if (['(', ')'].indexOf(c) >= 0) {
-                type = TokenType.PAREN;
+            else if (c === '(' || c === ')') {
+                type = TokenType.Parenthesis;
             }
-            else if (['[', ']'].indexOf(c) >= 0) {
-                type = TokenType.SQUARE_PAREN;
+            else if (c === '[' || c === ']') {
+                type = TokenType.SquareBracket;
             }
             else if (c === ',') {
-                type = TokenType.COMMA;
+                type = TokenType.Comma;
             }
-            else if (letters.indexOf(c) >= 0) {
-                // var, i, pi, e, sin, exp, ln, etc...
-                while (alphanum.indexOf(c = sb.nextChar()) >= 0) {
+            else if (LETTERS.indexOf(c) >= 0) {
+                // variable, i, pi, sin, etc.
+                while (ALPHANUMERICS.indexOf(c = sb.nextChar()) >= 0) {
                     token += c;
                 }
                 sb.backup();
-                type = TokenType.STR;
+                type = TokenType.String;
             }
-            else if (digits.indexOf(c) >= 0 || c === '.') {
-                // number
+            else if (DIGITS.indexOf(c) >= 0 || c === '.') {
+                // Number
                 var hasDot = (c === '.');
-                while (digits.indexOf(c = sb.nextChar()) >= 0 || c === '.') {
+                while (DIGITS.indexOf(c = sb.nextChar()) >= 0 || c === '.') {
                     if (c === '.') {
                         if (hasDot) {
                             throw ('Too many dots in a number: ' + token + '.');
                         }
-                        hasDot = true;
+                        else {
+                            hasDot = true;
+                        }
                     }
                     token += c;
                 }
                 sb.backup();
-                type = TokenType.NUM;
+                type = TokenType.Number;
             }
             else if (c === ' ') {
                 continue;
             }
             else {
-                throw ('Unrecognized character: ' + c);
+                throw 'Unrecognized character: ' + c;
             }
             tokens.push(new Token(token, type));
         }
         return tokens;
     }
+    exports.tokenize = tokenize;
+});
+define("parse", ["require", "exports", "complexNumbers", "functify", "tokenize"], function (require, exports, complexNumbers_1, functify_1, tokenize_1) {
+    "use strict";
+    exports.__esModule = true;
+    var NamedFunctions = {
+        'exp': complexNumbers_1.exp,
+        'ln': complexNumbers_1.log,
+        'log': complexNumbers_1.log,
+        'cos': complexNumbers_1.cosine,
+        'sin': complexNumbers_1.sine,
+        'tan': complexNumbers_1.tangent,
+        'sinh': complexNumbers_1.sinh,
+        'cosh': complexNumbers_1.cosh,
+        'tet': complexNumbers_1.tetrate,
+        'sqrt': complexNumbers_1.sqrt,
+        'Re': complexNumbers_1.Re,
+        'Im': complexNumbers_1.Im,
+        'Arg': complexNumbers_1.Arg,
+        'Mod': complexNumbers_1.Mod,
+        'iterate': complexNumbers_1.iterate
+    };
+    /**
+     * Class for a node in the parse tree
+     */
+    var Node = /** @class */ (function () {
+        function Node(f, children) {
+            this.f = f;
+            this.children = children;
+        }
+        return Node;
+    }());
+    exports.Node = Node;
     /**
      * Takes an array of tokens and turns it into a tree structure, returning the root Node
      * @param tokens The array of tokens from tokenize()
@@ -501,127 +450,367 @@ define("funcTrees", ["require", "exports", "complexNumbers"], function (require,
         if (vars === undefined) {
             vars = [null]; //Only allow one variable (for now)
         }
-        var rslt = parse2(tokens, vars);
+        var rslt = parseRec(tokens, vars);
         if (rslt instanceof Array) {
-            return new Node(function (x) { return x; }, rslt);
-        }
-        else if (typeof rslt === 'string') {
             return new Node(function (x) { return x; }, [rslt]);
         }
-        return rslt;
+        else if (!(rslt instanceof Node)) {
+            return new Node(function (x) { return x; }, [rslt]);
+        }
+        else {
+            return rslt;
+        }
     }
+    exports.parse = parse;
     /**
      * Recursive version of parse
-     * @param tokens Array of tokens from tokenize()
-     * @param vars Array with the variables we've encountered so far and open space for the number of remaining variables allowed
-     * @returns The root Node of the parsed tree or the single child
      */
-    function parse2(tokens, vars) {
+    function parseRec(tokens, vars) {
         if (tokens.length === 0) {
             throw 'Syntax error (I don\'t know what to do with this input)';
         }
         var children = [];
-        var _a = findLastFunc(tokens), func = _a[0], index = _a[1];
-        if (func !== undefined) {
-            if (func === complexNumbers_1.subtract && index === 0) {
-                // Actually a negative sign
+        var tokenOne = tokens[0];
+        // See if it's an arithmetic function
+        var _a = findLastFunc(tokens), funcName = _a.funcName, index = _a.index;
+        if (funcName !== '') {
+            if (funcName === '-' && index === 0) {
+                // Actually a negative sign, not minus
                 children.push(complexNumbers_1.real(0));
             }
             else {
-                children.push(parse2(tokens.slice(0, index), vars));
+                children.push(parseRec(tokens.slice(0, index), vars));
             }
-            if (func === implicit_mult) {
-                func = complexNumbers_1.mult;
+            if (funcName === 'implicit_mult') {
                 index -= 1;
             }
-            children.push(parse2(tokens.slice(index + 1), vars));
-            return new Node(func, children);
+            children.push(parseRec(tokens.slice(index + 1), vars));
+            return new Node(getFuncFromArithFuncString(funcName), children);
         }
-        var token1 = tokens[0];
+        // See if it's a single thing
         if (tokens.length === 1) {
-            var unit = unitize(token1, vars);
-            if (typeof unit === 'function') {
-                throw token1.text + ' called without arguments';
+            var unit_1 = turnTokenIntoChild(tokenOne, vars);
+            if (typeof unit_1 === 'function') {
+                throw tokenOne.text + ' called without arguments';
             }
-            return unit;
+            return unit_1;
         }
-        if (['(', '['].indexOf(token1.text) >= 0) {
-            var closePos = getNextCloseParen(tokens, 0, token1.type);
-            // entirely inside ()?
+        // See if it's a parenthesis
+        if (tokenOne.text === '(' || tokenOne.text === '[') {
+            var closePos = getNextCloseParen(tokens, 0, tokenOne.type);
             if (closePos === tokens.length - 1) {
-                return parse2(tokens.slice(1, tokens.length - 1), vars);
+                // Entirely inside parens
+                return parseRec(tokens.slice(1, tokens.length - 1), vars);
             }
-            // multiplication
-            func = complexNumbers_1.mult;
-            children.push(parse2(tokens.slice(1, closePos), vars));
-            children.push(parse2(tokens.slice(closePos + 1), vars));
-            return new Node(func, children);
+            else {
+                // Otherwise, multiplication
+                children.push(parseRec(tokens.slice(1, closePos), vars));
+                children.push(parseRec(tokens.slice(closePos + 1), vars));
+                return new Node(complexNumbers_1.mult, children);
+            }
         }
-        // Named function?
-        if ((func = matchKnownFunc(token1.text)) !== null) {
+        // See if it's a named function
+        if (isNamedFunction(tokenOne.text)) {
+            var func = matchKnownFunc(tokenOne.text);
             if (tokens[1].text === '(') {
-                if (funcHasSquareParens(token1.text)) {
-                    throw token1.text + ' should be called with square braces';
+                // Function without square brackets
+                if (funcHasSquareBrackets(tokenOne.text)) {
+                    throw tokenOne.text + ' should be called with square brackets';
                 }
-                var endInd = getNextCloseParen(tokens, 1, TokenType.PAREN);
+                var endInd = getNextCloseParen(tokens, 1, tokenize_1.TokenType.Parenthesis);
                 var args = splitArguments(tokens.slice(2, endInd));
                 if (args.length !== func.length) {
-                    throw 'Wrong number of parameters passed to ' + token1.text;
+                    throw 'Wrong number of parameters passed to ' + tokenOne.text;
                 }
                 if (endInd === tokens.length - 1) {
-                    return new Node(func, args.map(function (x) { return parse2(x, vars); }));
+                    // All tokens are arguments - here we know func is a ComplexFunction since it does not have square brackets
+                    return new Node(func, args.map(function (x) { return parseRec(x, vars); }));
                 }
-                // otherwise we're multiplying with the next part
-                children.push(new Node(func, args.map(function (x) { return parse2(x, vars); })));
-                children.push(parse2(tokens.slice(endInd + 1), vars));
-                return new Node(complexNumbers_1.mult, children);
+                else {
+                    // There are tokens past the arguments - we're multiplying with the next part
+                    children.push(new Node(func, args.map(function (x) { return parseRec(x, vars); })));
+                    children.push(parseRec(tokens.slice(endInd + 1), vars));
+                    return new Node(complexNumbers_1.mult, children);
+                }
             }
             else if (tokens[1].text === '[') {
-                if (!funcHasSquareParens(token1.text)) {
-                    throw token1.text + ' should not be called with square braces';
+                // Function with square brackets
+                if (!funcHasSquareBrackets(tokenOne.text)) {
+                    throw tokenOne.text + ' should not be called with square brackets';
                 }
-                var endInd = getNextCloseParen(tokens, 1, TokenType.SQUARE_PAREN);
-                var output = { length: 0 };
-                var realFunc = getRealFuncFromSquareParens(func, tokens.slice(2, endInd), output);
-                tokens = tokens.slice(endInd + 1); // Everything after the []
+                var endInd = getNextCloseParen(tokens, 1, tokenize_1.TokenType.SquareBracket);
+                var _b = getComplexFuncFromFuncWithSquareBrackets(tokenOne.text, tokens.slice(2, endInd)), complexFunc = _b.complexFunc, numArgs = _b.numArgs;
+                // Now we just need everything after the square brackets
+                tokens = tokens.slice(endInd + 1);
                 if (tokens.length === 0 || tokens[0].text !== '(') {
-                    throw 'No parameters passed to ' + token1.text;
+                    throw 'No parameters passed to ' + tokenOne.text;
                 }
-                // Get arguments
-                endInd = getNextCloseParen(tokens, 0, TokenType.PAREN);
-                var args = splitArguments(tokens.slice(1, endInd));
-                if (args.length < output.length) {
-                    throw 'Not enough parameters passed to ' + token1.text;
+                // Get the arguments
+                var argsEndInd = getNextCloseParen(tokens, 0, tokenize_1.TokenType.Parenthesis);
+                var args = splitArguments(tokens.slice(1, argsEndInd));
+                if (args.length < numArgs) {
+                    throw 'Not enough parameters passed to ' + tokenOne.text;
                 }
-                if (endInd === tokens.length - 1) {
-                    return new Node(realFunc, args.map(function (x) { return parse2(x, vars); }));
+                if (argsEndInd === tokens.length - 1) {
+                    // Everything is in the parentheses
+                    return new Node(complexFunc, args.map(function (x) { return parseRec(x, vars); }));
                 }
-                // otherwise we're multiplying with the next part
-                children.push(new Node(realFunc, args.map(function (x) { return parse2(x, vars); })));
-                children.push(parse2(tokens.slice(endInd + 1), vars));
-                return new Node(complexNumbers_1.mult, children);
+                else {
+                    // There are tokens past the arguments - we're multiplying with the next part
+                    children.push(new Node(complexFunc, args.map(function (x) { return parseRec(x, vars); })));
+                    children.push(parseRec(tokens.slice(argsEndInd + 1), vars));
+                    return new Node(complexNumbers_1.mult, children);
+                }
             }
-            // Otherwise no parens (e.g.  'cos x', or even 'cos sin x')
-            // Only allow this with 1-arg functions
-            if (func.length > 1) {
-                throw 'Missing parentheses';
+            else {
+                // Function called without parens/brackets (e.g. 'cos x' or 'cos sin x')
+                // Only allow this with 1-argument functions
+                if (func.length > 1) {
+                    throw 'Missing parentheses for ' + tokenOne.text;
+                }
+                return new Node(func, [parseRec(tokens.slice(1), vars)]);
             }
-            return new Node(func, parse2(tokens.slice(1), vars));
         }
-        // Then it's just implicit multiplication
-        children.push(unitize(token1, vars));
-        children.push(parse2(tokens.slice(1), vars));
+        // Otherwise it's just implicit multiplication
+        var unit = turnTokenIntoChild(tokenOne, vars);
+        if (typeof unit === 'function') {
+            throw tokenOne.text + ' called without arguments';
+        }
+        children.push(unit);
+        children.push(parseRec(tokens.slice(1), vars));
         return new Node(complexNumbers_1.mult, children);
     }
     /**
-     * Turns a token into a node, complex number, variable, or function
+     * Find lowest priority elementary function outside of parentheses (PEMDAS) and its index in the token list
+     * @param tokens The list of tokens
+     * @returns The pair [lowest-priority function, index in the token list]
+     * For example,
+     * ['2', 'x', '+', 'sin', '3'] => [add, 2]
+     * ['2', 'x', '*', 'sin', '3'] => [mult, 2]
+     * ['2', 'sin', 'x']           => [implicit_mult, 1]
+     */
+    function findLastFunc(tokens) {
+        var strF = '';
+        var index;
+        for (var i = 0; i < tokens.length; i++) {
+            var token = tokens[i];
+            if (token.type !== tokenize_1.TokenType.Function) {
+                // Check for implicit multiplication
+                if (i > 0) {
+                    var prevToken = tokens[i - 1];
+                    if (prevToken.type !== tokenize_1.TokenType.Function) {
+                        // must have 2 tokens next to each other that are each either
+                        // a number, a variable, or a parenthesis
+                        if (!(['+', '-'].indexOf(strF) >= 0) // +/- are lower priority
+                            && ([tokenize_1.TokenType.Number, tokenize_1.TokenType.String].indexOf(prevToken.type) >= 0 || prevToken.text === ')')
+                            && ([tokenize_1.TokenType.Number, tokenize_1.TokenType.String].indexOf(token.type) >= 0 || token.text === '(')
+                            && !isNamedFunction(prevToken.text)) {
+                            strF = 'implicit_mult';
+                            index = i;
+                        }
+                    }
+                }
+                if ([tokenize_1.TokenType.Parenthesis, tokenize_1.TokenType.SquareBracket].indexOf(token.type) >= 0) {
+                    if (['(', '['].indexOf(token.text) >= 0) {
+                        i = getNextCloseParen(tokens, i, token.type);
+                    }
+                    else {
+                        console.log(tokens);
+                        throw 'Error: unbalanced paremtheses';
+                    }
+                }
+                continue;
+            }
+            // always some function if one exists
+            if (strF === '') {
+                strF = token.text;
+                index = i;
+            }
+            else if (['+', '-'].indexOf(token.text) >= 0) {
+                // always lowest priority
+                strF = token.text;
+                index = i;
+            }
+            else if (['*', '/'].indexOf(token.text) >= 0 && !(['+', '-'].indexOf(strF) >= 0)) {
+                // only lowest priority if no add or subtract
+                strF = token.text;
+                index = i;
+            }
+            // No case for ^ because it's set if(f) strF is empty so far
+        }
+        return { funcName: strF, index: index };
+    }
+    /**
+     * Returns whether the string is a known function (like ln, tet, etc.)
+     */
+    function isNamedFunction(strF) {
+        return (NamedFunctions[strF] !== undefined);
+    }
+    /**
+     * Matches the string to a known function
+     */
+    function matchKnownFunc(strF) {
+        return NamedFunctions[strF];
+    }
+    /**
+     * Returns whether the function uses square brackets
+     */
+    function funcHasSquareBrackets(strF) {
+        return strF === 'iterate';
+    }
+    /**
+     * Gets the position of the closing parenthesis matching the opening parenthesis at the given position
+     * @param tokens The list of tokens
+     * @param i The position of the opening parenthesis
+     * @param parenType Either TokenType.Parenthesis or TokenType.SquareBracket to tell which type of paren we're looking for
+     */
+    function getNextCloseParen(tokens, i, parenType) {
+        var level = 1;
+        var open;
+        var close;
+        if (parenType === tokenize_1.TokenType.Parenthesis) {
+            open = '(';
+            close = ')';
+        }
+        else if (parenType === tokenize_1.TokenType.SquareBracket) {
+            open = '[';
+            close = ']';
+        }
+        else {
+            throw 'getNextCloseParen called incorrectly. Shame on the developer!';
+        }
+        var j;
+        for (j = i + 1; j < tokens.length; j++) {
+            switch (tokens[j].text) {
+                case open:
+                    level++;
+                    break;
+                case close:
+                    level--;
+                    break;
+                default:
+                    break;
+            }
+            if (level === 0) {
+                break;
+            }
+        }
+        if (j > tokens.length - 1) {
+            throw 'Error: unbalanced paremtheses';
+        }
+        return j;
+    }
+    function getFuncFromArithFuncString(arithFuncString) {
+        switch (arithFuncString) {
+            case '+':
+                return complexNumbers_1.add;
+            case '-':
+                return complexNumbers_1.subtract;
+            case '*':
+                return complexNumbers_1.mult;
+            case '/':
+                return complexNumbers_1.divide;
+            case '^':
+                return complexNumbers_1.raise;
+            case 'implicit_mult':
+                return complexNumbers_1.mult;
+            default:
+                throw 'getFuncFromArithFuncString called incorrectly. Shame on the developer!';
+        }
+    }
+    /**
+     * Given a list of tokens passed into a function, returns a list where the nth entry is the list of tokens corresponding to the nth argument.
+     * @param tokens The tokens passed into a function
+     * @returns A list of arguments (each argument is a list of tokens)
+     * For example, if the overall input is: tet(2*n, 35 tet(1, 2))
+     * then pass tokens = ['2', 'n', ',', '35', 'tet', '(', '1', '2', ')']
+     * and this returns [ ['2', 'n'], ['35', 'tet', '(', '1', '2', ')'] ]
+     */
+    function splitArguments(tokens) {
+        var args = [], curArg = [];
+        var level = 0;
+        for (var i = 0; i < tokens.length; i++) {
+            var curToken = tokens[i];
+            switch (curToken.type) {
+                case tokenize_1.TokenType.Comma:
+                    if (level === 0) {
+                        args.push(curArg);
+                        curArg = [];
+                    }
+                    else {
+                        curArg.push(curToken);
+                    }
+                    break;
+                case tokenize_1.TokenType.Parenthesis:
+                case tokenize_1.TokenType.SquareBracket:
+                    if (curToken.text === '(' || curToken.text === '[') {
+                        level++;
+                    }
+                    else {
+                        level--;
+                    }
+                // Don't break
+                default:
+                    curArg.push(curToken);
+                    break;
+            }
+        }
+        args.push(curArg);
+        return args;
+    }
+    /**
+     * Turn a functin with square brackets ('function[arg1, arg2, ...]') into a single function
+     * @param strF The function as a string (only 'iterate' supported for now)
+     * @param tokens The tokens from inside the square brackets
+     * @returns The complex function and the number of arguments that should be passed to the complex function
+     */
+    function getComplexFuncFromFuncWithSquareBrackets(strF, tokens) {
+        var args = splitArguments(tokens);
+        if (strF === 'iterate') {
+            // Function is iterate[g, n, varName]
+            if (args.length !== 3) {
+                throw 'wrong number of square-bracket parameters for iterate';
+            }
+            else if (args[2].length !== 1 || args[2][0].type !== tokenize_1.TokenType.String) {
+                throw 'third parameter for iterate should be a single variable';
+            }
+            var varName = args[2][0].text;
+            // Allow [arbitrary large number] variables
+            var newVarAry = createFilledArray(200, null);
+            newVarAry[0] = varName;
+            var g = functify_1.functify(parse(args[0], newVarAry));
+            var n = functify_1.functify(parse(args[1], []))()[0];
+            if (n <= 0) {
+                throw 'second parameter for iterate should be > 0';
+            }
+            return { complexFunc: complexNumbers_1.iterate(g, Math.floor(n)), numArgs: newVarAry.indexOf(null) };
+        }
+        else {
+            // Not supported
+            throw 'getComplexFuncFromFuncWithSquareBrackets called incorrectly. Shame on the developer!';
+        }
+    }
+    /**
+     * Create an array filled with a value
+     * @param size The size for the array
+     * @param value The value to fill the array
+     */
+    function createFilledArray(size, value) {
+        var ary = [];
+        for (var index = 0; index < size; index++) {
+            ary.push(value);
+        }
+        return ary;
+    }
+    /**
+     * Turn a single token into a thing that can be a child of a Node
      * @param token The token
      * @param vars Array with the variables we've encountered so far and open space for the number of remaining variables allowed
+     * @returns The token turned into a type that can be a child of a Node
      */
-    function unitize(token, vars) {
-        var fn;
+    function turnTokenIntoChild(token, vars) {
         switch (token.type) {
-            case TokenType.STR:
+            case tokenize_1.TokenType.String:
                 if (token.text === 'i') {
                     return complexNumbers_1.imag(1);
                 }
@@ -631,28 +820,36 @@ define("funcTrees", ["require", "exports", "complexNumbers"], function (require,
                 else if (token.text === 'pi') {
                     return complexNumbers_1.real(Math.PI);
                 }
-                else if ((fn = matchKnownFunc(token.text)) !== null) {
+                else if (isNamedFunction(token.text)) {
+                    var fn = matchKnownFunc(token.text);
+                    if (token.text === 'iterate') {
+                        throw 'iterate cannot be used like this (I\'m not sure what you entered, but it\'s wrong)';
+                    }
                     return fn;
                 }
-                // Otherwise, it's a variable
-                if (!canUseVar(token.text, vars)) {
-                    throw tooManyVarsErr(token.text, vars);
+                else {
+                    // Otherwise, it's a variable
+                    if (!canUseVar(token.text, vars)) {
+                        throw tooManyVarsErr(token.text, vars);
+                    }
+                    var ind = vars.indexOf(token.text);
+                    var variable = {
+                        name: token.text,
+                        position: ind + 1
+                    };
+                    return variable;
                 }
-                var ind = vars.indexOf(token.text);
-                return { text: token.text, pos: ind + 1 };
-            case TokenType.NUM:
+            case tokenize_1.TokenType.Number:
                 return complexNumbers_1.real(parseFloat(token.text));
-            case TokenType.COMMA:
+            case tokenize_1.TokenType.Comma:
                 throw 'Rogue comma detected';
-            case TokenType.FUNCTION:
-            case TokenType.PAREN:
             default:
-                console.log(token);
-                throw 'Something went wrong (this should never happen)';
+                throw 'Something went wrong; encountered "' + token.text + '" where I did not expect it. Shame on the developer!';
         }
     }
     /**
-     * Determines whether we can use a variable with this name given the variables seen so far
+     * Determines whether we can use a variable with this name given the variables seen so far. Also adds variable to the variable array if we can use it.
+     * @param varName The name of the potential variable
      * @param vars Array with the variables we've encountered so far and open space for the number of remaining variables allowed
      */
     function canUseVar(varName, varAry) {
@@ -695,267 +892,99 @@ define("funcTrees", ["require", "exports", "complexNumbers"], function (require,
         err += 'and ' + extraVar;
         return err;
     }
+});
+define("functify", ["require", "exports", "complexNumbers", "parse", "tokenize"], function (require, exports, complexNumbers_2, parse_1, tokenize_2) {
+    "use strict";
+    exports.__esModule = true;
     /**
-     * Gets the position of the closing parenthesis matching the opening parenthesis at the given position
-     * @param tokens The list of tokens
-     * @param i The position of the opening parenthesis
-     * @param parenType Either TokenType.PAREN or TokenType.SQUARE_PAREN to tell which type of paren we're looking for
+     * Returns a function from an input string (or throws an error on invalid input)
+     * @param str The input string
      */
-    function getNextCloseParen(tokens, i, parenType) {
-        var level = 1;
-        var open;
-        var close;
-        if (parenType === TokenType.PAREN) {
-            open = '(';
-            close = ')';
-        }
-        else if (parenType === TokenType.SQUARE_PAREN) {
-            open = '[';
-            close = ']';
-        }
-        else {
-            throw 'getNextCloseParen called incorrectly. Shame on the developer';
-        }
-        var j;
-        for (j = i + 1; j < tokens.length; j++) {
-            switch (tokens[j].text) {
-                case open:
-                    level++;
-                    break;
-                case close:
-                    level--;
-                    break;
-                default:
-                    break;
-            }
-            if (level === 0) {
-                break;
-            }
-        }
-        if (j > tokens.length - 1) {
-            throw 'Error: unbalanced paremtheses';
-        }
-        return j;
+    function strToFunc(str) {
+        return functify(parse_1.parse(tokenize_2.tokenize(str)));
     }
-    //#endregion
-    //===================//
-    //  Tools for using  //
-    //     functions     //
-    //===================//
-    //#region Function helpers
+    exports.strToFunc = strToFunc;
     /**
-     * Given a list of tokens passed into a function, returns a list where the nth entry is the list of tokens corresponding to the nth argument.
-     * @param tokens The tokens passed into a function
-     * @returns A list of arguments (each argument is a list of tokens)
-     * For example, if the overall input is: tet(2*n, 35 tet(1, 2))
-     * then pass tokens = ['2', 'n', ',', '35', 'tet', '(', '1', '2', ')']
-     * and this returns [ ['2', 'n'], ['35', 'tet', '(', '1', '2', ')'] ]
+     * Returns a complex number from an input string (or throws an error on invalid input)
+     * @param str The input string
      */
-    function splitArguments(tokens) {
-        var args = [], curArg = [];
-        var level = 0;
-        for (var i = 0; i < tokens.length; i++) {
-            var curToken = tokens[i];
-            switch (curToken.type) {
-                case TokenType.COMMA:
-                    if (level === 0) {
-                        args.push(curArg);
-                        curArg = [];
-                    }
-                    else {
-                        curArg.push(curToken);
-                    }
-                    break;
-                case TokenType.PAREN:
-                case TokenType.SQUARE_PAREN:
-                    if (curToken.text === '(' || curToken.text === '[') {
-                        level++;
-                    }
-                    else {
-                        level--;
-                    }
-                // Don't break
-                default:
-                    curArg.push(curToken);
-                    break;
-            }
+    function strToNum(str) {
+        var vars = [];
+        try {
+            var rslt = parse_1.parse(tokenize_2.tokenize(str), vars);
+            return functify(rslt)();
         }
-        args.push(curArg);
-        return args;
+        catch (e) {
+            throw 'Input must be a complex number';
+        }
     }
+    exports.strToNum = strToNum;
     /**
-     * Implicit multiplication function - wrapper for multiplication
-     * @param args The complex numbers to multiply
+     * Turns a Node into a function on the complex numbers
+     * TODO: Could be improved by not creating so many functions
+     * @param n The node
+     * @returns A complex function corresponding to the parse tree entered
      */
-    function implicit_mult() {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
+    function functify(n) {
+        if (n.children === undefined || n.children.length === 0) {
+            return n.f;
         }
-        if (args.length > 1) {
-            return complexNumbers_1.mult(args[0], args[1]);
+        // Turn each child into a function
+        var results = [];
+        for (var i = 0; i < n.children.length; i++) {
+            results.push(childToFunc(n.children[i]));
         }
-        return [0, 0];
+        // Then create a function that calls the Node's function on the result of calling each child function with the given arguments
+        var func = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return n.f.apply(n, results.map(function (g) { return g.apply(void 0, args); }));
+        };
+        return func;
     }
+    exports.functify = functify;
     /**
-     * Find lowest priority elementary function outside of parentheses (PEMDAS) and its index in the token list
-     * @param tokens The list of tokens
-     * @returns The pair [lowest-priority function, index in the token list]
-     * For example,
-     * ['2', 'x', '+', 'sin', '3'] => [add, 2]
-     * ['2', 'x', '*', 'sin', '3'] => [mult, 2]
-     * ['2', 'sin', 'x']           => [implicit_mult, 1]
+     * Turns a child of a Node into a function on the complex numbers
      */
-    function findLastFunc(tokens) {
-        var strF, index, func;
-        for (var i = 0; i < tokens.length; i++) {
-            var token = tokens[i];
-            if (token.type !== TokenType.FUNCTION) {
-                // Check for implicit multiplication
-                if (i > 0) {
-                    var prevToken = tokens[i - 1];
-                    if (prevToken.type !== TokenType.FUNCTION) {
-                        // must have 2 tokens next to each other that are each either
-                        // a number, a variable, or a parenthesis
-                        if (!(['+', '-'].indexOf(strF) >= 0) // +/- are lower priority
-                            && ([TokenType.NUM, TokenType.STR].indexOf(prevToken.type) >= 0 || prevToken.text === ')')
-                            && ([TokenType.NUM, TokenType.STR].indexOf(token.type) >= 0 || token.text === '(')
-                            && matchKnownFunc(prevToken.text) === null) {
-                            strF = 'implicit_mult';
-                            index = i;
-                        }
-                    }
-                }
-                if ([TokenType.PAREN, TokenType.SQUARE_PAREN].indexOf(token.type) >= 0) {
-                    if (['(', '['].indexOf(token.text) >= 0) {
-                        i = getNextCloseParen(tokens, i, token.type);
-                    }
-                    else {
-                        throw 'Error: unbalanced paremtheses';
-                    }
-                }
-                continue;
-            }
-            // always some function if one exists
-            if (strF === undefined) {
-                strF = token.text;
-                index = i;
-            }
-            else if (['+', '-'].indexOf(token.text) >= 0) {
-                // always lowest priority
-                strF = token.text;
-                index = i;
-            }
-            else if (['*', '/'].indexOf(token.text) >= 0 && !(['+', '-'].indexOf(strF) >= 0)) {
-                // only lowest priority if no add or subtract
-                strF = token.text;
-                index = i;
-            }
-            // No case for ^ because it's set if(f) strF is undefined so far
+    function childToFunc(child) {
+        if (child instanceof parse_1.Node) {
+            return functify(child);
         }
-        switch (strF) {
-            case '^':
-                func = complexNumbers_1.raise;
-                break;
-            case '*':
-                func = complexNumbers_1.mult;
-                break;
-            case '/':
-                func = complexNumbers_1.divide;
-                break;
-            case '+':
-                func = complexNumbers_1.add;
-                break;
-            case '-':
-                func = complexNumbers_1.subtract;
-                break;
-            case 'implicit_mult':
-                func = implicit_mult;
-            default:
-                break;
+        else if (child instanceof Array) {
+            // child is a ComplexNumber
+            return function () { return child; };
         }
-        return [func, index];
-    }
-    var namedFuncStrings = [
-        'exp', 'ln', 'log', 'cos', 'sin', 'tan', 'sinh', 'cosh', 'tet',
-        'sqrt',
-        'Re', 'Im', 'Arg', 'Mod', 'iterate'
-    ];
-    var namedFuncs = [
-        complexNumbers_1.exp, complexNumbers_1.log, complexNumbers_1.log, complexNumbers_1.cosine, complexNumbers_1.sine, complexNumbers_1.tangent, complexNumbers_1.sinh, complexNumbers_1.cosh, complexNumbers_1.tetrate,
-        function (x) { return complexNumbers_1.raise(x, complexNumbers_1.real(0.5)); },
-        complexNumbers_1.Re, complexNumbers_1.Im, complexNumbers_1.Arg, complexNumbers_1.Mod, complexNumbers_1.iterate
-    ];
-    /**
-     * Match a string to a known function
-     */
-    function matchKnownFunc(strF) {
-        var ind = namedFuncStrings.indexOf(strF);
-        if (ind >= 0) {
-            return namedFuncs[ind];
-        }
-        return null;
-    }
-    /**
-     * Return whether the function requires square parentheses
-     * e.g. 'iterate[func, n, var](z)'
-     */
-    function funcHasSquareParens(strF) {
-        if (strF === 'iterate') {
-            return true;
-        }
-        return false;
-    }
-    /**
-     * Turn 'iterate[func, n, var]' into a single function
-     * @param tokens The tokens from inside the square brackets
-     * @param output output.length is set to the number of variables within the square brackets
-     * @returns The iterated function
-     */
-    function getRealFuncFromSquareParens(f, tokens, output) {
-        var args = splitArguments(tokens);
-        if (f === complexNumbers_1.iterate) {
-            if (args.length !== 3) {
-                throw 'wrong number of parameters for iterate';
-            }
-            else if (args[2].length !== 1 || args[2][0].type !== TokenType.STR) {
-                throw 'third parameter for iterate should be a single variable';
-            }
-            var varName = args[2][0].text;
-            // Allow hella variables
-            var newVarAry = createFilledArray(Math.pow(2, 10), null);
-            newVarAry[0] = varName;
-            var g = functify(parse2(args[0], newVarAry));
-            var n = functify(parse2(args[1], []))();
-            if (n instanceof Array) {
-                n = n[0];
+        else if (typeof child === 'object') {
+            // child is a Variable
+            var position = child.position;
+            if (position === 1) {
+                // It's the first variable
+                return function (x) { return x; };
             }
             else {
-                throw 'second parameter for iterate should be an integer';
+                // It's a subsequent variable, create a function that returns the position-th argument
+                var str = 'n1,';
+                for (var i = 2; i < position; i++) {
+                    str += 'n' + i + ',';
+                }
+                str += 'n' + position;
+                return new Function(str, 'return n' + position + ';');
             }
-            n = Math.floor(n);
-            if (n <= 0) {
-                throw 'second parameter for iterate should be >0';
-            }
-            output.length = newVarAry.indexOf(null);
-            return complexNumbers_1.iterate(g, n);
         }
-    }
-    /**
-     * Create an array filled with a value
-     * @param size The size for the array
-     * @param value The value to fill the array
-     */
-    function createFilledArray(size, value) {
-        var ary = [];
-        for (var index = 0; index < size; index++) {
-            ary.push(value);
+        else if (typeof child === 'number') {
+            // Shouldn't happen but just in case
+            console.log('This shouldn\'t happen - child in childToFunc is type number');
+            return function () { return complexNumbers_2.real(child); };
         }
-        return ary;
+        else {
+            // Otherwise, should be a function
+            return child;
+        }
     }
 });
-//#endregion
-define("complex", ["require", "exports", "complexNumbers", "funcTrees"], function (require, exports, complexNumbers_2, funcTrees_1) {
+define("complex", ["require", "exports", "complexNumbers", "functify"], function (require, exports, complexNumbers_3, functify_2) {
     "use strict";
     exports.__esModule = true;
     var MIN_PIXELS = 20;
@@ -1304,7 +1333,7 @@ define("complex", ["require", "exports", "complexNumbers", "funcTrees"], functio
         var center = centerInput.value;
         if (center !== centerInput.lastValue) {
             try {
-                view.center = funcTrees_1.strToNum(center);
+                view.center = functify_2.strToNum(center);
                 centerInput.lastValue = center;
                 view.hasChanged = true;
             }
@@ -1324,7 +1353,7 @@ define("complex", ["require", "exports", "complexNumbers", "funcTrees"], functio
         if (typeof str !== 'string' || str == '')
             return;
         try {
-            f = funcTrees_1.strToFunc(str);
+            f = functify_2.strToFunc(str);
         }
         catch (e) {
             logError(e);
@@ -1405,7 +1434,7 @@ define("complex", ["require", "exports", "complexNumbers", "funcTrees"], functio
                 var i = col * MIN_PIXELS;
                 var j = row * MIN_PIXELS;
                 var res = f(toCoords(i + MIN_PIXELS / 2, j + MIN_PIXELS / 2));
-                var _a = hl2rgb(complexNumbers_2.Arg(res)[0], scaleMod(complexNumbers_2.Mod(res)[0])), r = _a[0], g = _a[1], b = _a[2];
+                var _a = hl2rgb(complexNumbers_3.Arg(res)[0], scaleMod(complexNumbers_3.Mod(res)[0])), r = _a[0], g = _a[1], b = _a[2];
                 var baseInd = ind = width * 4 * j + 4 * i;
                 for (j = 0; j < MIN_PIXELS; j++) {
                     ind = baseInd + width * 4 * j;
@@ -1435,7 +1464,7 @@ define("complex", ["require", "exports", "complexNumbers", "funcTrees"], functio
             for (var j = 0; j < height; j++) {
                 ind = width * 4 * j + 4 * i;
                 res = f(toCoords(i, j));
-                _a = hl2rgb(complexNumbers_2.Arg(res)[0], scaleMod(complexNumbers_2.Mod(res)[0])), r = _a[0], g = _a[1], b = _a[2];
+                _a = hl2rgb(complexNumbers_3.Arg(res)[0], scaleMod(complexNumbers_3.Mod(res)[0])), r = _a[0], g = _a[1], b = _a[2];
                 data[ind] = r;
                 data[ind + 1] = g;
                 data[ind + 2] = b;
@@ -1454,7 +1483,7 @@ define("complex", ["require", "exports", "complexNumbers", "funcTrees"], functio
         var mod;
         for (var i = 0; i < width; i += floor(width / samples)) {
             for (var j = 0; j < height; j += floor(height / samples)) {
-                mod = complexNumbers_2.Mod(f(toCoords(i, j)))[0];
+                mod = complexNumbers_3.Mod(f(toCoords(i, j)))[0];
                 if (!isNaN(mod) && mod !== Infinity && mod !== undefined) {
                     mods.push(mod);
                 }
@@ -1574,7 +1603,7 @@ define("complex", ["require", "exports", "complexNumbers", "funcTrees"], functio
         input.value = f;
         view.lastFuncStr = f;
         try {
-            f = funcTrees_1.strToFunc(f);
+            f = functify_2.strToFunc(f);
         }
         catch (e) {
             logError(e);

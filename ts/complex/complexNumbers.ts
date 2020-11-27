@@ -1,5 +1,5 @@
 export {
-  real, imag, Re, Im, Mod, Arg, add, subtract, mult, divide, exp, log, raise,
+  real, imag, Re, Im, Mod, Arg, add, subtract, mult, divide, exp, log, raise, sqrt,
   sine, cosine, tangent, sinh, cosh, tetrate, iterate,
   normalizeTheta, ComplexNumber
 };
@@ -115,6 +115,13 @@ function raise(z: ComplexNumber, w: ComplexNumber): ComplexNumber {
   let logzz = toPolar(Math.log(zz[0]), zz[1]);
   let ww = toPolar(w[0], w[1]);
   return exp(fromPolar(ww[0] * logzz[0], ww[1] + logzz[1]));
+}
+
+/**
+ * Returns the square root of a complex number
+ */
+function sqrt(z: ComplexNumber): ComplexNumber {
+  return raise(z, real(0.5));
 }
 
 /**

@@ -1,5 +1,5 @@
 import { Arg, Mod } from "./complexNumbers";
-import { strToFunc, strToNum } from "./funcTrees";
+import { strToFunc, strToNum } from "./functify";
 
 const MIN_PIXELS = 20;
 function dgebi(id: string): HTMLElement { return document.getElementById(id); }
