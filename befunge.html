@@ -1,22 +1,32 @@
 <!doctype html>
 
 <html lang=en>
+
 <head>
-  <link rel=apple-touch-icon sizes=180x180 href=/favicon/apple-touch-icon.webp><link rel=icon type=image/png sizes=32x32 href=/favicon/favicon-32x32.webp><link rel=icon type=image/png sizes=16x16 href=/favicon/favicon-16x16.webp><link rel=manifest href=/favicon/site.webmanifest><link rel=mask-icon href=/favicon/safari-pinned-tab.svg color=#5bbad5><link rel=shortcut icon href=/favicon/favicon.ico><meta name=msapplication-TileColor content=#da532c><meta name=msapplication-config content=/favicon/browserconfig.xml><meta name=theme-color content=#ffffff>
+  <link rel=apple-touch-icon sizes=180x180 href=/favicon/apple-touch-icon.webp>
+  <link rel=icon type=image/png sizes=32x32 href=/favicon/favicon-32x32.webp>
+  <link rel=icon type=image/png sizes=16x16 href=/favicon/favicon-16x16.webp>
+  <link rel=manifest href=/favicon/site.webmanifest>
+  <link rel=mask-icon href=/favicon/safari-pinned-tab.svg color=#5bbad5>
+  <link rel=shortcut icon href=/favicon/favicon.ico>
+  <meta name=msapplication-TileColor content=#da532c>
+  <meta name=msapplication-config content=/favicon/browserconfig.xml>
+  <meta name=theme-color content=#ffffff>
   <meta name=viewport content=width=device-width, initial-scale=1>
   <link href=/css/befunge.css rel=stylesheet type=text/css>
   <meta charset=utf-8>
   <title>Befunge</title>
   <meta name=description content=web>
   <meta name=author content=Peter Illig>
-  <!-- <script type=text/javascript src=/js/befunge.js></script> -->
-  <script type=text/javascript src=/js/befunge.min.js></script>
 </head>
 
 <body id=befunge1>
   <h1 class=title id=top> Befunge 93&ndash;&infin; </h1>
 
-  <div id=navdiv></div>
+  <div id=navigation_sidebar>
+    <!-- Placeholder -->
+    <ul class="sidebarlist"></ul>
+  </div>
 
   <div id=content>
 
@@ -26,7 +36,7 @@
       Click <span id=exampleToggler onclick=toggleExamples()>here</span> for example programs.
     </p>
 
-    <span id=examples style=font-size: 11pt;></span>
+    <span id=examples style="font-size: 11pt;"></span>
 
     <table id=buttonTable style=width:100%>
       <colgroup>
@@ -57,9 +67,11 @@
       </tr>
     </table>
 
-    <span><label for=befungeCode>Input</label></span><span class=rightAligned> <label for=dm>Darkmode</label> <input id=dm type=checkbox onclick=toggleDarkMode() /></span>
+    <span><label for=befungeCode>Input</label></span><span class=rightAligned> <label for=dm>Darkmode</label> <input
+        id=dm type=checkbox onclick=toggleDarkMode() /></span>
     <div id=befungeCodeWrapper>
-      <textarea id=befungeCode placeholder="Write some code here, or choose an example above!" rows=10 autofocus=true autocomplete=off autocorrect=off autocapitalize=off spellcheck=false></textarea>
+      <textarea id=befungeCode placeholder="Write some code here, or choose an example above!" rows=10 autofocus=true
+        autocomplete=off autocorrect=off autocapitalize=off spellcheck=false></textarea>
     </div>
 
     <div id=display>
@@ -70,13 +82,22 @@
     </div>
 
     <div id=output>
-      <span><label for=befungeOutput>Output</label></span> <span class=rightAligned> <label for=wrap>Wrap Text</label> <input id=wrap type=checkbox onclick=toggleWrap()></input> </span>
+      <span><label for=befungeOutput>Output</label></span> <span class=rightAligned> <label for=wrap>Wrap Text</label>
+        <input id=wrap type=checkbox onclick=toggleWrap()></input> </span>
       <div class=codeOutput id=befungeOutput></div>
     </div>
 
     <br /><br /><br /><br /><br /><br />
 
   </div>
-  <script type=text/javascript src=/js/nav.js></script>
 
+  <!-- Load React -->
+  <!-- Note: "development.js" <==> "production.min.js" -->
+  <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+  <!-- Load React components -->
+  <script src="/js/navigation_sidebar.js"></script>
+
+  <!-- <script type=text/javascript src=/js/befunge.js></script> -->
+  <script type=text/javascript src=/js/befunge.min.js></script>
 </body>

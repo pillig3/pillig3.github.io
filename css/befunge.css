@@ -6,6 +6,18 @@ h1.title {
   font-weight: lighter;
 }
 
+h2 {
+  margin-block-start: auto;
+}
+
+.card > h3 {
+  margin-block-start: 0;
+}
+
+.card > p {
+  margin-block-start: 0;
+}
+
 .card {
   background-color: white;
   width: 100%;
@@ -21,10 +33,19 @@ div.problemNumber {
   border-radius: 0.5em;
 }
 
+body#problemPage {
+  counter-reset: problemNum;
+}
+
+div.problemNumber::before {
+  counter-increment: problemNum;
+  content: counter(problemNum) ".";
+}
+
 #content {
   display: inline-block;
   left: calc(100% / 3 - 100% / 6);
-  width: calc(100% * 2 / 3);
+  max-width: calc(100% * 2 / 3);
   font-family: "Times New Roman";
   font-weight: normal;
 }

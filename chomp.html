@@ -26,7 +26,10 @@
 <body>
   <h1 class="title" id="top"> Chomp </h1>
 
-  <div id="navdiv"></div>
+  <div id=navigation_sidebar>
+    <!-- Placeholder -->
+    <ul class="sidebarlist"></ul>
+  </div>
 
   <div id="content">
     <div class="card">
@@ -36,7 +39,7 @@
       E.g. if you take the square with coordinates \((x,y)\) (the origin is the lower left square), then all squares
       \((i,j)\) with \(i\geq x\) and \(j\geq y\) are also removed.
       Whichever player takes the bottom left square loses, and the other player wins.
-      <br/>
+      <br />
       Since this game is <a href="//mathworld.wolfram.com/FiniteGame.html">finite</a>,
       <a href="//www.whatgamesare.com/determinism.html">deterministic</a>, and
       <a href="//mathworld.wolfram.com/ImpartialGame.html">impartial</a>, with no draws,
@@ -48,7 +51,7 @@
     </div>
     <div class="card">
       What size of chocolate bar would you like to play on?
-    <br />
+      <br />
       <select id="chompRowNumber">
         <option value=2>2</option>
         <option selected value=3>3</option>
@@ -131,5 +134,11 @@
     <script src="/ts/gen/chomp.js"></script>
 
   </div>
-  <script type="text/javascript" src="/js/nav.js"></script>
+
+  <!-- Load React -->
+  <!-- Note: "development.js" <==> "production.min.js" -->
+  <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+  <!-- Load React components -->
+  <script src="/js/navigation_sidebar.js"></script>
 </body>
