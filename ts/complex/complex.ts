@@ -1,15 +1,17 @@
 import { Arg, Mod } from "./complexNumbers";
 import { strToFunc, strToNum } from "./functify";
+import { ComplexFunction } from "./parse";
 
 const MIN_PIXELS = 20;
 function dgebi(id: string): HTMLElement { return document.getElementById(id); }
 const floor = Math.floor;
 
-var lastTimeoutID;
+var lastTimeoutID: number;
 
 interface IHTMLInputWithMemory extends HTMLInputElement {
   lastValue: string;
 }
+
 var input = dgebi('mainInput') as IHTMLInputWithMemory;
 var widthInput = dgebi('widthInput') as IHTMLInputWithMemory;
 var heightInput = dgebi('heightInput') as IHTMLInputWithMemory;
@@ -25,7 +27,28 @@ dgebi('plusMinusDiv').addEventListener('click', onButtonClick);
 canvas.addEventListener('keydown', onCanvasKey);
 for (let name of ['inputDiv', 'widthDiv', 'heightDiv']) dgebi(name).addEventListener('click', onInputDivClick);
 
-var view = {
+window.onresize = () => { view.hasChanged = true; };
+
+function onWindowLoad(): void {
+  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  let hash = window.location.hash;
+  if (hash !== '' && hash !== '#') {
+    setTimeout(drawFromHash, 0, hash.replace(/%20/g, ' '));
+  } else {
+    setCenter(0, 0);
+  }
+  view.hasChanged = true;
+}
+
+window.addEventListener("load", onWindowLoad, false);
+
+//#region View
+
+/**
+ * Contains information about the current view
+ */
+const view = {
   center: [0, 0],
   width: 10,
   height: (window.innerHeight / window.innerWidth) * 10,
@@ -42,29 +65,23 @@ var view = {
   fixAspectRatio: true
 };
 
-window.onresize = () => { view.hasChanged = true; };
-function onWindowLoad(): void {
-  canvas.height = window.innerHeight;
-  canvas.width = window.innerWidth;
-  let hash = window.location.hash;
-  if (hash !== '' && hash !== '#') {
-    setTimeout(drawFromHash, 0, hash.replace(/%20/g, ' '));
-  } else {
-    setCenter(0, 0);
-  }
-  view.hasChanged = true;
+/**
+ * Set the center of the view
+ */
+function setCenter(x: number, y: number): void {
+  view.center = [x, y];
+  centerInput.value = x + '+' + y + 'i';
+  centerInput.lastValue = centerInput.value;
 }
 
-window.addEventListener("load", onWindowLoad, false);
+//#endregion
 
+//#region Buttons
 
-//=========================//
-//         Buttons         //
-//=========================//
-
-
-// Toggle showing the rest of the buttons
-function toggleMenu() {
+/**
+ * Toggle showing the rest of the buttons
+ */
+function toggleMenu(): void {
   let menuBox = dgebi('menuBox');
   let chevronDiv = dgebi('chevronDiv');
   if (chevronDiv.classList.contains('upsidedown')) {
@@ -76,8 +93,10 @@ function toggleMenu() {
   }
 }
 
-// (Un)Fix aspect ratio button
-function showOrHideHeight() {
+/**
+ * (Un)Fix aspect ratio button
+ */
+function showOrHideHeight(): void {
   if (view.fixAspectRatio) {
     (dgebi('heightDiv') as HTMLDivElement).hidden = false;
     view.fixAspectRatio = false;
@@ -87,14 +106,10 @@ function showOrHideHeight() {
   }
 }
 
-function setCenter(x, y) {
-  view.center = [x, y];
-  centerInput.value = x + '+' + y + 'i';
-  centerInput.lastValue = centerInput.value;
-}
-
-// Origin button
-function center() {
+/**
+ * Origin button - centers at 0 + 0i
+ */
+function center(): void {
   if (view.center == [0, 0]) {
     return;
   }
@@ -107,8 +122,10 @@ function center() {
   draw(view.lastFunc);
 }
 
-// Copy to clipboard button
-function copyLink() {
+/**
+ * Copy link to clipboard button
+ */
+function copyLink(): void {
   let link = "https://pillig3.github.io/complex.html#";
   link += view.lastFuncStr.replace(/ /g, '%20') + '&'; // Function
   link += view.center[0] + ',' + view.center[1] + '&'; // Center
@@ -119,8 +136,10 @@ function copyLink() {
   navigator.clipboard.writeText(link);
 }
 
-// Change resolution button
-function changeResolution() {
+/**
+ * Change resolution button
+ */
+function changeResolution(): void {
   const pixelWidthStr = prompt('Change resolution:\nEnter a width for the image in pixels', canvas.width.toString());
   if (pixelWidthStr === null || pixelWidthStr === "") {
     return; // Cancel button
@@ -139,12 +158,16 @@ function changeResolution() {
   draw(view.lastFunc, false);
 }
 
-//=========================//
-//       Drag n Drop       //
-//=========================//
+//#endregion
 
-var dragStart;
-canvas.onmousedown = function (e) {
+//#region Drag 'n' drop
+
+var dragStart: [number, number];
+
+/**
+ * Begin the drag
+ */
+canvas.onmousedown = function (e: MouseEvent): void {
   if (e.buttons === 2) { // right-click
     return;
   }
@@ -153,9 +176,12 @@ canvas.onmousedown = function (e) {
   dragStart = [e.pageX, e.pageY];
 };
 
-function dragCanvas(e) {
-  let ratio = imageData.width / window.innerWidth;
-  let [dx, dy] = [(e.pageX - dragStart[0]) * ratio, (e.pageY - dragStart[1]) * ratio];
+/**
+ * When the mouse moves while the drag is in progress
+ */
+function dragCanvas(e: MouseEvent): void {
+  const ratio = imageData.width / window.innerWidth;
+  const [dx, dy] = [(e.pageX - dragStart[0]) * ratio, (e.pageY - dragStart[1]) * ratio];
   if (lastTimeoutID !== undefined) {
     clearTimeout(lastTimeoutID);
     lastTimeoutID = undefined;
@@ -164,7 +190,10 @@ function dragCanvas(e) {
   ctx.putImageData(imageData, dx, dy);
 }
 
-canvas.onmouseup = function (e) {
+/**
+ * When the mouse button is released
+ */
+canvas.onmouseup = function (e: MouseEvent): void {
   canvas.onmousemove = undefined;
   canvas.removeEventListener('keydown', abortIfEsc);
   if (dragStart === undefined) {
@@ -191,7 +220,10 @@ canvas.onmouseup = function (e) {
   dragStart = undefined;
 };
 
-function abortIfEsc(e) {
+/**
+ * Abort the drag if user presses the escape button
+ */
+function abortIfEsc(e: KeyboardEvent): void {
   if (e.code === 'Escape') {
     canvas.onmousemove = undefined;
     dragStart = undefined;
@@ -203,18 +235,19 @@ function abortIfEsc(e) {
   }
 }
 
+//#endregion
 
-//========================//
-//          ZOOM          //
-//========================//
+//#region Zoom in and out
 
-// Zoom in to half the current window size
-function zoomIn() {
+/**
+ * Zoom in to half the current window size
+ */
+function zoomIn(): void {
   // Make quick pixellated version to show while loading
-  let [pixelWidth, pixelHeight] = [canvas.width, canvas.height];
+  const [pixelWidth, pixelHeight] = [canvas.width, canvas.height];
   imageData = ctx.getImageData(Math.ceil(pixelWidth / 4), Math.ceil(pixelHeight / 4), floor(3 * pixelWidth / 4), floor(3 * pixelHeight / 4));
   data = imageData.data;
-  let newData = new Uint8ClampedArray(pixelWidth * pixelHeight * 4);
+  const newData = new Uint8ClampedArray(pixelWidth * pixelHeight * 4);
   let ind = 0;
   for (let row = 0; row < pixelHeight; row++) {
     let dataInd = floor(row / 2) * imageData.width * 4;
@@ -238,13 +271,15 @@ function zoomIn() {
   draw(view.lastFunc);
 }
 
-// Zoom out to twice the current window size
-function zoomOut() {
+/**
+ * Zoom out to twice the current window size
+ */
+function zoomOut(): void {
   // Make quick pixellated version to show while loading
-  let [pixelWidth, pixelHeight] = [canvas.width, canvas.height];
+  const [pixelWidth, pixelHeight] = [canvas.width, canvas.height];
   imageData = ctx.getImageData(0, 0, pixelWidth, pixelHeight);
   data = imageData.data;
-  let newData = new Uint8ClampedArray(floor(pixelWidth / 2) * floor(pixelHeight / 2) * 4);
+  const newData = new Uint8ClampedArray(floor(pixelWidth / 2) * floor(pixelHeight / 2) * 4);
   let dataInd = 0, ind = 0;
   for (let row = 0; row < floor(pixelHeight / 2); row++) {
     dataInd = pixelWidth * 2 * row * 4;
@@ -267,14 +302,15 @@ function zoomOut() {
   draw(view.lastFunc);
 }
 
+//#endregion
 
-//========================//
-//       keypresses       //
-//========================//
+//#region Key presses
 
-// when focus is on the canvas
-function onCanvasKey(e) {
-  if (e.isComposing || e.keyCode === 229) {
+/**
+ * Key pressed when focus is on the canvas
+ */
+function onCanvasKey(e: KeyboardEvent): void {
+  if (e.isComposing) {
     return;
   }
   switch (e.code) {
@@ -295,53 +331,61 @@ function onCanvasKey(e) {
   }
 }
 
-// not literally the 'control' key but like the keys
-// that control the meaning of other keypresses
-function controlKeyHeld(e) {
+/**
+ * Whether one of the 'controlling' keys is held
+ */
+function controlKeyHeld(e: KeyboardEvent): boolean {
   return e.ctrlKey || e.metaKey || e.altKey;
 }
 
-// sets focus from the containing div to the <textarea>
-function onInputDivClick(e) {
-  if (e.target.children.length > 0) {
-    e.target.children[0].focus();
+/**
+ * Sets focus from the containing div to the <textarea> - otherwise the user could
+ * click on a tiny place in the input box and not get to the input field
+ */
+function onInputDivClick(e: MouseEvent): void {
+  if ((e.target as HTMLElement).children.length > 0) {
+    (e.target as any).children[0].focus();
   }
 }
 
-// When button pressed in one of the input boxes
-function onInputKey(e) {
-  if (e.isComposing || e.keyCode === 229) {
+/**
+ * Handler when a button is pressed in one of the input boxes or buttons
+ */
+function onInputKey(e: KeyboardEvent): void {
+  if (e.isComposing) {
     return;
   }
-  let elem = e.target.id;
+  let elem = (e.target as HTMLElement).id;
   if (inputBoxes.indexOf(elem) >= 0) {
     if (e.code === 'Enter') {
       e.preventDefault();
       drawOnEnter();
     }
-    return;
   } else {
     if (e.code === 'Enter' || e.code === 'Space') {
       if (elem === 'horiz' || elem === 'vert') {
-        elem = e.target.parentNode.id;
+        elem = ((e.target as HTMLElement).parentNode as HTMLElement).id;
       }
       doFuncForElem(elem);
     }
   }
 }
 
-// When a button is clicked
-function onButtonClick(e) {
-  let elem = e.target.id;
-  if (['horiz', 'vert'].indexOf(e.target.classList[0]) >= 0) {
-    elem = e.target.parentNode.id;
+/**
+ * Handler when a button is clicked
+ */
+function onButtonClick(e: MouseEvent): void {
+  let elem = (e.target as HTMLElement).id;
+  if (['horiz', 'vert'].indexOf((e.target as HTMLElement).classList[0]) >= 0) {
+    elem = ((e.target as HTMLElement).parentNode as HTMLElement).id;
   }
   doFuncForElem(elem);
 }
 
-// Returns the function to execute when
-// the doc element is clicked/pushed/etc.
-function doFuncForElem(elem) {
+/**
+ * Execute the corresponding function when a doc element is clicked
+ */
+function doFuncForElem(elem: string) {
   switch (elem) {
     case 'plusDiv':
       zoomIn();
@@ -370,9 +414,15 @@ function doFuncForElem(elem) {
   }
 }
 
-// Draw what they entered
+//#endregion
+
+//#region Draw
+
+/**
+ * Draw what the user entered
+ */
 function drawOnEnter() {
-  let f;
+  let f: ComplexFunction;
   let str = input.value;
   let width = widthInput.value;
   let height = heightInput.value;
@@ -408,11 +458,13 @@ function drawOnEnter() {
   view.lastFuncStr = str;
 }
 
-// Set height or width
-// Returns true if property was changed
-function setViewHW(prop, val) {
+/**
+ * Set the height or width of the view
+ * @returns true if the property was changed
+ */
+function setViewHW(prop: string, val: string): boolean {
   if (val === '') {
-    return 0;
+    return false;
   }
   let newVal = parseFloat(val);
   if (typeof newVal !== 'number' || newVal <= 0 || isNaN(newVal) || newVal === Infinity) {
@@ -420,12 +472,16 @@ function setViewHW(prop, val) {
   } else if (newVal !== view[prop]) {
     view[prop] = newVal;
     view.hasChanged = true;
-    return 1;
+    return true;
   }
 }
 
-// Pop up the error message
-function logError(e: string, notAnError: boolean = false) {
+/**
+ * Display an error message
+ * @param e The error message
+ * @param notAnError True if this is more of a 'notification' than an error - the div will be grey rather than yellow
+ */
+function logError(e: string, notAnError: boolean = false): void {
   let cssClass: string = '';
   let errorDiv = dgebi('errorDiv');
   if (!notAnError) {
@@ -444,16 +500,14 @@ function logError(e: string, notAnError: boolean = false) {
   }, 4000, errorDiv);
 }
 
-
-
-//=======================//
-//   Drawing functions   //
-//=======================//
-
 type DrawCallback = () => void;
-type DrawFunction = (coords: number[]) => number[];
+type PixelToCoordsFunction = (i: number, j: number) => [number, number];
+type ScaleModFunction = (number) => number;
 
-function draw(f: DrawFunction, showLowRes: boolean = false, callback?: DrawCallback) {
+/**
+ * Draw the entered function
+ */
+function draw(f: ComplexFunction, showLowRes: boolean = false, callback?: DrawCallback): void {
   view.lastFunc = f;
   let pixelWidth = canvas.width;
   let pixelHeight = canvas.height;
@@ -482,9 +536,11 @@ function draw(f: DrawFunction, showLowRes: boolean = false, callback?: DrawCallb
   lastTimeoutID = setTimeout(drawTimeout, 0, f, 0, toCoords, scaleMod, pixelWidth, pixelHeight, callback);
 }
 
-// Draw a low resolution version of the image while full image loads
-function drawLowRes(f, toCoords, scaleMod, width, height) {
-  let ind;
+/**
+ * Draw a low resolution version of the function while the full image loads
+ */
+function drawLowRes(f: ComplexFunction, toCoords: PixelToCoordsFunction, scaleMod: ScaleModFunction, width: number, height: number): void {
+  let ind: number;
   for (let row = 0; row < Math.ceil(height / MIN_PIXELS); row++) {
     for (let col = 0; col < Math.ceil(width / MIN_PIXELS); col++) {
       let i = col * MIN_PIXELS;
@@ -507,20 +563,22 @@ function drawLowRes(f, toCoords, scaleMod, width, height) {
   ctx.putImageData(imageData, 0, 0);
 }
 
-//Draw image & update screen every handful of columns
-function drawTimeout(f, i, toCoords, scaleMod, width, height, callback) {
+/**
+ * Draw image and update screen every few columns
+ */
+function drawTimeout(f: ComplexFunction, i: number, toCoords: PixelToCoordsFunction, scaleMod: ScaleModFunction, width: number, height: number, callback: DrawCallback): void {
   if (i >= width) {
     if (callback !== undefined) {
       callback();
     }
     return;
   }
-  let ind, res, r, g, b;
+
   for (let k = 0; k < 5 && i < width; k++) {
     for (let j = 0; j < height; j++) {
-      ind = width * 4 * j + 4 * i;
-      res = f(toCoords(i, j));
-      [r, g, b] = hl2rgb(Arg(res)[0], scaleMod(Mod(res)[0]));
+      const ind = width * 4 * j + 4 * i;
+      const res = f(toCoords(i, j));
+      const [r, g, b] = hl2rgb(Arg(res)[0], scaleMod(Mod(res)[0]));
       data[ind] = r;
       data[ind + 1] = g;
       data[ind + 2] = b;
@@ -532,15 +590,16 @@ function drawTimeout(f, i, toCoords, scaleMod, width, height, callback) {
   lastTimeoutID = setTimeout(() => { drawTimeout(f, i, toCoords, scaleMod, width, height, callback); });
 }
 
-// Returns a function to turn modulus\in[0,\infty) into Lightness\in[0,1]
-// based on the median & standard deviation
-function getScaleMod(f, toCoords, width, height) {
+/**
+ * Returns a function that will turn a modulus in [0, Infinity) into a lightness in [0, 1]
+ * based on the median & standard deviation of the input function
+ */
+function getScaleMod(f: ComplexFunction, toCoords: PixelToCoordsFunction, width: number, height: number): ScaleModFunction {
   let mods = [];
   let samples = 6;
-  let mod;
   for (let i = 0; i < width; i += floor(width / samples)) {
     for (let j = 0; j < height; j += floor(height / samples)) {
-      mod = Mod(f(toCoords(i, j)))[0];
+      const mod = Mod(f(toCoords(i, j)))[0];
       if (!isNaN(mod) && mod !== Infinity && mod !== undefined) {
         mods.push(mod);
       }
@@ -577,13 +636,14 @@ function getScaleMod(f, toCoords, width, height) {
   };
 }
 
-// Returns f such that f(i, j) = [x, y]
-// where i,j are the pixel coordinates
-// and x, y are real and imaginary parts
-function getPixelToCoords(pixelWidth, pixelHeight) {
-  let width = view.width;
-  let height = view.height;
-  return function (i, j) {
+/**
+ * Returns a function f such that f(i, j) = [x, y] where i, j are the pixel coordinates and x, y
+ * are the real and imaginary parts
+ */
+function getPixelToCoords(pixelWidth: number, pixelHeight: number): PixelToCoordsFunction {
+  const width = view.width;
+  const height = view.height;
+  return function (i: number, j: number) {
     return [
       view.center[0] - width / 2 + (i / pixelWidth) * width,
       view.center[1] + height / 2 - (j / pixelHeight) * height
@@ -591,8 +651,10 @@ function getPixelToCoords(pixelWidth, pixelHeight) {
   };
 }
 
-// get median
-function getMedian(ary) {
+/**
+ * Get the median value in the array
+ */
+function getMedian(ary: number[]): number {
   ary.sort((x, y) => y - x);
   if (ary.length % 2 === 0) {
     return (ary[floor(ary.length / 2)] + ary[floor(ary.length / 2) + 1]) / 2;
@@ -600,11 +662,12 @@ function getMedian(ary) {
   return ary[floor(ary.length / 2)];
 }
 
-// turns Hue \in [0,2\pi] and Lightness \in [0,1] into RGB color
-// Input is an HSL color with S = 1
-// Source: https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_RGB
-// Returns [r, g, b] \in {0, 1, ..., 255}^3
-function hl2rgb(h, l) {
+/**
+ * Turns a hue in [0, 2pi] and lightness in [0, 1] into an RGB color
+ * Input is an HSL color with S = 1
+ * Source: https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_RGB
+ */
+function hl2rgb(h: number, l: number): number[] {
   if (isNaN(h)) {
     h = 0;
   }
@@ -612,7 +675,7 @@ function hl2rgb(h, l) {
   let h1 = h / (Math.PI / 3);
   let c = 1 - Math.abs(2 * l - 1);
   let x = c * (1 - Math.abs(h1 % 2 - 1));
-  let r, g, b;
+  let r: number, g: number, b: number;
   if (c === 0) {
     [r, g, b] = [0, 0, 0];
   } else if (h1 <= 1) {
@@ -632,9 +695,10 @@ function hl2rgb(h, l) {
   return [r, g, b].map((x) => floor((x + m) * 255));
 }
 
-// For when the url has a hash -
-// #function&centerX,centerY&width,height
-function drawFromHash(hash) {
+/**
+ * Draw from a hash in the url - this has the form #function&centerX,centerY&width,height
+ */
+function drawFromHash(hash: string): void {
   let [f, center, wh] = hash.slice(1).split('&');
   if (center !== undefined && center !== '') {
     view.center = center.split(',').map((x) => parseFloat(x));
@@ -656,20 +720,25 @@ function drawFromHash(hash) {
   input.value = f;
   view.lastFuncStr = f;
 
+  let func: ComplexFunction;
   try {
-    f = strToFunc(f);
+    func = strToFunc(f);
   } catch (e) {
     logError(e);
     return;
   }
-  draw(f, true);
+  draw(func, true);
 }
 
-// lol
-function realMod(x, y) {
+/**
+ * Gets the real value of x modulo y (none of that 'remainder' stuff)
+ */
+function realMod(x: number, y: number): number {
   if (x < 0) {
     return Math.abs(y) + x % y;
   } else {
     return x % y;
   }
 }
+
+//#endregion

@@ -1007,6 +1007,24 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         var name_1 = _a[_i];
         dgebi(name_1).addEventListener('click', onInputDivClick);
     }
+    window.onresize = function () { view.hasChanged = true; };
+    function onWindowLoad() {
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        var hash = window.location.hash;
+        if (hash !== '' && hash !== '#') {
+            setTimeout(drawFromHash, 0, hash.replace(/%20/g, ' '));
+        }
+        else {
+            setCenter(0, 0);
+        }
+        view.hasChanged = true;
+    }
+    window.addEventListener("load", onWindowLoad, false);
+    //#region View
+    /**
+     * Contains information about the current view
+     */
     var view = {
         center: [0, 0],
         width: 10,
@@ -1023,24 +1041,19 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         lastFuncStr: null,
         fixAspectRatio: true
     };
-    window.onresize = function () { view.hasChanged = true; };
-    function onWindowLoad() {
-        canvas.height = window.innerHeight;
-        canvas.width = window.innerWidth;
-        var hash = window.location.hash;
-        if (hash !== '' && hash !== '#') {
-            setTimeout(drawFromHash, 0, hash.replace(/%20/g, ' '));
-        }
-        else {
-            setCenter(0, 0);
-        }
-        view.hasChanged = true;
+    /**
+     * Set the center of the view
+     */
+    function setCenter(x, y) {
+        view.center = [x, y];
+        centerInput.value = x + '+' + y + 'i';
+        centerInput.lastValue = centerInput.value;
     }
-    window.addEventListener("load", onWindowLoad, false);
-    //=========================//
-    //         Buttons         //
-    //=========================//
-    // Toggle showing the rest of the buttons
+    //#endregion
+    //#region Buttons
+    /**
+     * Toggle showing the rest of the buttons
+     */
     function toggleMenu() {
         var menuBox = dgebi('menuBox');
         var chevronDiv = dgebi('chevronDiv');
@@ -1053,7 +1066,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
             menuBox.hidden = false;
         }
     }
-    // (Un)Fix aspect ratio button
+    /**
+     * (Un)Fix aspect ratio button
+     */
     function showOrHideHeight() {
         if (view.fixAspectRatio) {
             dgebi('heightDiv').hidden = false;
@@ -1064,12 +1079,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
             view.fixAspectRatio = true;
         }
     }
-    function setCenter(x, y) {
-        view.center = [x, y];
-        centerInput.value = x + '+' + y + 'i';
-        centerInput.lastValue = centerInput.value;
-    }
-    // Origin button
+    /**
+     * Origin button - centers at 0 + 0i
+     */
     function center() {
         if (view.center == [0, 0]) {
             return;
@@ -1082,7 +1094,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         view.manuallySet = false;
         draw(view.lastFunc);
     }
-    // Copy to clipboard button
+    /**
+     * Copy link to clipboard button
+     */
     function copyLink() {
         var link = "https://pillig3.github.io/complex.html#";
         link += view.lastFuncStr.replace(/ /g, '%20') + '&'; // Function
@@ -1093,7 +1107,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         }
         navigator.clipboard.writeText(link);
     }
-    // Change resolution button
+    /**
+     * Change resolution button
+     */
     function changeResolution() {
         var pixelWidthStr = prompt('Change resolution:\nEnter a width for the image in pixels', canvas.width.toString());
         if (pixelWidthStr === null || pixelWidthStr === "") {
@@ -1110,10 +1126,12 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         view.hasChanged = true;
         draw(view.lastFunc, false);
     }
-    //=========================//
-    //       Drag n Drop       //
-    //=========================//
+    //#endregion
+    //#region Drag 'n' drop
     var dragStart;
+    /**
+     * Begin the drag
+     */
     canvas.onmousedown = function (e) {
         if (e.buttons === 2) { // right-click
             return;
@@ -1122,6 +1140,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         canvas.addEventListener('keydown', abortIfEsc);
         dragStart = [e.pageX, e.pageY];
     };
+    /**
+     * When the mouse moves while the drag is in progress
+     */
     function dragCanvas(e) {
         var ratio = imageData.width / window.innerWidth;
         var _a = [(e.pageX - dragStart[0]) * ratio, (e.pageY - dragStart[1]) * ratio], dx = _a[0], dy = _a[1];
@@ -1132,6 +1153,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.putImageData(imageData, dx, dy);
     }
+    /**
+     * When the mouse button is released
+     */
     canvas.onmouseup = function (e) {
         canvas.onmousemove = undefined;
         canvas.removeEventListener('keydown', abortIfEsc);
@@ -1157,6 +1181,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         draw(view.lastFunc);
         dragStart = undefined;
     };
+    /**
+     * Abort the drag if user presses the escape button
+     */
     function abortIfEsc(e) {
         if (e.code === 'Escape') {
             canvas.onmousemove = undefined;
@@ -1168,10 +1195,11 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
             }
         }
     }
-    //========================//
-    //          ZOOM          //
-    //========================//
-    // Zoom in to half the current window size
+    //#endregion
+    //#region Zoom in and out
+    /**
+     * Zoom in to half the current window size
+     */
     function zoomIn() {
         // Make quick pixellated version to show while loading
         var _a = [canvas.width, canvas.height], pixelWidth = _a[0], pixelHeight = _a[1];
@@ -1200,7 +1228,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         view.height /= 2;
         draw(view.lastFunc);
     }
-    // Zoom out to twice the current window size
+    /**
+     * Zoom out to twice the current window size
+     */
     function zoomOut() {
         // Make quick pixellated version to show while loading
         var _a = [canvas.width, canvas.height], pixelWidth = _a[0], pixelHeight = _a[1];
@@ -1228,12 +1258,13 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         view.height *= 2;
         draw(view.lastFunc);
     }
-    //========================//
-    //       keypresses       //
-    //========================//
-    // when focus is on the canvas
+    //#endregion
+    //#region Key presses
+    /**
+     * Key pressed when focus is on the canvas
+     */
     function onCanvasKey(e) {
-        if (e.isComposing || e.keyCode === 229) {
+        if (e.isComposing) {
             return;
         }
         switch (e.code) {
@@ -1253,20 +1284,26 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
                 break;
         }
     }
-    // not literally the 'control' key but like the keys
-    // that control the meaning of other keypresses
+    /**
+     * Whether one of the 'controlling' keys is held
+     */
     function controlKeyHeld(e) {
         return e.ctrlKey || e.metaKey || e.altKey;
     }
-    // sets focus from the containing div to the <textarea>
+    /**
+     * Sets focus from the containing div to the <textarea> - otherwise the user could
+     * click on a tiny place in the input box and not get to the input field
+     */
     function onInputDivClick(e) {
         if (e.target.children.length > 0) {
             e.target.children[0].focus();
         }
     }
-    // When button pressed in one of the input boxes
+    /**
+     * Handler when a button is pressed in one of the input boxes or buttons
+     */
     function onInputKey(e) {
-        if (e.isComposing || e.keyCode === 229) {
+        if (e.isComposing) {
             return;
         }
         var elem = e.target.id;
@@ -1275,7 +1312,6 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
                 e.preventDefault();
                 drawOnEnter();
             }
-            return;
         }
         else {
             if (e.code === 'Enter' || e.code === 'Space') {
@@ -1286,7 +1322,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
             }
         }
     }
-    // When a button is clicked
+    /**
+     * Handler when a button is clicked
+     */
     function onButtonClick(e) {
         var elem = e.target.id;
         if (['horiz', 'vert'].indexOf(e.target.classList[0]) >= 0) {
@@ -1294,8 +1332,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         }
         doFuncForElem(elem);
     }
-    // Returns the function to execute when
-    // the doc element is clicked/pushed/etc.
+    /**
+     * Execute the corresponding function when a doc element is clicked
+     */
     function doFuncForElem(elem) {
         switch (elem) {
             case 'plusDiv':
@@ -1324,7 +1363,11 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
                 break;
         }
     }
-    // Draw what they entered
+    //#endregion
+    //#region Draw
+    /**
+     * Draw what the user entered
+     */
     function drawOnEnter() {
         var f;
         var str = input.value;
@@ -1362,11 +1405,13 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         draw(f, view.lastFuncStr !== str);
         view.lastFuncStr = str;
     }
-    // Set height or width
-    // Returns true if property was changed
+    /**
+     * Set the height or width of the view
+     * @returns true if the property was changed
+     */
     function setViewHW(prop, val) {
         if (val === '') {
-            return 0;
+            return false;
         }
         var newVal = parseFloat(val);
         if (typeof newVal !== 'number' || newVal <= 0 || isNaN(newVal) || newVal === Infinity) {
@@ -1375,10 +1420,14 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         else if (newVal !== view[prop]) {
             view[prop] = newVal;
             view.hasChanged = true;
-            return 1;
+            return true;
         }
     }
-    // Pop up the error message
+    /**
+     * Display an error message
+     * @param e The error message
+     * @param notAnError True if this is more of a 'notification' than an error - the div will be grey rather than yellow
+     */
     function logError(e, notAnError) {
         if (notAnError === void 0) { notAnError = false; }
         var cssClass = '';
@@ -1398,6 +1447,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
             ed.classList.remove(cssClass);
         }, 4000, errorDiv);
     }
+    /**
+     * Draw the entered function
+     */
     function draw(f, showLowRes, callback) {
         if (showLowRes === void 0) { showLowRes = false; }
         view.lastFunc = f;
@@ -1426,7 +1478,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         }
         lastTimeoutID = setTimeout(drawTimeout, 0, f, 0, toCoords, scaleMod, pixelWidth, pixelHeight, callback);
     }
-    // Draw a low resolution version of the image while full image loads
+    /**
+     * Draw a low resolution version of the function while the full image loads
+     */
     function drawLowRes(f, toCoords, scaleMod, width, height) {
         var ind;
         for (var row = 0; row < Math.ceil(height / MIN_PIXELS); row++) {
@@ -1450,21 +1504,21 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         }
         ctx.putImageData(imageData, 0, 0);
     }
-    //Draw image & update screen every handful of columns
+    /**
+     * Draw image and update screen every few columns
+     */
     function drawTimeout(f, i, toCoords, scaleMod, width, height, callback) {
-        var _a;
         if (i >= width) {
             if (callback !== undefined) {
                 callback();
             }
             return;
         }
-        var ind, res, r, g, b;
         for (var k = 0; k < 5 && i < width; k++) {
             for (var j = 0; j < height; j++) {
-                ind = width * 4 * j + 4 * i;
-                res = f(toCoords(i, j));
-                _a = hl2rgb(complexNumbers_3.Arg(res)[0], scaleMod(complexNumbers_3.Mod(res)[0])), r = _a[0], g = _a[1], b = _a[2];
+                var ind = width * 4 * j + 4 * i;
+                var res = f(toCoords(i, j));
+                var _a = hl2rgb(complexNumbers_3.Arg(res)[0], scaleMod(complexNumbers_3.Mod(res)[0])), r = _a[0], g = _a[1], b = _a[2];
                 data[ind] = r;
                 data[ind + 1] = g;
                 data[ind + 2] = b;
@@ -1475,15 +1529,16 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         ctx.putImageData(imageData, 0, 0);
         lastTimeoutID = setTimeout(function () { drawTimeout(f, i, toCoords, scaleMod, width, height, callback); });
     }
-    // Returns a function to turn modulus\in[0,\infty) into Lightness\in[0,1]
-    // based on the median & standard deviation
+    /**
+     * Returns a function that will turn a modulus in [0, Infinity) into a lightness in [0, 1]
+     * based on the median & standard deviation of the input function
+     */
     function getScaleMod(f, toCoords, width, height) {
         var mods = [];
         var samples = 6;
-        var mod;
         for (var i = 0; i < width; i += floor(width / samples)) {
             for (var j = 0; j < height; j += floor(height / samples)) {
-                mod = complexNumbers_3.Mod(f(toCoords(i, j)))[0];
+                var mod = complexNumbers_3.Mod(f(toCoords(i, j)))[0];
                 if (!isNaN(mod) && mod !== Infinity && mod !== undefined) {
                     mods.push(mod);
                 }
@@ -1520,9 +1575,10 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
             return Math.sqrt(Math.pow(avg, 2) - Math.pow((Math.pow((Math.max(x, 0) * avg), (1 / 2)) - avg), 2)) / (2 * avg);
         };
     }
-    // Returns f such that f(i, j) = [x, y]
-    // where i,j are the pixel coordinates
-    // and x, y are real and imaginary parts
+    /**
+     * Returns a function f such that f(i, j) = [x, y] where i, j are the pixel coordinates and x, y
+     * are the real and imaginary parts
+     */
     function getPixelToCoords(pixelWidth, pixelHeight) {
         var width = view.width;
         var height = view.height;
@@ -1533,7 +1589,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
             ];
         };
     }
-    // get median
+    /**
+     * Get the median value in the array
+     */
     function getMedian(ary) {
         ary.sort(function (x, y) { return y - x; });
         if (ary.length % 2 === 0) {
@@ -1541,10 +1599,11 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         }
         return ary[floor(ary.length / 2)];
     }
-    // turns Hue \in [0,2\pi] and Lightness \in [0,1] into RGB color
-    // Input is an HSL color with S = 1
-    // Source: https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_RGB
-    // Returns [r, g, b] \in {0, 1, ..., 255}^3
+    /**
+     * Turns a hue in [0, 2pi] and lightness in [0, 1] into an RGB color
+     * Input is an HSL color with S = 1
+     * Source: https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_RGB
+     */
     function hl2rgb(h, l) {
         var _a, _b, _c, _d, _e, _f, _g;
         if (isNaN(h)) {
@@ -1579,8 +1638,9 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         var m = l - c / 2;
         return [r, g, b].map(function (x) { return floor((x + m) * 255); });
     }
-    // For when the url has a hash -
-    // #function&centerX,centerY&width,height
+    /**
+     * Draw from a hash in the url - this has the form #function&centerX,centerY&width,height
+     */
     function drawFromHash(hash) {
         var _a = hash.slice(1).split('&'), f = _a[0], center = _a[1], wh = _a[2];
         if (center !== undefined && center !== '') {
@@ -1602,16 +1662,19 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         }
         input.value = f;
         view.lastFuncStr = f;
+        var func;
         try {
-            f = functify_2.strToFunc(f);
+            func = functify_2.strToFunc(f);
         }
         catch (e) {
             logError(e);
             return;
         }
-        draw(f, true);
+        draw(func, true);
     }
-    // lol
+    /**
+     * Gets the real value of x modulo y (none of that 'remainder' stuff)
+     */
     function realMod(x, y) {
         if (x < 0) {
             return Math.abs(y) + x % y;
@@ -1621,3 +1684,4 @@ define("complex", ["require", "exports", "complexNumbers", "functify"], function
         }
     }
 });
+//#endregion
