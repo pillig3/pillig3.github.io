@@ -13,5 +13,12 @@
     <td onclick="putExample('binomial')">Binomial</td>
     <td onclick="putExample('pi')">Pi</td>
   </tr>
+  <tr>
+    <td onclick="putExample('quine')">Quine</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
 </table>
 <p></p>
