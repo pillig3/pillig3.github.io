@@ -1,0 +1,19 @@
+{
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "files.exclude": {
+    "node_modules": true,
+    "dist": true,
+    "**/.DS_Store": true
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
