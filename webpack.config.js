@@ -12,7 +12,10 @@ module.exports = merge(
 	{
 		name: "app",
 		mode: "development",
-		entry: "./src/index.tsx",
+		entry: {
+			index: "./src/index.tsx",
+			problems: "./src/problems.tsx",
+		},
 		devtool: DEVELOPMENT ? "inline-source-map" : false,
 		dependencies: ["vendor"],
 		module: {
@@ -23,12 +26,12 @@ module.exports = merge(
 					exclude: /node_modules/
 				},
 				// {
-				// 	test: /\.webp$/i,
-				// 	type: "asset/resource",
+				// 	test: /\.katex.min.js?$/,
+				// 	loader: "script-loader",
 				// 	exclude: /node_modules/,
 				// 	options: {
-				// 		name: "./images/[name].[ext]"
-				// 	}
+				// 		name: 'katex.min.js',
+				// 	},
 				// },
 				{
 					test: /\.(png|jpe?g|gif|webp)$/i,
@@ -59,6 +62,13 @@ module.exports = merge(
 				filename: "index.html",
 				template: "./src/index.html",
 				favicon: "favicon.ico",
+				chunks: ["index"]
+			}),
+			new HtmlWebpackPlugin({
+				filename: "problems.html",
+				template: "./src/problems.html",
+				favicon: "favicon.ico",
+				chunks: ["problems"],
 			})
 		],
 		optimization: {

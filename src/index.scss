@@ -1,3 +1,8 @@
+@use "sass:math";
+
+$page-margin: 15px;
+$border-radius: 10px;
+
 html,
 body {
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
@@ -5,19 +10,22 @@ body {
 	background-color: #d3eded;
 }
 
-h1.title {
+div.title {
 	font-size: 32pt;
 	text-align: center;
 	font-variant: small-caps;
-	font-weight: lighter;
+	font-weight: 250;
+	margin: $page-margin;
+	margin-top: 0;
+	padding-top: $page-margin;
 }
 
 .card {
 	background-color: white;
 	width: calc(100% - 30px);
 	min-height: 20px;
-	border-radius: 10px;
-	margin: 15px;
+	border-radius: $border-radius;
+	margin: $page-margin;
 	margin-bottom: 10px;
 	overflow: hidden;
 }
@@ -27,11 +35,18 @@ h1.title {
 	padding: 10px;
 }
 
+// KaTeX override to make the font slightly smaller
 .katex {
 	text-rendering: auto;
 	font: normal 1.1em KaTeX_Main, Times New Roman, serif;
 	line-height: 1.2;
 	text-indent: 0;
+}
+
+// If the math goes off the screen allow scrolling
+.katex-display {
+	overflow-x: scroll;
+	overflow-y: hidden;
 }
 
 picture > img {
@@ -42,4 +57,90 @@ picture > img {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+/**
+ * Menu Styling
+ */
+$menu-collapsed-size: 50px;
+$menu-inner-side-margin: $menu-collapsed-size * 0.2;
+$menu-inner-top-margin: $menu-collapsed-size * 0.1;
+$menu-inner-button-height: $menu-collapsed-size - 2 * $menu-inner-top-margin;
+
+.menu_collapsed {
+	left: 0;
+	top: 0;
+	background-color: #fff;
+	width: $menu-collapsed-size;
+	height: $menu-collapsed-size;
+	margin: $page-margin;
+	float: left;
+	border-radius: $border-radius;
+	z-index: 100;
+	cursor: pointer;
+}
+
+.menu_expanded {
+	left: 0;
+	top: 0;
+	background-color: #fff;
+	width: auto; // $menu-collapsed-size * 3;
+	height: auto; // $menu-collapsed-size * 3;
+	margin: $page-margin;
+	float: left;
+	border-radius: $border-radius;
+	z-index: 100;
+}
+
+.menu_button {
+	left: 0;
+	top: 0;
+	background-color: #fff;
+	width: $menu-collapsed-size;
+	height: $menu-collapsed-size;
+	margin: 0;
+	border-radius: $border-radius;
+	z-index: 101;
+	cursor: pointer;
+	float: left;
+}
+
+.menu_button_inner {
+	margin: $menu-inner-side-margin;
+	margin-top: $menu-inner-top-margin;
+	margin-bottom: $menu-inner-top-margin;
+	width: $menu-collapsed-size - 2 * $menu-inner-side-margin;
+	border-top-color: #fff;
+	border-top-style: solid;
+	border-top-width: math.div($menu-inner-button-height, 7);
+	height: math.div($menu-inner-button-height * 6, 7);
+}
+
+.menu_button_line {
+	width: 100%;
+	height: math.div($menu-inner-button-height, 7);
+	margin-bottom: math.div($menu-inner-button-height, 7);
+	background-color: black;
+}
+
+a.menu_item {
+	color: black;
+	text-decoration: none;
+
+	&:hover {
+		font-weight: bold;
+	}
+}
+
+ul.menu_list {
+	list-style-type: none;
+	padding: 0;
+	margin-top: $menu-collapsed-size + math.div($menu-inner-button-height, 7);
+	margin-bottom: $menu-inner-side-margin;
+	margin-left: $menu-inner-side-margin;
+	margin-right: $menu-inner-side-margin;
+
+	li a p {
+		margin: 16px 0;
+	}
 }

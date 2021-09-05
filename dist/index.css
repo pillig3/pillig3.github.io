@@ -54,6 +54,9 @@ picture > img {
   margin-right: auto;
 }
 
+/**
+ * Menu Styling
+ */
 .menu_collapsed {
   left: 0;
   top: 0;
@@ -65,20 +68,18 @@ picture > img {
   border-radius: 10px;
   z-index: 100;
   cursor: pointer;
-  transition: all 1s ease;
 }
 
 .menu_expanded {
   left: 0;
   top: 0;
   background-color: #fff;
-  width: 150px;
-  height: 150px;
+  width: auto;
+  height: auto;
   margin: 15px;
   float: left;
   border-radius: 10px;
   z-index: 100;
-  transition: all 1s ease;
 }
 
 .menu_button {
@@ -101,13 +102,33 @@ picture > img {
   width: 30px;
   border-top-color: #fff;
   border-top-style: solid;
-  border-top-width: 5.716px;
-  height: 34.284px;
+  border-top-width: 5.7142857143px;
+  height: 34.2857142857px;
 }
 
 .menu_button_line {
   width: 100%;
-  height: 5.716px;
-  margin-bottom: 5.716px;
+  height: 5.7142857143px;
+  margin-bottom: 5.7142857143px;
   background-color: black;
+}
+
+a.menu_item {
+  color: black;
+  text-decoration: none;
+}
+a.menu_item:hover {
+  font-weight: bold;
+}
+
+ul.menu_list {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 55.7142857143px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+ul.menu_list li a p {
+  margin: 16px 0;
 }
