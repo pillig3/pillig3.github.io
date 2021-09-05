@@ -21,7 +21,23 @@ module.exports = merge(
 					test: /\.tsx?$/,
 					use: "ts-loader",
 					exclude: /node_modules/
-				}
+				},
+				// {
+				// 	test: /\.webp$/i,
+				// 	type: "asset/resource",
+				// 	exclude: /node_modules/,
+				// 	options: {
+				// 		name: "./images/[name].[ext]"
+				// 	}
+				// },
+				{
+					test: /\.(png|jpe?g|gif|webp)$/i,
+					loader: "file-loader",
+					exclude: /node_modules/,
+					options: {
+						name: './images/[name].[ext]',
+					},
+      	},
 			]
 		},
 		resolve: {
@@ -32,7 +48,8 @@ module.exports = merge(
 		},
 		output: {
 			filename: "[name].js",
-			path: path.resolve(__dirname, "dist")
+			path: path.resolve(__dirname, "dist"),
+			assetModuleFilename: 'images/[hash][ext][query]'
 		},
 		devServer: {
 			hot: true
@@ -40,7 +57,8 @@ module.exports = merge(
 		plugins: [
 			new HtmlWebpackPlugin({
 				filename: "index.html",
-				template: "./src/index.html"
+				template: "./src/index.html",
+				favicon: "favicon.ico",
 			})
 		],
 		optimization: {

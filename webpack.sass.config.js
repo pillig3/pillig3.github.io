@@ -19,7 +19,23 @@ module.exports = {
 						options: { implementation: require("sass") },
 					},
 				]
+			},
+			{
+				test: /\.css$/,
+				use: [
+					{
+						loader: 'css-loader',
+					},
+				]
 			}
+			// {
+			// 	test: /\.css$/,
+			// 	use: [
+			// 		{
+			// 			loader: "css-loader"
+			// 		}
+			// 	]
+			// }
 		]
 	},
 	plugins: [

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { render } from "react-dom";
-import App from "./components/app";
+import Home from "./components/Home";
 import "./index.scss";
 
-render(<App />, document.querySelector("#root") as HTMLElement);
+render(<Home />, document.querySelector("#root") as HTMLElement);
