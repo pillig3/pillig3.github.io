@@ -4,6 +4,8 @@ import homePng from "../images/home.png";
 import homeWebp from "../images/home.webp";
 import compassPng from "../images/compass.png";
 import compassWebp from "../images/compass.webp";
+import chocoPng from "../images/choco.png";
+import chocoWebp from "../images/choco.webp";
 
 const Menu: React.FC<MenuProps> = ({ startExpanded }) => {
 	const [expanded, toggleExpanded] = useState(startExpanded ?? false);
@@ -16,6 +18,7 @@ const Menu: React.FC<MenuProps> = ({ startExpanded }) => {
 					<ul className="menu_list">
 						{MenuItem("/", "Home", homePng, homeWebp)}
 						{MenuItem("/problems.html", "Problems", compassPng, compassWebp)}
+						{MenuItem("/chomp.html", "Chomp", chocoPng, chocoWebp)}
 					</ul>
 				</div>
 			) : null}

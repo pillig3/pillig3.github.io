@@ -10,6 +10,20 @@ body {
 	background-color: #d3eded;
 }
 
+p {
+	margin-block-start: 1em;
+	margin-block-end: 1em;
+	margin-inline-start: 0px;
+	margin-inline-end: 0px;
+}
+
+div.p {
+	margin-block-start: 1em;
+	margin-block-end: 1em;
+	margin-inline-start: 0px;
+	margin-inline-end: 0px;
+}
+
 div.title {
 	font-size: 32pt;
 	text-align: center;
@@ -22,12 +36,12 @@ div.title {
 
 .card {
 	background-color: white;
-	width: calc(100% - 30px);
 	min-height: 20px;
 	border-radius: $border-radius;
 	margin: $page-margin;
 	margin-bottom: 10px;
 	overflow: hidden;
+	float: none;
 }
 
 .inner_card {
@@ -57,6 +71,7 @@ picture > img {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
+	text-align: center;
 }
 
 /**
@@ -67,40 +82,35 @@ $menu-inner-side-margin: $menu-collapsed-size * 0.2;
 $menu-inner-top-margin: $menu-collapsed-size * 0.1;
 $menu-inner-button-height: $menu-collapsed-size - 2 * $menu-inner-top-margin;
 
-.menu_collapsed {
+@mixin menu() {
 	left: 0;
 	top: 0;
 	background-color: #fff;
+	margin: $page-margin;
+	border-radius: $border-radius;
+	float: left;
+	z-index: 100;
+}
+
+.menu_collapsed {
+	@include menu();
 	width: $menu-collapsed-size;
 	height: $menu-collapsed-size;
-	margin: $page-margin;
-	float: left;
-	border-radius: $border-radius;
-	z-index: 100;
 	cursor: pointer;
 }
 
 .menu_expanded {
-	left: 0;
-	top: 0;
-	background-color: #fff;
-	width: auto; // $menu-collapsed-size * 3;
-	height: auto; // $menu-collapsed-size * 3;
-	margin: $page-margin;
-	float: left;
-	border-radius: $border-radius;
-	z-index: 100;
+	@include menu();
+	width: auto;
+	height: auto;
+	margin-bottom: math.div($page-margin, 2);
 }
 
 .menu_button {
-	left: 0;
-	top: 0;
-	background-color: #fff;
+	@include menu();
 	width: $menu-collapsed-size;
 	height: $menu-collapsed-size;
 	margin: 0;
-	border-radius: $border-radius;
-	z-index: 101;
 	cursor: pointer;
 	float: left;
 }
@@ -139,8 +149,33 @@ ul.menu_list {
 	margin-bottom: $menu-inner-side-margin;
 	margin-left: $menu-inner-side-margin;
 	margin-right: $menu-inner-side-margin;
+	text-align: center;
+	width: 8em;
 
-	li a p {
+	& > li > a > p {
 		margin: 16px 0;
 	}
+}
+
+ul.math_list > li {
+	padding-bottom: 0.5em;
+	list-style-type: circle;
+}
+
+.inline_code {
+	font-family: "Courier New", monospace;
+	padding: 1px 1px;
+}
+
+span {
+	&.red {
+		color: red;
+	}
+	&.blue {
+		color: blue;
+	}
+}
+
+.hidden {
+	visibility: hidden;
 }

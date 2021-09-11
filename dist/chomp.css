@@ -1,5 +1,5 @@
 /*!*************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./src/index.scss ***!
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./src/chomp.scss ***!
   \*************************************************************************************************************************************/
 html,
 body {
@@ -172,4 +172,54 @@ span.blue {
 
 .hidden {
   visibility: hidden;
+}
+
+table.chocolate {
+  background-color: black;
+  border-collapse: separate;
+  border: 2px solid black;
+  margin: auto;
+  width: auto;
+  border-spacing: 0;
+}
+table.chocolate tr {
+  display: flex;
+}
+table.chocolate td {
+  width: 5em;
+  height: 5em;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.chomp_square {
+  background-position: 0px 0px;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.chomp_square:hover {
+  cursor: pointer;
+}
+
+div.table_container {
+  width: 100%;
+  overflow-x: scroll;
+}
+
+div.loader {
+  border-radius: 50%;
+  width: 3em;
+  height: 3em;
+  border-top: 0.3em solid cornflowerblue;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

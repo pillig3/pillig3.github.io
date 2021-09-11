@@ -15,6 +15,7 @@ module.exports = merge(
 		entry: {
 			index: "./src/index.tsx",
 			problems: "./src/problems.tsx",
+			chomp: "./src/chomp.tsx",
 		},
 		devtool: DEVELOPMENT ? "inline-source-map" : false,
 		dependencies: ["vendor"],
@@ -34,13 +35,13 @@ module.exports = merge(
 				// 	},
 				// },
 				{
-					test: /\.(png|jpe?g|gif|webp)$/i,
+					test: /\.(png|jpg|gif|webp)$/i,
 					loader: "file-loader",
 					exclude: /node_modules/,
 					options: {
 						name: './images/[name].[ext]',
 					},
-      	},
+				},
 			]
 		},
 		resolve: {
@@ -69,7 +70,13 @@ module.exports = merge(
 				template: "./src/problems.html",
 				favicon: "favicon.ico",
 				chunks: ["problems"],
-			})
+			}),
+			new HtmlWebpackPlugin({
+				filename: "chomp.html",
+				template: "./src/chomp.html",
+				favicon: "favicon.ico",
+				chunks: ["chomp"],
+			}),
 		],
 		optimization: {
 			minimize: PRODUCTION,

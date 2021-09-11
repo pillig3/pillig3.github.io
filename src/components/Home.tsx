@@ -6,7 +6,7 @@ import tetWebp from "../images/tetinv52.webp";
 import Menu from "./Menu";
 
 const Home: React.FC = (): JSX.Element => (
-	<div>
+	<React.Fragment>
 		<Menu />
 		<div className="title">Hello!</div>
 		<Card>
@@ -18,7 +18,7 @@ const Home: React.FC = (): JSX.Element => (
 				<img className="centered" src={tetPng} width="500em" alt="graph of tetration" />
 			</picture>
 		</Card>
-	</div>
+	</React.Fragment>
 );
 
 export default Home;

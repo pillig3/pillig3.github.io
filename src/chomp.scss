@@ -1,0 +1,55 @@
+@import "./index.scss";
+
+table.chocolate {
+	background-color: black;
+	border-collapse: separate;
+	border: 2px solid black;
+	margin: auto;
+	width: auto;
+	border-spacing: 0;
+
+	tr {
+		display: flex;
+	}
+
+	td {
+		width: 5em; // 75px;
+		height: 5em; // 75px;
+		border: 0;
+		margin: 0;
+		padding: 0;
+	}
+}
+
+.chomp_square {
+	background: {
+		position: 0px 0px;
+		size: 100% 100%;
+		repeat: no-repeat;
+	}
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+div.table_container {
+	width: 100%;
+	overflow-x: scroll;
+}
+
+div.loader {
+	border-radius: 50%;
+	width: 3em;
+	height: 3em;
+	border-top: 0.3em solid cornflowerblue;
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}

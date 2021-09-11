@@ -7,6 +7,20 @@ body {
   background-color: #d3eded;
 }
 
+p {
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+div.p {
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
 div.title {
   font-size: 32pt;
   text-align: center;
@@ -19,12 +33,12 @@ div.title {
 
 .card {
   background-color: white;
-  width: calc(100% - 30px);
   min-height: 20px;
   border-radius: 10px;
   margin: 15px;
   margin-bottom: 10px;
   overflow: hidden;
+  float: none;
 }
 
 .inner_card {
@@ -52,6 +66,7 @@ picture > img {
   display: block;
   margin-left: auto;
   margin-right: auto;
+  text-align: center;
 }
 
 /**
@@ -61,12 +76,12 @@ picture > img {
   left: 0;
   top: 0;
   background-color: #fff;
+  margin: 15px;
+  border-radius: 10px;
+  float: left;
+  z-index: 100;
   width: 50px;
   height: 50px;
-  margin: 15px;
-  float: left;
-  border-radius: 10px;
-  z-index: 100;
   cursor: pointer;
 }
 
@@ -74,23 +89,26 @@ picture > img {
   left: 0;
   top: 0;
   background-color: #fff;
+  margin: 15px;
+  border-radius: 10px;
+  float: left;
+  z-index: 100;
   width: auto;
   height: auto;
-  margin: 15px;
-  float: left;
-  border-radius: 10px;
-  z-index: 100;
+  margin-bottom: 7.5px;
 }
 
 .menu_button {
   left: 0;
   top: 0;
   background-color: #fff;
+  margin: 15px;
+  border-radius: 10px;
+  float: left;
+  z-index: 100;
   width: 50px;
   height: 50px;
   margin: 0;
-  border-radius: 10px;
-  z-index: 101;
   cursor: pointer;
   float: left;
 }
@@ -128,7 +146,30 @@ ul.menu_list {
   margin-bottom: 10px;
   margin-left: 10px;
   margin-right: 10px;
+  text-align: center;
+  width: 8em;
 }
-ul.menu_list li a p {
+ul.menu_list > li > a > p {
   margin: 16px 0;
+}
+
+ul.math_list > li {
+  padding-bottom: 0.5em;
+  list-style-type: circle;
+}
+
+.inline_code {
+  font-family: "Courier New", monospace;
+  padding: 1px 1px;
+}
+
+span.red {
+  color: red;
+}
+span.blue {
+  color: blue;
+}
+
+.hidden {
+  visibility: hidden;
 }
