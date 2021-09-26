@@ -16,6 +16,8 @@ module.exports = merge(
 			index: "./src/index.tsx",
 			problems: "./src/problems.tsx",
 			chomp: "./src/chomp.tsx",
+			befunge: "./src/befunge.tsx",
+			"befunge-info": "./src/befunge-info.tsx", 
 		},
 		devtool: DEVELOPMENT ? "inline-source-map" : false,
 		dependencies: ["vendor"],
@@ -76,6 +78,18 @@ module.exports = merge(
 				template: "./src/chomp.html",
 				favicon: "favicon.ico",
 				chunks: ["chomp"],
+			}),
+			new HtmlWebpackPlugin({
+				filename: "befunge.html",
+				template: "./src/befunge.html",
+				favicon: "favicon.ico",
+				chunks: ["befunge"],
+			}),
+			new HtmlWebpackPlugin({
+				filename: "befunge-info.html",
+				template: "./src/befunge-info.html",
+				favicon: "favicon.ico",
+				chunks: ["befunge-info"],
 			}),
 		],
 		optimization: {

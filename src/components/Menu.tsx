@@ -6,6 +6,8 @@ import compassPng from "../images/compass.png";
 import compassWebp from "../images/compass.webp";
 import chocoPng from "../images/choco.png";
 import chocoWebp from "../images/choco.webp";
+import mushroomPng from "../images/mushroom.png";
+import mushroomWebp from "../images/mushroom.webp";
 
 const Menu: React.FC<MenuProps> = ({ startExpanded }) => {
 	const [expanded, toggleExpanded] = useState(startExpanded ?? false);
@@ -14,11 +16,12 @@ const Menu: React.FC<MenuProps> = ({ startExpanded }) => {
 		<div className={expanded ? "menu_expanded" : "menu_collapsed"}>
 			{MenuButton(expanded, toggleExpanded)}
 			{expanded ? (
-				<div>
-					<ul className="menu_list">
+				<div className="centered">
+					<ul className="menu_list centered">
 						{MenuItem("/", "Home", homePng, homeWebp)}
 						{MenuItem("/problems.html", "Problems", compassPng, compassWebp)}
 						{MenuItem("/chomp.html", "Chomp", chocoPng, chocoWebp)}
+						{MenuItem("/befunge.html", "Befunge", mushroomPng, mushroomWebp)}
 					</ul>
 				</div>
 			) : null}
@@ -35,6 +38,7 @@ function MenuItem(reference: string, text: string, png: any, webp: any): JSX.Ele
 						<source type="image/webp" srcSet={webp} />
 						<img src={png} height="16px" width="16px" alt="" />
 					</picture>
+					&nbsp;
 					{text}
 				</p>
 			</a>

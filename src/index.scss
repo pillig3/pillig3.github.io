@@ -7,6 +7,11 @@ html,
 body {
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
 		sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	margin: 0;
+}
+
+body {
+	padding: 1%;
 	background-color: #d3eded;
 }
 
@@ -47,6 +52,7 @@ div.title {
 .inner_card {
 	width: calc(100% - 20px);
 	padding: 10px;
+	overflow-x: scroll;
 }
 
 // KaTeX override to make the font slightly smaller
@@ -72,6 +78,15 @@ picture > img {
 	margin-left: auto;
 	margin-right: auto;
 	text-align: center;
+}
+
+.fit_content {
+	width: fit-content;
+}
+
+.flex {
+	display: flex;
+	flex-wrap: wrap;
 }
 
 /**
@@ -104,6 +119,12 @@ $menu-inner-button-height: $menu-collapsed-size - 2 * $menu-inner-top-margin;
 	width: auto;
 	height: auto;
 	margin-bottom: math.div($page-margin, 2);
+	overflow-x: hidden;
+
+	@media only screen and (max-aspect-ratio: 2/3) {
+		width: -webkit-fill-available;
+		width: -moz-available;
+	}
 }
 
 .menu_button {
@@ -145,12 +166,12 @@ a.menu_item {
 ul.menu_list {
 	list-style-type: none;
 	padding: 0;
-	margin-top: $menu-collapsed-size + math.div($menu-inner-button-height, 7);
 	margin-bottom: $menu-inner-side-margin;
-	margin-left: $menu-inner-side-margin;
-	margin-right: $menu-inner-side-margin;
 	text-align: center;
 	width: 8em;
+	@media only screen and (min-aspect-ratio: 2/3) {
+		margin-top: $menu-collapsed-size + math.div($menu-inner-button-height, 7);
+	}
 
 	& > li > a > p {
 		margin: 16px 0;
@@ -178,4 +199,42 @@ span {
 
 .hidden {
 	visibility: hidden;
+}
+
+.command_table {
+	border-collapse: collapse;
+	width: 100%;
+
+	th,
+	td {
+		border-style: solid;
+		border-width: thin;
+	}
+
+	th {
+		font-weight: normal;
+		padding: 10px;
+		background-color: lightgray;
+	}
+
+	td {
+		padding: 0.5em;
+	}
+}
+
+.subsection {
+	font-size: 1em;
+}
+
+.nodisp {
+	display: none;
+}
+
+.upsidedown {
+	-webkit-transform: scaleY(-1);
+	transform: scaleY(-1);
+}
+
+.float_left {
+	float: left;
 }

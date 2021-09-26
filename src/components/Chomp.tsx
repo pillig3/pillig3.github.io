@@ -21,10 +21,7 @@ const Chomp: React.FC = (): JSX.Element => (
 		<Card>
 			Chomp is a two-player game about eating chocolate! The rules are simple: To play, two people (or
 			in this case, a person and a computer) take turns removing any square, plus all squares above and
-			to the right. E.g. if you take the square with coordinates <TeX>(x,y)</TeX> (the origin is the
-			lower left square), then all squares <TeX>(i,j)</TeX> with <TeX>i\geq x</TeX> and{" "}
-			<TeX>j \geq y</TeX> are also removed. Whichever player takes the bottom left square loses, and the
-			other player wins.
+			to the right. Whichever player takes the bottom left square loses, and the other player wins.
 			<p>
 				Since this game is <a href="//mathworld.wolfram.com/FiniteGame.html">finite</a>,{" "}
 				<a href="//www.whatgamesare.com/determinism.html">deterministic</a>, and{" "}
@@ -52,12 +49,12 @@ const Chomp: React.FC = (): JSX.Element => (
 				</li>
 				<li>
 					<a href="//www.kurims.kyoto-u.ac.jp/EMIS/journals/INTEGERS/papers/fg7/fg7.pdf">
-						More variants, work on \(3\times n\) boards
+						More variants, work on 3 × n boards
 					</a>
 				</li>
 				<li>
 					<a href="//citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.718.8493&rep=rep1&type=pdf">
-						General poset games and \(3\times n\) chomp
+						General poset games and 3 × n chomp
 					</a>
 				</li>
 			</ul>

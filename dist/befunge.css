@@ -1,6 +1,6 @@
-/*!*************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./src/index.scss ***!
-  \*************************************************************************************************************************************/
+/*!***************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./src/befunge.scss ***!
+  \***************************************************************************************************************************************/
 html,
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -231,4 +231,165 @@ span.blue {
 
 .float_left {
   float: left;
+}
+
+button {
+  font-size: 12pt;
+  outline: none;
+  padding: 0.5em 1em;
+  text-align: center;
+  border-radius: 20px;
+  border: 0;
+}
+button:hover {
+  cursor: pointer;
+}
+button#run {
+  background-color: #66e2b3;
+}
+button#displayButton {
+  background-color: #dea3ff;
+}
+button#pause {
+  background-color: #fabdfc;
+}
+button#step {
+  background-color: #ffc268;
+}
+
+div.button_container {
+  padding: 0.5em;
+  float: left;
+}
+
+div.options_container {
+  padding: 1em 1em;
+  float: left;
+}
+
+input#pauseInterval {
+  width: 4em;
+  outline: none;
+}
+input#pauseInterval::-webkit-inner-spin-button, input#pauseInterval::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+span.bordered_char {
+  display: inline-block;
+  outline: 1px solid black;
+  outline-offset: -1px;
+}
+span.bordered_char_darkmode {
+  display: inline-block;
+  outline: 1px solid white;
+  outline-offset: -1px;
+}
+span.right_aligned {
+  float: right;
+  text-align: right;
+}
+
+div#befungeCodeWrapper,
+div#display,
+div#output {
+  width: 100%;
+}
+
+textarea {
+  font-size: 12pt;
+  border: thin solid black;
+  outline: none;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  white-space: pre;
+  overflow: auto;
+  resize: vertical;
+  font-family: monospace, monospace;
+  font-kerning: none;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.code_output {
+  font-size: 12pt;
+  border: thin solid black;
+  outline: none;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  white-space: pre;
+  overflow: auto;
+  resize: vertical;
+  font-family: monospace, monospace;
+  font-kerning: none;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0 0;
+  background-color: white;
+}
+.code_output:hover {
+  cursor: default;
+}
+
+.word_wrap {
+  white-space: pre-wrap;
+  /* CSS3 */
+  white-space: -moz-pre-wrap;
+  /* Firefox */
+  white-space: -pre-wrap;
+  /* Opera <7 */
+  white-space: -o-pre-wrap;
+  /* Opera 7 */
+  word-wrap: break-word;
+  /* IE */
+}
+
+#befungeOutput {
+  height: 400px;
+  width: 100%;
+}
+
+div#display {
+  width: 100%;
+  padding: 0;
+}
+div#display #befungeState {
+  height: 200px;
+}
+div#display #befungeStack {
+  height: 60px;
+  line-height: 30px;
+  border-top: 0;
+}
+
+div#examplesButton {
+  width: max-content;
+  cursor: pointer;
+}
+
+.examples_collapsed {
+  left: 0;
+  top: 0;
+  margin: 15px;
+  float: left;
+  z-index: 100;
+}
+
+.examples_expanded {
+  left: 0;
+  top: 0;
+  margin: 15px;
+  float: left;
+  z-index: 100;
+  width: -webkit-fill-available;
+  width: -moz-available;
+}
+
+.max_content {
+  width: max-content;
 }
