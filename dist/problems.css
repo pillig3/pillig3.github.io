@@ -187,6 +187,12 @@ ul.math_list > li {
   padding: 1px 1px;
 }
 
+textarea.codeblock {
+  font-family: "Courier New", monospace;
+  width: 100%;
+  resize: none;
+}
+
 span.red {
   color: red;
 }
@@ -231,4 +237,17 @@ span.blue {
 
 .float_left {
   float: left;
+}
+
+canvas.full_canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.nopadding {
+  padding: 0;
+}
+
+.list_no_style {
+  list-style-type: none;
 }
