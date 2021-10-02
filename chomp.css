@@ -49,7 +49,7 @@ div.title {
 .inner_card {
   width: calc(100% - 20px);
   padding: 10px;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .katex {
@@ -60,7 +60,7 @@ div.title {
 }
 
 .katex-display {
-  overflow-x: scroll;
+  overflow-x: auto;
   overflow-y: hidden;
 }
 
@@ -282,7 +282,7 @@ table.chocolate td {
 
 div.table_container {
   width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 div.loader {
