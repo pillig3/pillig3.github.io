@@ -52,7 +52,7 @@ div.title {
 .inner_card {
 	width: calc(100% - 20px);
 	padding: 10px;
-	overflow-x: scroll;
+	overflow-x: auto;
 }
 
 // KaTeX override to make the font slightly smaller
@@ -65,7 +65,7 @@ div.title {
 
 // If the math goes off the screen allow scrolling
 .katex-display {
-	overflow-x: scroll;
+	overflow-x: auto;
 	overflow-y: hidden;
 }
 
