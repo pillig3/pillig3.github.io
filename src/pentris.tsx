@@ -31,29 +31,51 @@ interface Piece {
 	shape: boolean[][];
 }
 
-const pieces: { [pieceName: string]: Piece } = {
+const enum PieceNames {
+	SmallI,
+	SmallL,
+	SmallO,
+	SmallS,
+	SmallT,
+	F,
+	L,
+	I,
+	P,
+	N,
+	U,
+	T,
+	V,
+	W,
+	X,
+	Y,
+	Z,
+}
+
+type PieceName = keyof typeof PieceNames;
+
+const pieces: { [pieceName in PieceName]: Piece } = {
 	/**
 	 * Tetrominos
 	 */
-	smallI: {
+	SmallI: {
 		color: "cyan",
 		shape: [[true], [true], [true], [true]],
 	},
-	smallT: {
+	SmallT: {
 		color: "magenta",
 		shape: [
 			[true, true, true],
 			[false, true, false],
 		],
 	},
-	smallO: {
+	SmallO: {
 		color: "yellow",
 		shape: [
 			[true, true],
 			[true, true],
 		],
 	},
-	smallL: {
+	SmallL: {
 		color: "blue",
 		shape: [
 			[true, false],
@@ -61,7 +83,7 @@ const pieces: { [pieceName: string]: Piece } = {
 			[true, true],
 		],
 	},
-	smallS: {
+	SmallS: {
 		color: "green",
 		shape: [
 			[false, true, true],
@@ -204,16 +226,16 @@ const enum Transformation {
 interface IState {
 	board: string[][]; // Visual board - each element is the color of that cell
 	fixedBoard: string[][]; // Board of non-movable pieces
-	currentPiece: string; // Currently-dropping piece
+	currentPiece: PieceName; // Currently-dropping piece
 	currentPosition: Pair;
 	currentShapeGrid: boolean[][];
-	nextPiece: string; // Next up piece
+	nextPiece: PieceName; // Next up piece
 	keysPressed: string[]; // Keys pressed since the last loop
 	counter: number;
 	waitTime: number;
 	level: number;
 	linesCleared: number;
-	savedPiece: string; // Piece saved with 'c'
+	savedPiece: PieceName | ""; // Piece saved with 'c'
 	score: number;
 	cPressed: boolean;
 }
@@ -266,7 +288,7 @@ function resetState(): void {
  * and start the next piece
  * @param overrideNextPiece If entered, will use this piece next instead of state.nextPiece
  */
-function transitionToNextState(overrideNextPiece: string = ""): void {
+function transitionToNextState(overrideNextPiece: PieceName | "" = ""): void {
 	// Clear full rows
 	const fullLines = getFullLines();
 	if (fullLines.length > 0) {
@@ -449,7 +471,7 @@ function drawBoard(): void {
  */
 function drawSinglePieceToTheSide(
 	startPosition: Pair,
-	piece: string,
+	piece: PieceName,
 	edgeColor: string,
 	pieceColor: string,
 ): void {
@@ -657,10 +679,17 @@ function mainLoop(): void {
  */
 function transformCurrentPiece(t: Transformation): boolean {
 	const newShapeGrid = applyTransformation(t, state.currentShapeGrid);
+	const [offsetX, offsetY] = getOffsetForTransformation(
+		state.currentShapeGrid,
+		state.currentPiece,
+		t === Transformation.H,
+	);
+	const x = state.currentPosition.x + offsetX;
+	const y = state.currentPosition.y + offsetY;
 	let conflict = false;
 	forEachElementOfShapeGrid(newShapeGrid, (col, row, element) => {
 		if (element) {
-			const boardPos = new Pair(state.currentPosition.x + col, state.currentPosition.y + row);
+			const boardPos = new Pair(x + col, y + row);
 			if (
 				boardPos.x >= state.board.length ||
 				boardPos.y >= state.board[0].length ||
@@ -678,6 +707,8 @@ function transformCurrentPiece(t: Transformation): boolean {
 	// If no conflicts, move the piece
 	if (!conflict) {
 		eraseShape(state.currentShapeGrid, state.currentPosition);
+		state.currentPosition.x = x;
+		state.currentPosition.y = y;
 		state.currentShapeGrid = newShapeGrid;
 		drawShape(state.currentShapeGrid, state.currentPosition, pieces[state.currentPiece].color);
 	}
@@ -783,6 +814,255 @@ function applyTransformation(t: Transformation, shape: boolean[][]): boolean[][]
 }
 
 /**
+ * Given a shape, gets the offset to apply after rotation to the position
+ * @param shape
+ * @param piece
+ * @returns The offset -
+ * For example, if we have the shape
+ *    xzx
+ *     x
+ * This would return (0,-1) indicating that we should rotate 90' counterclockwise like so:
+ *     x
+ *    xz
+ *     x
+ * Where the 'z's are in the same location before and after because we have shifted it -1 in the y direction
+ */
+function getOffsetForTransformation(
+	shape: boolean[][],
+	piece: PieceName,
+	reflection: boolean,
+): [number, number] {
+	switch (piece) {
+		case "SmallI":
+			if (reflection) {
+				return [0, 0];
+			}
+			if (shape.length === 4) {
+				// xxxx
+				return [1, -1];
+			} else {
+				// x
+				// x
+				// x
+				// x
+				return [-1, 1];
+			}
+		case "SmallL":
+			if (reflection && shape.length === 2) {
+				// x
+				// x
+				// xx
+				if (shape[0][1]) {
+					return [-1, 0];
+				} else {
+					return [1, 0];
+				}
+			} else {
+				return [0, 0];
+			}
+		case "SmallO":
+			// xx
+			// xx
+			return [0, 0];
+		case "SmallS":
+			if (shape.length === 3) {
+				// xx
+				//  xx
+				return [0, 0];
+			} else {
+				// x
+				// xx
+				//  x
+				return [0, 0];
+			}
+		case "SmallT":
+			if (shape.length === 3) {
+				// xxx
+				//  x
+				if (reflection) {
+					return [0, 0];
+				}
+				if (shape[0][0]) {
+					return [0, -1];
+				} else {
+					return [1, 0];
+				}
+			} else {
+				// x
+				// xx
+				// x
+				if (shape[0][0]) {
+					if (reflection) {
+						return [-1, 0];
+					} else {
+						return [-1, 1];
+					}
+				} else {
+					if (reflection) {
+						return [1, 0];
+					} else {
+						return [0, 0];
+					}
+				}
+			}
+		case "F":
+			//  xx
+			// xx
+			//  x
+			return [0, 0];
+		case "L":
+			if (shape.length === 4) {
+				// xxxx
+				// x
+				if (reflection) {
+					return [0, 0];
+				}
+				return [1, -1];
+			} else {
+				// x
+				// x
+				// x
+				// xx
+				if (reflection) {
+					if (shape[0][0] && shape[1][0]) {
+						if (shape[0][3]) {
+							return [-1, 0];
+						} else {
+							return [1, 0];
+						}
+					} else {
+						if (shape[0][0]) {
+							return [-1, 0];
+						} else {
+							return [1, 0];
+						}
+					}
+				}
+				return [-1, 1];
+			}
+		case "I":
+			if (reflection) {
+				return [0, 0];
+			}
+			if (shape.length === 5) {
+				// xxxxx
+				return [2, -2];
+			} else {
+				// x
+				// x
+				// x
+				// x
+				// x
+				return [-2, 2];
+			}
+		case "P":
+			if (shape.length === 3) {
+				// xxx
+				//  xx
+				if (reflection) {
+					if (!shape[0][0] || !shape[0][1]) {
+						return [1, 0];
+					} else {
+						return [-1, 0];
+					}
+				}
+				if (!shape[0][0] || !shape[0][1]) {
+					return [1, -1];
+				} else {
+					return [0, 0];
+				}
+			} else {
+				// xx
+				// xx
+				// x
+				if (reflection) {
+					return [0, 0];
+				}
+				if (!shape[0][0] || !shape[1][0]) {
+					return [0, 1];
+				} else {
+					return [-1, 0];
+				}
+			}
+		case "N":
+			if (reflection) {
+				return [0, 0];
+			}
+			if (shape.length === 4) {
+				// xxx
+				//   xx
+				return [1, -1];
+			} else {
+				// x
+				// x
+				// xx
+				//  x
+				return [-1, 1];
+			}
+		case "U":
+			if (reflection && shape.length === 2) {
+				if (!shape[0][1]) {
+					return [1, 0];
+				} else {
+					return [-1, 0];
+				}
+			}
+			// x x
+			// xxx
+			return [0, 0];
+		case "T":
+			// xxx
+			//  x
+			//  x
+			return [0, 0];
+		case "V":
+			// xxx
+			// x
+			// x
+			return [0, 0];
+		case "W":
+			//  xx
+			// xx
+			// x
+			return [0, 0];
+		case "X":
+			//  x
+			// xxx
+			//  x
+			return [0, 0];
+		case "Y":
+			if (shape.length === 4) {
+				// xxxx
+				//  x
+				if (reflection) {
+					return [0, 0];
+				}
+				return [1, -1];
+			} else {
+				// x
+				// xx
+				// x
+				// x
+				if (reflection) {
+					if (!shape[0][0]) {
+						return [1, 0];
+					} else {
+						return [-1, 0];
+					}
+				}
+				return [-1, 1];
+			}
+		case "Z":
+			// xx
+			//  x
+			//  xx
+			return [0, 0];
+		default:
+			throw "Non-piece entered to getOffsetForRotation!";
+	}
+}
+
+/**
  * Get which rows are filled up
  * @returns An array of the row numbers for which all squares are occupied (in ascending order)
  */
@@ -884,9 +1164,9 @@ function copyMatrix<T>(ary: T[][]): T[][] {
 /**
  * Get the name of a random piece // TODO - should this be adjustable for probability of tetromino vs. pentomino?
  */
-function randomPiece(): string {
+function randomPiece(): PieceName {
 	const pieceNames = Object.keys(pieces);
-	return pieceNames[Math.floor(Math.random() * pieceNames.length)];
+	return pieceNames[Math.floor(Math.random() * pieceNames.length)] as PieceName;
 }
 
 /**

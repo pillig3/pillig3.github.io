@@ -148,15 +148,15 @@ function MainButton(
 	toggleExpanded: React.Dispatch<React.SetStateAction<boolean>>,
 ): JSX.Element {
 	return (
-		<div id="examplesButton" onClick={() => toggleExpanded(!expanded)}>
-			<div className={"float_left" + (expanded ? " upsidedown" : "")}>
-				<picture>
+		<button id="examplesButton" onClick={() => toggleExpanded(!expanded)}>
+			<div id="chevronContainer" className={"float_left" + (expanded ? " upsidedown" : "")}>
+				<picture style={{ verticalAlign: "middle" }}>
 					<source type="image/webp" srcSet={chevronWebp} />
-					<img src={chevronPng} height="16px" width="16px" alt="" />
+					<img src={chevronPng} height="14px" width="14px" alt="" />
 				</picture>
 			</div>
-			&nbsp; Examples
-		</div>
+			&nbsp;Examples
+		</button>
 	);
 }
 
