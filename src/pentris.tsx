@@ -193,14 +193,7 @@ const pieces: { [pieceName in PieceName]: Piece } = {
 /**
  * Just an (x,y) pair
  */
-class Pair {
-	public x: number;
-	public y: number;
-	constructor(x: number, y: number) {
-		this.x = x;
-		this.y = y;
-	}
-}
+type Pair = [number, number];
 
 /**
  * Transformations that can be made to the pieces
@@ -249,7 +242,7 @@ const state: IState = {
 	board: newMatrix<string>(NUM_COLUMNS, NUM_ROWS, ""),
 	fixedBoard: newMatrix<string>(NUM_COLUMNS, NUM_ROWS, ""),
 	currentPiece: initialPiece,
-	currentPosition: new Pair(6, 0),
+	currentPosition: [6, 0],
 	currentShapeGrid: pieces[initialPiece].shape,
 	nextPiece: randomPiece(),
 	keysPressed: [],
@@ -270,7 +263,7 @@ function resetState(): void {
 	state.board = newMatrix<string>(NUM_COLUMNS, NUM_ROWS, "");
 	state.fixedBoard = newMatrix<string>(NUM_COLUMNS, NUM_ROWS, "");
 	state.currentPiece = initialPiece;
-	state.currentPosition = new Pair(6, 0);
+	state.currentPosition = [6, 0];
 	state.currentShapeGrid = pieces[initialPiece].shape;
 	state.nextPiece = randomPiece();
 	state.keysPressed = [];
@@ -327,7 +320,7 @@ function transitionToNextState(overrideNextPiece: PieceName | "" = ""): void {
 		state.currentPiece = state.nextPiece;
 		state.nextPiece = randomPiece();
 	}
-	state.currentPosition = new Pair(6, 0);
+	state.currentPosition = [6, 0];
 	state.currentShapeGrid = copyMatrix(pieces[state.currentPiece].shape);
 	state.cPressed = false;
 }
@@ -427,38 +420,42 @@ function drawBoard(): void {
 			} else {
 				color = colArray[row];
 			}
-			const start = new Pair(boardLeft + col * cellHeight, TOP_MARGIN + row * cellHeight);
-			drawBorderedRectangle(start.x, start.y, cellHeight - 1, cellHeight - 1, edgeColor, color);
+			const start = [boardLeft + col * cellHeight, TOP_MARGIN + row * cellHeight];
+			drawBorderedRectangle(start[0], start[1], cellHeight - 1, cellHeight - 1, edgeColor, color);
 		}
 	}
 
 	// Draw the upcoming piece to the right
-	const upcomingStartPos = new Pair(boardLeft + cellHeight * (NUM_COLUMNS + 1), TOP_MARGIN);
+	const upcomingStartPos: Pair = [boardLeft + cellHeight * (NUM_COLUMNS + 1), TOP_MARGIN];
 	const upcomingColor = pieces[state.nextPiece].color;
 	drawSinglePieceToTheSide(upcomingStartPos, state.nextPiece, edgeColor, upcomingColor);
 
 	// And the saved piece to the left
 	if (state.savedPiece !== "") {
-		const savedStartPos = new Pair(boardLeft - cellHeight * 7, TOP_MARGIN);
+		const savedStartPos: Pair = [boardLeft - cellHeight * 7, TOP_MARGIN];
 		const savedColor = pieces[state.savedPiece].color;
 		drawSinglePieceToTheSide(savedStartPos, state.savedPiece, edgeColor, savedColor);
 	}
 
 	// Draw score and high score
-	const scoreStartPos = new Pair(
+	const scoreStartPos = [
 		boardLeft + Math.floor(cellHeight * (NUM_COLUMNS + 1)),
 		TOP_MARGIN + Math.floor(6 * cellHeight),
-	);
-	drawBorderedRectangle(scoreStartPos.x, scoreStartPos.y, 1000, 128, BACKGROUND_COLOR, BACKGROUND_COLOR);
+	];
+	drawBorderedRectangle(scoreStartPos[0], scoreStartPos[1], 1000, 128, BACKGROUND_COLOR, BACKGROUND_COLOR);
 	ctx.font = "24px sans-serif";
 	ctx.fillStyle = "black";
 	ctx.textAlign = "left";
-	ctx.fillText("Level: " + state.level, scoreStartPos.x, scoreStartPos.y);
-	ctx.fillText("Score: " + state.score, scoreStartPos.x, scoreStartPos.y + 24 + Math.floor(cellHeight / 2));
+	ctx.fillText("Level: " + state.level, scoreStartPos[0], scoreStartPos[1]);
+	ctx.fillText(
+		"Score: " + state.score,
+		scoreStartPos[0],
+		scoreStartPos[1] + 24 + Math.floor(cellHeight / 2),
+	);
 	ctx.fillText(
 		"High Score: " + getHighScore(),
-		scoreStartPos.x,
-		scoreStartPos.y + 48 + Math.floor(cellHeight),
+		scoreStartPos[0],
+		scoreStartPos[1] + 48 + Math.floor(cellHeight),
 	);
 }
 
@@ -478,10 +475,9 @@ function drawSinglePieceToTheSide(
 	// Background
 	for (let col = 0; col < 7; col++) {
 		for (let row = 0; row < 6; row++) {
-			const start = new Pair(startPosition.x + col * cellHeight, startPosition.y + row * cellHeight);
 			drawBorderedRectangle(
-				start.x,
-				start.y,
+				startPosition[0] + col * cellHeight,
+				startPosition[1] + row * cellHeight,
 				cellHeight - 1,
 				cellHeight - 1,
 				BACKGROUND_COLOR,
@@ -492,11 +488,14 @@ function drawSinglePieceToTheSide(
 	// Piece
 	forEachElementOfShapeGrid(pieces[piece].shape, (col, row, element) => {
 		if (element) {
-			const start = new Pair(
-				startPosition.x + (col + 1) * cellHeight,
-				startPosition.y + (row + 1) * cellHeight,
+			drawBorderedRectangle(
+				startPosition[0] + (col + 1) * cellHeight,
+				startPosition[1] + (row + 1) * cellHeight,
+				cellHeight - 1,
+				cellHeight - 1,
+				edgeColor,
+				pieceColor,
 			);
-			drawBorderedRectangle(start.x, start.y, cellHeight - 1, cellHeight - 1, edgeColor, pieceColor);
 		}
 	});
 }
@@ -537,8 +536,7 @@ function drawBorderedRectangle(
 function eraseShape(shape: boolean[][], position: Pair): void {
 	forEachElementOfShapeGrid(shape, (col, row, element) => {
 		if (element) {
-			const boardPos = new Pair(position.x + col, position.y + row);
-			state.board[boardPos.x][boardPos.y] = "";
+			state.board[position[0] + col][position[1] + row] = "";
 		}
 	});
 }
@@ -552,8 +550,7 @@ function eraseShape(shape: boolean[][], position: Pair): void {
 function drawShape(shape: boolean[][], position: Pair, color: string): void {
 	forEachElementOfShapeGrid(shape, (col, row, element) => {
 		if (element) {
-			const boardPos = new Pair(position.x + col, position.y + row);
-			state.board[boardPos.x][boardPos.y] = color;
+			state.board[position[0] + col][position[1] + row] = color;
 		}
 	});
 }
@@ -684,21 +681,17 @@ function transformCurrentPiece(t: Transformation): boolean {
 		state.currentPiece,
 		t === Transformation.H,
 	);
-	const x = state.currentPosition.x + offsetX;
-	const y = state.currentPosition.y + offsetY;
+	const x = state.currentPosition[0] + offsetX;
+	const y = state.currentPosition[1] + offsetY;
 	let conflict = false;
 	forEachElementOfShapeGrid(newShapeGrid, (col, row, element) => {
 		if (element) {
-			const boardPos = new Pair(x + col, y + row);
-			if (
-				boardPos.x >= state.board.length ||
-				boardPos.y >= state.board[0].length ||
-				boardPos.x < 0 ||
-				boardPos.y < 0
-			) {
+			const tempX = x + col;
+			const tempY = y + row;
+			if (tempX >= state.board.length || tempY >= state.board[0].length || tempX < 0 || tempY < 0) {
 				// Would go off the board
 				conflict = true;
-			} else if (state.fixedBoard[boardPos.x][boardPos.y] !== "") {
+			} else if (state.fixedBoard[tempX][tempY] !== "") {
 				// Conflicts with an existing piece
 				conflict = true;
 			}
@@ -707,8 +700,8 @@ function transformCurrentPiece(t: Transformation): boolean {
 	// If no conflicts, move the piece
 	if (!conflict) {
 		eraseShape(state.currentShapeGrid, state.currentPosition);
-		state.currentPosition.x = x;
-		state.currentPosition.y = y;
+		state.currentPosition[0] = x;
+		state.currentPosition[1] = y;
 		state.currentShapeGrid = newShapeGrid;
 		drawShape(state.currentShapeGrid, state.currentPosition, pieces[state.currentPiece].color);
 	}
@@ -725,16 +718,16 @@ function moveCurrentPiece(direction: "U" | "D" | "L" | "R" | "none", tryMove: bo
 	let newPos: Pair;
 	switch (direction) {
 		case "U":
-			newPos = new Pair(state.currentPosition.x, state.currentPosition.y - 1);
+			newPos = [state.currentPosition[0], state.currentPosition[1] - 1];
 			break;
 		case "D":
-			newPos = new Pair(state.currentPosition.x, state.currentPosition.y + 1);
+			newPos = [state.currentPosition[0], state.currentPosition[1] + 1];
 			break;
 		case "L":
-			newPos = new Pair(state.currentPosition.x - 1, state.currentPosition.y);
+			newPos = [state.currentPosition[0] - 1, state.currentPosition[1]];
 			break;
 		case "R":
-			newPos = new Pair(state.currentPosition.x + 1, state.currentPosition.y);
+			newPos = [state.currentPosition[0] + 1, state.currentPosition[1]];
 			break;
 		default:
 			newPos = state.currentPosition;
@@ -743,16 +736,16 @@ function moveCurrentPiece(direction: "U" | "D" | "L" | "R" | "none", tryMove: bo
 	let conflict = false;
 	forEachElementOfShapeGrid(state.currentShapeGrid, (col, row, element) => {
 		if (element) {
-			const boardPos = new Pair(newPos.x + col, newPos.y + row);
+			const boardPos: Pair = [newPos[0] + col, newPos[1] + row];
 			if (
-				boardPos.x >= state.board.length ||
-				boardPos.y >= state.board[0].length ||
-				boardPos.x < 0 ||
-				boardPos.y < 0
+				boardPos[0] >= state.board.length ||
+				boardPos[1] >= state.board[0].length ||
+				boardPos[0] < 0 ||
+				boardPos[1] < 0
 			) {
 				// Would go off the board
 				conflict = true;
-			} else if (state.fixedBoard[boardPos.x][boardPos.y] !== "") {
+			} else if (state.fixedBoard[boardPos[0]][boardPos[1]] !== "") {
 				// Conflicts with an existing piece
 				conflict = true;
 			}
@@ -814,9 +807,10 @@ function applyTransformation(t: Transformation, shape: boolean[][]): boolean[][]
 }
 
 /**
- * Given a shape, gets the offset to apply after rotation to the position
- * @param shape
- * @param piece
+ * Given a shape, gets the position offset after transformation
+ * @param shape The current shape
+ * @param piece The current piece name
+ * @param reflection Whether the transformation is a reflection (otherwise, rotation)
  * @returns The offset -
  * For example, if we have the shape
  *    xzx
@@ -827,11 +821,7 @@ function applyTransformation(t: Transformation, shape: boolean[][]): boolean[][]
  *     x
  * Where the 'z's are in the same location before and after because we have shifted it -1 in the y direction
  */
-function getOffsetForTransformation(
-	shape: boolean[][],
-	piece: PieceName,
-	reflection: boolean,
-): [number, number] {
+function getOffsetForTransformation(shape: boolean[][], piece: PieceName, reflection: boolean): Pair {
 	switch (piece) {
 		case "SmallI":
 			if (reflection) {
@@ -1066,37 +1056,64 @@ function getOffsetForTransformation(
  * Get which rows are filled up
  * @returns An array of the row numbers for which all squares are occupied (in ascending order)
  */
-function getFullLines(): number[] {
-	const fullLines: number[] = [];
+function getFullLines(): IGetFullLinesReturnObj {
+	const fullLines: IGetFullLinesReturnObj = { length: 0 };
 	for (let row = 0; row < state.board[0].length; row++) {
 		let fullRow = true;
 		for (let col = 0; col < state.board.length; col++) {
 			if (state.board[col][row] === "") {
 				fullRow = false;
-			}
-			if (!fullRow) {
 				break;
 			}
 		}
 		if (fullRow) {
-			fullLines.push(row);
+			fullLines[row] = true;
+			fullLines.length++;
 		}
 	}
 	return fullLines;
 }
 
+interface IGetFullLinesReturnObj {
+	length: number;
+	[row: number]: boolean;
+}
+
 /**
  * Remove a series of lines
- * @param lines Lines to be removed from getFulLines - assumed to be consecutive numbers in ascending order
+ * @param lines Lines to be removed, from getFulLines
  */
-function removeLines(lines: number[]) {
-	// Copy from current row minus lines.length
-	for (let row = lines[lines.length - 1]; row > lines.length - 1; row--) {
+function removeLines(lines: IGetFullLinesReturnObj) {
+	// First copy all lines down over the removed lines
+	let removedLinesPassed = 0;
+	const linesAdded: { [row: number]: boolean } = {};
+	for (let row = state.board[0].length - 1; row > lines.length - 1; row--) {
+		// If we haven't seen a removed line yet don't copy
+		if (removedLinesPassed === 0 && lines[row] !== true) {
+			continue;
+		}
+		// If this is a removed line we haven't already counted, add 1 to the removed lines counter (N)
+		if (lines[row] === true && linesAdded[row] !== true) {
+			removedLinesPassed++;
+			linesAdded[row] = true;
+		}
+		// While the Nth previous line is one we've removed, add one to N
+		while (lines[row - removedLinesPassed] === true) {
+			if (linesAdded[row - removedLinesPassed] !== true) {
+				//This should always pass
+				linesAdded[row - removedLinesPassed] = true;
+			} else {
+				console.log("!!!The unexpected happened in removeLines()!!!");
+			}
+			removedLinesPassed++;
+		}
+		// Copy from N lines up
 		for (let col = 0; col < state.board.length; col++) {
-			state.board[col][row] = state.board[col][row - lines.length];
+			state.board[col][row] = state.board[col][row - removedLinesPassed];
 		}
 	}
-	// Clear first lines.length rows
+
+	// Now clear a row on the top for each line we removed
 	for (let row = 0; row < lines.length; row++) {
 		for (let col = 0; col < state.board.length; col++) {
 			state.board[col][row] = "";
