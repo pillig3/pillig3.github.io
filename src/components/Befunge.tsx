@@ -439,7 +439,7 @@ function buildStateContent(codeArray: (string | bigint)[][], pointerIndex: Point
 				</span>,
 			);
 		}
-		childArray.push(<br />);
+		childArray.push(<br key={key++} />);
 	}
 
 	return <React.Fragment>{...childArray}</React.Fragment>;

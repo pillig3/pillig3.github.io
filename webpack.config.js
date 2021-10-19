@@ -20,7 +20,9 @@ module.exports = merge(
 			"befunge-info": "./src/befunge-info.tsx",
 			misc: "./src/misc.tsx",
 			comps: "./src/comps.tsx",
-			pentris: "./src/pentris.tsx"
+			pentris: "./src/pentris.tsx",
+			complex: "./src/complex.tsx",
+			"complex-info": "./src/complex-info.tsx",
 		},
 		devtool: DEVELOPMENT ? "inline-source-map" : false,
 		dependencies: ["vendor"],
@@ -111,6 +113,18 @@ module.exports = merge(
 				template: "./src/pentris.html",
 				favicon: "favicon.ico",
 				chunks: ["pentris"],
+			}),
+			new HtmlWebpackPlugin({
+				filename: "complex.html",
+				template: "./src/complex.html",
+				favicon: "favicon.ico",
+				chunks: ["complex"],
+			}),
+			new HtmlWebpackPlugin({
+				filename: "complex-info.html",
+				template: "./src/complex-info.html",
+				favicon: "favicon.ico",
+				chunks: ["complex-info"],
 			}),
 		],
 		optimization: {
