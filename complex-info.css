@@ -1,0 +1,253 @@
+/*!*************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./src/index.scss ***!
+  \*************************************************************************************************************************************/
+html,
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  margin: 0;
+}
+
+body {
+  padding: 1%;
+  background-color: #d3eded;
+}
+
+p {
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+div.p {
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+div.title {
+  font-size: 32pt;
+  text-align: center;
+  font-variant: small-caps;
+  font-weight: 250;
+  margin: 15px;
+  margin-top: 0;
+  padding-top: 15px;
+}
+
+.card {
+  background-color: white;
+  min-height: 20px;
+  border-radius: 10px;
+  margin: 15px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  float: none;
+}
+
+.inner_card {
+  width: calc(100% - 20px);
+  padding: 10px;
+  overflow-x: auto;
+}
+
+.katex {
+  text-rendering: auto;
+  font: normal 1.1em KaTeX_Main, Times New Roman, serif;
+  line-height: 1.2;
+  text-indent: 0;
+}
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+picture > img {
+  max-width: 100%;
+}
+
+.centered {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.fit_content {
+  width: fit-content;
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/**
+ * Menu Styling
+ */
+.menu_collapsed {
+  left: 0;
+  top: 0;
+  background-color: #fff;
+  margin: 15px;
+  border-radius: 10px;
+  float: left;
+  z-index: 100;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.menu_expanded {
+  left: 0;
+  top: 0;
+  background-color: #fff;
+  margin: 15px;
+  border-radius: 10px;
+  float: left;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  margin-bottom: 7.5px;
+  overflow-x: hidden;
+}
+@media only screen and (max-aspect-ratio: 2/3) {
+  .menu_expanded {
+    width: -webkit-fill-available;
+    width: -moz-available;
+  }
+}
+
+.menu_button {
+  left: 0;
+  top: 0;
+  background-color: #fff;
+  margin: 15px;
+  border-radius: 10px;
+  float: left;
+  z-index: 100;
+  width: 50px;
+  height: 50px;
+  margin: 0;
+  cursor: pointer;
+  float: left;
+}
+
+.menu_button_inner {
+  margin: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  width: 30px;
+  border-top-color: #fff;
+  border-top-style: solid;
+  border-top-width: 5.7142857143px;
+  height: 34.2857142857px;
+}
+
+.menu_button_line {
+  width: 100%;
+  height: 5.7142857143px;
+  margin-bottom: 5.7142857143px;
+  background-color: black;
+}
+
+a.menu_item {
+  color: black;
+  text-decoration: none;
+}
+a.menu_item:hover {
+  font-weight: bold;
+}
+
+ul.menu_list {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 10px;
+  text-align: center;
+  width: 8em;
+}
+@media only screen and (min-aspect-ratio: 2/3) {
+  ul.menu_list {
+    margin-top: 55.7142857143px;
+  }
+}
+ul.menu_list > li > a > p {
+  margin: 16px 0;
+}
+
+ul.math_list > li {
+  padding-bottom: 0.5em;
+  list-style-type: circle;
+}
+
+.inline_code {
+  font-family: "Courier New", monospace;
+  padding: 1px 1px;
+}
+
+textarea.codeblock {
+  font-family: "Courier New", monospace;
+  width: 100%;
+  resize: none;
+}
+
+span.red {
+  color: red;
+}
+span.blue {
+  color: blue;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.command_table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.command_table th,
+.command_table td {
+  border-style: solid;
+  border-width: thin;
+}
+.command_table th {
+  font-weight: normal;
+  padding: 10px;
+  background-color: lightgray;
+}
+.command_table td {
+  padding: 0.5em;
+}
+
+.subsection {
+  font-size: 1em;
+}
+
+.nodisp {
+  display: none;
+}
+
+.upsidedown {
+  -webkit-transform: scaleY(-1);
+  transform: scaleY(-1);
+}
+
+.float_left {
+  float: left;
+}
+
+canvas.full_canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.nopadding {
+  padding: 0;
+}
+
+.list_no_style {
+  list-style-type: none;
+}
