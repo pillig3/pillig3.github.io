@@ -636,7 +636,7 @@ function drawOnEnter() {
 			view.center = strToNum(center);
 			centerInput.lastValue = center;
 			view.hasChanged = true;
-		} catch (e) {
+		} catch (e: any) {
 			// Just use last valid center
 			logError(e, true);
 		}
@@ -653,7 +653,7 @@ function drawOnEnter() {
 	if (typeof str !== "string" || str == "") return;
 	try {
 		f = strToFunc(str);
-	} catch (e) {
+	} catch (e: any) {
 		logError(e);
 		return;
 	}
@@ -965,7 +965,7 @@ function drawFromHash(hash: string): void {
 	let func: ComplexFunction;
 	try {
 		func = strToFunc(f);
-	} catch (e) {
+	} catch (e: any) {
 		logError(e);
 		return;
 	}

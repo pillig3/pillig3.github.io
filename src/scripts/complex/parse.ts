@@ -17,6 +17,7 @@ import {
 	tangent,
 	sinh,
 	cosh,
+	tanh,
 	tetrate,
 	iterate,
 	ComplexNumber,
@@ -24,6 +25,8 @@ import {
 } from "./complexNumbers";
 import { Token, TokenType, tokenize } from "./tokenize";
 export { Node, NodeChild, ComplexFunction, parse, functify, strToFunc, strToNum };
+// Just for unit tests
+export { splitArguments, getNextCloseParen };
 
 //#region Functify
 
@@ -115,6 +118,7 @@ const NamedFunctions: { [key: string]: ComplexFunction | typeof iterate } = {
 	tan: tangent,
 	sinh: sinh,
 	cosh: cosh,
+	tanh: tanh,
 	tet: tetrate,
 	sqrt: sqrt,
 	Re: Re,
@@ -349,7 +353,7 @@ function findLastFunc(tokens: Token[]): FindLastFuncReturn {
 					i = getNextCloseParen(tokens, i, token.type);
 				} else {
 					console.log(tokens);
-					throw "Error: unbalanced paremtheses";
+					throw "Error: unbalanced parentheses";
 				}
 			}
 			continue;
@@ -400,7 +404,7 @@ function funcHasSquareBrackets(strF: string): boolean {
  * @param i The position of the opening parenthesis
  * @param parenType Either TokenType.Parenthesis or TokenType.SquareBracket to tell which type of paren we're looking for
  */
-function getNextCloseParen(tokens: Token[], i: number, parenType: TokenType) {
+function getNextCloseParen(tokens: Token[], i: number, parenType: TokenType): number {
 	let level = 1;
 	let open: string;
 	let close: string;
@@ -411,7 +415,7 @@ function getNextCloseParen(tokens: Token[], i: number, parenType: TokenType) {
 		open = "[";
 		close = "]";
 	} else {
-		throw "getNextCloseParen called incorrectly. Shame on the developer!";
+		throw "getNextCloseParen called incorrectly. This should not have been possible!";
 	}
 	let j: number;
 	for (j = i + 1; j < tokens.length; j++) {
@@ -430,7 +434,7 @@ function getNextCloseParen(tokens: Token[], i: number, parenType: TokenType) {
 		}
 	}
 	if (j > tokens.length - 1) {
-		throw "Error: unbalanced paremtheses";
+		throw "Error: unbalanced parentheses";
 	}
 	return j;
 }
@@ -450,7 +454,7 @@ function getFuncFromArithFuncString(arithFuncString: string): ComplexFunction {
 		case "implicit_mult":
 			return mult;
 		default:
-			throw "getFuncFromArithFuncString called incorrectly. Shame on the developer!";
+			throw "getFuncFromArithFuncString called incorrectly. This should not have been possible!";
 	}
 }
 
@@ -526,7 +530,7 @@ function getComplexFuncFromFuncWithSquareBrackets(strF: string, tokens: Token[])
 		return { complexFunc: iterate(g, Math.floor(n)), numArgs: newVarAry.indexOf(null) };
 	} else {
 		// Not supported
-		throw "getComplexFuncFromFuncWithSquareBrackets called incorrectly. Shame on the developer!";
+		throw "getComplexFuncFromFuncWithSquareBrackets called incorrectly. This should not have been possible!";
 	}
 }
 
@@ -584,7 +588,7 @@ function turnTokenIntoChild(token: Token, vars: (string | null)[]): NodeChild {
 			throw (
 				'Something went wrong; encountered "' +
 				token.text +
-				'" where I did not expect it. Shame on the developer!'
+				'" where I did not expect it. This should not have been possible!'
 			);
 	}
 }

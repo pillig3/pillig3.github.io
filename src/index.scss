@@ -67,6 +67,11 @@ div.title {
 .katex-display {
 	overflow-x: auto;
 	overflow-y: hidden;
+	// Need to add some padding so the scrollbar doesn't cover the text
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
 }
 
 picture > img {

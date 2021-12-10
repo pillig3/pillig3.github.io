@@ -18,13 +18,14 @@ export {
 	tangent,
 	sinh,
 	cosh,
+	tanh,
 	tetrate,
 	iterate,
 	normalizeTheta,
 	ComplexNumber,
 };
 
-// Type for a complex number - (x, y)
+// Type for a complex number: (x, y)
 type ComplexNumber = [number, number];
 // Type for a function that we can iterate
 type IterateFunction = (first: any, ...rest: any[]) => any;
@@ -107,7 +108,7 @@ function divide(z: ComplexNumber, w: ComplexNumber): ComplexNumber {
 }
 
 /**
- * Returns e to the power of a number - e^(x+iy)
+ * Returns e to the power of a number: e^(x+iy)
  */
 function exp([x, y]: ComplexNumber): ComplexNumber {
 	if (x === Infinity || y === Infinity) {
@@ -117,7 +118,7 @@ function exp([x, y]: ComplexNumber): ComplexNumber {
 }
 
 /**
- * Returns the natural log of a complex number - ln(z)
+ * Returns the natural log of a complex number: ln(z)
  */
 function log(z: ComplexNumber): ComplexNumber {
 	let zz = toPolar(z[0], z[1]);
@@ -125,7 +126,7 @@ function log(z: ComplexNumber): ComplexNumber {
 }
 
 /**
- * Returns one complex number raised to the power of another - z^w = e^(w * ln(z))
+ * Returns one complex number raised to the power of another: z^w = e^(w * ln(z))
  */
 function raise(z: ComplexNumber, w: ComplexNumber): ComplexNumber {
 	if (z[0] === 0 && z[1] === 0) {
@@ -145,42 +146,49 @@ function sqrt(z: ComplexNumber): ComplexNumber {
 }
 
 /**
- * Returns the sine of the complex number - sin z = ( e^(i z) - e^(-i z) ) / (2i)
+ * Returns the sine of the complex number: sin z = ( e^(i z) - e^(-i z) ) / (2i)
  */
 function sine(z: ComplexNumber): ComplexNumber {
 	return divide(subtract(exp(mult([0, 1], z)), exp(mult([0, -1], z))), [0, 2]);
 }
 
 /**
- * Returns the cosine of the complex number - cos z = ( e^(i z) + e^(-i z) ) / 2
+ * Returns the cosine of the complex number: cos z = ( e^(i z) + e^(-i z) ) / 2
  */
 function cosine(z: ComplexNumber): ComplexNumber {
 	return divide(add(exp(mult([0, 1], z)), exp(mult([0, -1], z))), [2, 0]);
 }
 
 /**
- * Returns the tangent of the complex number - tan z = sin z / cos z
+ * Returns the tangent of the complex number: tan z = sin z / cos z
  */
 function tangent(z: ComplexNumber): ComplexNumber {
 	return divide(sine(z), cosine(z));
 }
 
 /**
- * Returns the hyperbolic sine of the complex number - sinh z = sin(-i z)
+ * Returns the hyperbolic sine of the complex number: sinh z = -i sin(i z)
  */
 function sinh(z: ComplexNumber): ComplexNumber {
-	return sine(mult([0, -1], z));
+	return mult([0, -1], sine(mult([0, 1], z)));
 }
 
 /**
- * Returns the hyperbolic cosine of the complex number - cosh z = cos(-i z)
+ * Returns the hyperbolic cosine of the complex number: cosh z = cos(i z)
  */
 function cosh(z: ComplexNumber): ComplexNumber {
-	return cosine(mult([0, -1], z));
+	return cosine(mult([0, 1], z));
 }
 
 /**
- * Returns a complex number tetrated a given number of times -
+ * Returns the hyperbolic tangent of the complex number: tanh z = sinh(z)/cosh(z)
+ */
+function tanh(z: ComplexNumber): ComplexNumber {
+	return divide(sinh(z), cosh(z));
+}
+
+/**
+ * Returns a complex number tetrated a given number of times:
  * z^z^...^z  =  e^(e^(...e^(z ln(z))... ln(z)) ln(z))
  */
 function tetrate([x, y]: ComplexNumber, n: number | number[]): ComplexNumber {
@@ -188,7 +196,7 @@ function tetrate([x, y]: ComplexNumber, n: number | number[]): ComplexNumber {
 		if (n.length === 0) {
 			return [0, 1]; //Just in case, return multiplicative identity
 		}
-		n = n[0];
+		n = n[0]; //Use real part
 	}
 	n = Math.floor(n);
 	if (n < 0) {
