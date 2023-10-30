@@ -34,7 +34,6 @@ test/*
 # node.js modules #
 ###################
 node_modules/*
-package.json
 package-lock.json
 
 instructions.txt

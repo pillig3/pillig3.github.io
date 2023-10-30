@@ -317,7 +317,7 @@ function showOrHideHeight(): void {
  * Origin button - centers at 0 + 0i
  */
 function center(): void {
-	if (view.center == [0, 0]) {
+	if (view.center[0] === 0 && view.center[1] === 0) {
 		return;
 	}
 	view.center = [0, 0];
