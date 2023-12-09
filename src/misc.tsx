@@ -11,7 +11,8 @@ render(
 		<div className="title">Miscellanea</div>
 		<Card>
 			<a href="/complex.html">Complex function plotter</a> &ndash; A place to graph functions on the
-			complex plane! Click and drag to move around, and press the - and + keys to zoom. Here are some
+			complex plane! It uses <a href="https://en.wikipedia.org/wiki/Domain_coloring">domain coloring</a> to visualize complex functions in two dimensions.
+			Click and drag to move around, and press the - and + keys to zoom. Here are some
 			examples:
 			<ul className="math_list">
 				<li>

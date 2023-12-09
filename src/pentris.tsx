@@ -217,19 +217,33 @@ const enum Transformation {
  * Contains all the info on the state of the game
  */
 interface IState {
-	board: string[][]; // Visual board - each element is the color of that cell
-	fixedBoard: string[][]; // Board of non-movable pieces
-	currentPiece: PieceName; // Currently-dropping piece
+	/** Visual board - each element is the color of that cell */
+	board: string[][];
+	/** Board of non-movable pieces */
+	fixedBoard: string[][]; 
+	/** Currently-dropping piece */
+	currentPiece: PieceName;
+	/** Position of the current piece (top left) */
 	currentPosition: Pair;
+	/** Grid representing the current piece (taking into account rotation) */
 	currentShapeGrid: boolean[][];
-	nextPiece: PieceName; // Next up piece
-	keysPressed: string[]; // Keys pressed since the last loop
+	/** Next up piece */
+	nextPiece: PieceName;
+	/** Keys pressed since the last loop */
+	keysPressed: string[]; 
+	/** Number of times the main loop has been called for the current piece */
 	counter: number;
+	/** How many steps we should wait before moving the current piece down automatically (decreases as level increases to make shapes fall faster) */
 	waitTime: number;
+	/** Current level (increases as user clears more lines) */
 	level: number;
+	/** Count of all lines cleared */
 	linesCleared: number;
-	savedPiece: PieceName | ""; // Piece saved with 'c'
+	/** Piece saved with 'c' */
+	savedPiece: PieceName | "";
+	/** Current score */
 	score: number;
+	/** Whether 'c' has been used to swap a piece since the last piece fell into place (don't let the user swap pieces back and forth forever on the same turn) */
 	cPressed: boolean;
 }
 

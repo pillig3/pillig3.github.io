@@ -37,6 +37,9 @@ div.title {
 	margin: $page-margin;
 	margin-top: 0;
 	padding-top: $page-margin;
+	// Add 1px of padding under the title. Without this, for some reason, Chrome on mobile would squish the topmost Card under the title to the right
+	// (only Chrome, and only on actual mobile device. Desktop Chrome pretending to be a mobile device was fine) 
+	padding-bottom: 1px;
 }
 
 .card {
@@ -50,8 +53,8 @@ div.title {
 }
 
 .inner_card {
-	width: calc(100% - 20px);
-	padding: 10px;
+	width: calc(100% - 30px);
+	padding: 10px 15px;
 	overflow-x: auto;
 }
 
